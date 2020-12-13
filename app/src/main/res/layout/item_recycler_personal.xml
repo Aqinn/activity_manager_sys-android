@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/inner_with_outer_margin"
+        android:background="@drawable/bg_radius"
+        android:padding="@dimen/inner_with_outer_padding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_account_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="账号:"
+            android:textSize="@dimen/personal_text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></TextView>
+
+        <TextView
+            android:id="@+id/tv_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/left_right_item_interval"
+            android:text="_aqinn"
+            android:textSize="@dimen/personal_text_size_other"
+            app:layout_constraintStart_toEndOf="@id/tv_account_text"
+            app:layout_constraintTop_toTopOf="@id/tv_account_text"
+            app:layout_constraintBottom_toBottomOf="@id/tv_account_text"></TextView>
+
+        <TextView
+            android:id="@+id/tv_name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/list_item_interval"
+            android:text="名称:"
+            android:textSize="@dimen/personal_text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_account_text"></TextView>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/left_right_item_interval"
+            android:text="钟兆锋"
+            android:textSize="@dimen/personal_text_size_other"
+            app:layout_constraintStart_toEndOf="@id/tv_name_text"
+            app:layout_constraintTop_toTopOf="@id/tv_name_text"
+            app:layout_constraintBottom_toBottomOf="@id/tv_name_text"></TextView>
+
+        <TextView
+            android:id="@+id/tv_sex_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/list_item_interval"
+            android:text="性别:"
+            android:textSize="@dimen/personal_text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_name_text"></TextView>
+
+        <TextView
+            android:id="@+id/tv_sex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/left_right_item_interval"
+            android:text="男 / 女"
+            android:textSize="@dimen/personal_text_size_other"
+            app:layout_constraintStart_toEndOf="@id/tv_sex_text"
+            app:layout_constraintTop_toTopOf="@id/tv_sex_text"
+            app:layout_constraintBottom_toBottomOf="@id/tv_sex_text"></TextView>
+
+        <TextView
+            android:id="@+id/tv_contact_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/list_item_interval"
+            android:text="联系方式:"
+            android:textSize="@dimen/personal_text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_sex_text"></TextView>
+
+        <TextView
+            android:id="@+id/tv_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/left_right_item_interval"
+            android:text="具体联系方式"
+            android:textSize="@dimen/personal_text_size_other"
+            app:layout_constraintStart_toEndOf="@id/tv_contact_text"
+            app:layout_constraintTop_toTopOf="@id/tv_contact_text"
+            app:layout_constraintBottom_toBottomOf="@id/tv_contact_text"></TextView>
+
+        <TextView
+            android:id="@+id/tv_desc_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/list_item_interval"
+            android:text="个人简介:"
+            android:textSize="@dimen/personal_text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_contact_text"></TextView>
+
+        <TextView
+            android:id="@+id/tv_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/list_item_interval"
+            android:padding="5dp"
+            android:text="简介详情"
+            android:textSize="@dimen/personal_text_size_desc"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_desc_text"></TextView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/inner_with_outer_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_top">
+
+        <Button
+            android:id="@+id/bt_gather_face"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="重新采集人脸"
+            android:textSize="@dimen/personal_setting_bt_text_size"
+            android:gravity="center |left"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <Button
+            android:id="@+id/bt_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="设置"
+            android:textSize="@dimen/personal_setting_bt_text_size"
+            android:gravity="center |left"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bt_gather_face"
+            app:layout_goneMarginTop="@dimen/personal_setting_bt_interval"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

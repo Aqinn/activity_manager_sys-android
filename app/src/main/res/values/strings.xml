@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">二休二休</string>
+    <string name="empty_tips">列表为空</string>
+    <string name="error_fragment_title">亲这边是出问题了噢</string>
+    <string name="error_fragment_detail">暂时不知道是啥问题呢</string>
+    <string name="act_center_tab_1_title">我创建的活动</string>
+    <string name="act_center_tab_2_title">我参与的活动</string>
+    <string name="attend_center_tab_1_title">我创建的签到</string>
+    <string name="attend_center_tab_2_title">我参与的签到</string>
+</resources>

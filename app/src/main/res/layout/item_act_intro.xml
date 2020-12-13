@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_item_act_intro"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_item_height_act"
+    android:padding="@dimen/list_item_padding"
+    android:background="@color/listview_bg">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_item_act_intro_inner"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:padding="@dimen/list_item_margin">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="活动名称"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="活动开始时间-活动结束时间"
+            app:layout_constraintStart_toStartOf="@id/tv_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_name"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="@dimen/list_item_interval" />
+
+        <TextView
+            android:id="@+id/tv_loc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="活动地点"
+            app:layout_constraintStart_toStartOf="@id/tv_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_time"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="@dimen/list_item_interval"  />
+
+        <TextView
+            android:id="@+id/tv_intro_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="活动简介"
+            app:layout_constraintStart_toStartOf="@id/tv_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_loc"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="@dimen/list_item_interval"  />
+
+        <TextView
+            android:id="@+id/tv_intro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="活动简介-详细"
+            android:maxLines="2"
+            android:textColor="?attr/qmui_config_color_gray_5"
+            android:ellipsize="end"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_intro_text"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="1dp"  />
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/list_item_margin"
+            android:text="进行中"
+            android:textSize="@dimen/status_text_size"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/tv_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
