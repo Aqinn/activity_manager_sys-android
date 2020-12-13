@@ -1,4 +1,4 @@
-package com.aqinn.actmanagersysandroid.data;
+package com.aqinn.actmanagersysandroid.datafortest;
 
 /**
  * 活动简介数据 - 仅展示用

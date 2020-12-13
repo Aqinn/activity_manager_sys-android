@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.aqinn.actmanagersysandroid.R;
-import com.aqinn.actmanagersysandroid.data.CreateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.datafortest.CreateAttendIntroItem;
 
 import java.util.List;
 
@@ -82,7 +82,7 @@ public class CreateAttendIntroItemAdapter extends BaseAdapter {
         }
         viewHolder.tv_status.setTextColor(mContext.getResources().getColor(statusTextColor));
         viewHolder.cl_item_create_attend_intro_inner.setBackground(mContext.getDrawable(statusBgColor));
-        viewHolder.cl_item_create_attend_intro_inner.getBackground().mutate().setAlpha(153);
+//        viewHolder.cl_item_create_attend_intro_inner.getBackground().mutate().setAlpha(153);
         return convertView;
     }
 

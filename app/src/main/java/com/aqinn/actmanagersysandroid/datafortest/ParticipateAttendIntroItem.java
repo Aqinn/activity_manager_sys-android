@@ -1,4 +1,4 @@
-package com.aqinn.actmanagersysandroid.data;
+package com.aqinn.actmanagersysandroid.datafortest;
 
 /**
  * 我参与的签到简介数据 - 仅展示用

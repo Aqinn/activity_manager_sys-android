@@ -11,8 +11,9 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.aqinn.actmanagersysandroid.R;
-import com.aqinn.actmanagersysandroid.data.ActIntroItem;
+import com.aqinn.actmanagersysandroid.datafortest.ActIntroItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -84,8 +85,24 @@ public class ActIntroItemAdapter extends BaseAdapter {
         }
         viewHolder.tv_status.setTextColor(mContext.getResources().getColor(statusTextColor));
         viewHolder.cl_item_act_intro_inner.setBackground(mContext.getDrawable(statusBgColor));
-        viewHolder.cl_item_act_intro_inner.getBackground().mutate().setAlpha(153);
+//        viewHolder.cl_item_act_intro_inner.getBackground().mutate().setAlpha(153);
         return convertView;
+    }
+
+    public void add(ActIntroItem item) {
+        if (actIntroItemList == null) {
+            actIntroItemList = new ArrayList<ActIntroItem>();
+        }
+        actIntroItemList.add(item);
+        notifyDataSetChanged();
+    }
+
+    public void remove(int position) {
+        if (actIntroItemList == null) {
+            return;
+        }
+        actIntroItemList.remove(position);
+        notifyDataSetChanged();
     }
 
     static class ViewHolder {

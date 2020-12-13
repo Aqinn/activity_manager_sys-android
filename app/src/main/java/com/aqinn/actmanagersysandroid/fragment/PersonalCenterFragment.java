@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.UserDescRecyclerViewAdapter;
-import com.aqinn.actmanagersysandroid.data.DataCenter;
-import com.aqinn.actmanagersysandroid.data.UserDesc;
+import com.aqinn.actmanagersysandroid.datafortest.DataCenter;
+import com.aqinn.actmanagersysandroid.datafortest.UserDesc;
 import com.qmuiteam.qmui.widget.QMUICollapsingTopBarLayout;
 import com.qmuiteam.qmui.widget.QMUITopBar;
 import com.qmuiteam.qmui.widget.dialog.QMUIBottomSheet;
@@ -50,19 +50,19 @@ public class PersonalCenterFragment extends BaseFragment {
         userDesc = initUserDesc();
         userDescRecyclerViewAdapter = new UserDescRecyclerViewAdapter(userDesc);
         mRecyclerView.setAdapter(userDescRecyclerViewAdapter);
-        mCollapsingTopBarLayout.setScrimUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Log.i(TAG, "scrim: " + animation.getAnimatedValue());
-            }
-        });
-
-        mCollapsingTopBarLayout.addOnOffsetUpdateListener(new QMUICollapsingTopBarLayout.OnOffsetUpdateListener() {
-            @Override
-            public void onOffsetChanged(QMUICollapsingTopBarLayout layout, int offset, float expandFraction) {
-                Log.i(TAG, "offset = " + offset + "; expandFraction = " + expandFraction);
-            }
-        });
+//        mCollapsingTopBarLayout.setScrimUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                Log.i(TAG, "scrim: " + animation.getAnimatedValue());
+//            }
+//        });
+//
+//        mCollapsingTopBarLayout.addOnOffsetUpdateListener(new QMUICollapsingTopBarLayout.OnOffsetUpdateListener() {
+//            @Override
+//            public void onOffsetChanged(QMUICollapsingTopBarLayout layout, int offset, float expandFraction) {
+//                Log.i(TAG, "offset = " + offset + "; expandFraction = " + expandFraction);
+//            }
+//        });
 
         return rootView;
     }

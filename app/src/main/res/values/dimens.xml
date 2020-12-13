@@ -14,6 +14,7 @@
     <dimen name="personal_text_size">19dp</dimen>
     <dimen name="personal_text_size_other">15dp</dimen>
     <dimen name="personal_text_size_desc">12dp</dimen>
-    <dimen name="personal_setting_bt_interval">10dp</dimen>
-    <dimen name="personal_setting_bt_text_size">22dp</dimen>
+    <dimen name="personal_setting_bt_interval">5dp</dimen>
+    <dimen name="personal_setting_bt_text_size">20dp</dimen>
+    <dimen name="personal_setting_bt_padding_left">13dp</dimen>
 </resources>

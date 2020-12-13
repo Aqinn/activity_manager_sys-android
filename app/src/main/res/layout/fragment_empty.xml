@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.qmuiteam.qmui.widget.QMUIWindowInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/emptyView"
     android:layout_width="match_parent"
@@ -8,11 +8,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/qmui_config_color_white"
-        android:fitsSystemWindows="true"
+        android:background="@color/listview_bg"
         android:gravity="center"
         android:text="@string/empty_tips"
         android:textSize="@dimen/empty_text_size"
-        android:textColor="@color/qmui_config_color_black"/>
+        android:textColor="#000000"/>
 
-</com.qmuiteam.qmui.widget.QMUIWindowInsetLayout>
+</LinearLayout>

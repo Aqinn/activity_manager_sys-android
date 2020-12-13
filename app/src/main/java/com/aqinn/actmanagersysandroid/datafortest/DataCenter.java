@@ -1,4 +1,4 @@
-package com.aqinn.actmanagersysandroid.data;
+package com.aqinn.actmanagersysandroid.datafortest;
 
 import android.util.Log;
 

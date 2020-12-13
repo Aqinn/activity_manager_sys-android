@@ -1,6 +1,5 @@
 package com.aqinn.actmanagersysandroid.fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +9,11 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.aqinn.actmanagersysandroid.R;
-import com.aqinn.actmanagersysandroid.adapter.ActIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.adapter.CreateAttendIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.adapter.ParticipateAttendIntroItemAdapter;
-import com.aqinn.actmanagersysandroid.data.ActIntroItem;
-import com.aqinn.actmanagersysandroid.data.CreateAttendIntroItem;
-import com.aqinn.actmanagersysandroid.data.DataCenter;
-import com.aqinn.actmanagersysandroid.data.ParticipateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.datafortest.CreateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.datafortest.DataCenter;
+import com.aqinn.actmanagersysandroid.datafortest.ParticipateAttendIntroItem;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
 import com.qmuiteam.qmui.widget.dialog.QMUIBottomSheet;
 import com.qmuiteam.qmui.widget.tab.QMUITabBuilder;

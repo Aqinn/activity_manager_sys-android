@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.aqinn.actmanagersysandroid.R;
-import com.aqinn.actmanagersysandroid.data.UserDesc;
+import com.aqinn.actmanagersysandroid.datafortest.UserDesc;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,10 +18,6 @@ import butterknife.ButterKnife;
 /**
  * @author Aqinn
  * @date 2020/12/12 9:06 PM
- */
-/**
- * Demo 中通用的 RecyclerView Adapter。
- * Created by sm on 2015/5/3.
  */
 public class UserDescRecyclerViewAdapter extends RecyclerView.Adapter<UserDescRecyclerViewAdapter.ViewHolder> {
 
