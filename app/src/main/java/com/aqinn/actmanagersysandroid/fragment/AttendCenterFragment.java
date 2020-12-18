@@ -8,12 +8,18 @@ import android.widget.ListView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.CreateAttendIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.adapter.ParticipateAttendIntroItemAdapter;
+import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
 import com.aqinn.actmanagersysandroid.datafortest.CreateAttendIntroItem;
-import com.aqinn.actmanagersysandroid.datafortest.DataCenter;
+import com.aqinn.actmanagersysandroid.datafortest.DataSource;
+import com.aqinn.actmanagersysandroid.datafortest.DataSourceCreateAttendIntroItemTest;
+import com.aqinn.actmanagersysandroid.datafortest.DataSourceParticipateAttendIntroItemTest;
 import com.aqinn.actmanagersysandroid.datafortest.ParticipateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
+import com.aqinn.actmanagersysandroid.qualifiers.AttendPartDataSource;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
 import com.qmuiteam.qmui.widget.dialog.QMUIBottomSheet;
 import com.qmuiteam.qmui.widget.tab.QMUITabBuilder;
@@ -23,15 +29,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * 签到中心
+ *
  * @author Aqinn
  * @date 2020/12/12 8:37 PM
  */
-public class AttendCenterFragment  extends BaseFragment {
+public class AttendCenterFragment extends BaseFragment {
 
     private static final String TAG = "AttendCenterFragment";
 
@@ -42,6 +51,12 @@ public class AttendCenterFragment  extends BaseFragment {
     @BindView(R.id.contentViewPager)
     ViewPager mContentViewPager;
 
+    @Inject
+    @AttendCreateDataSource
+    public DataSource dsc;
+    @Inject
+    @AttendPartDataSource
+    public DataSource dsp;
     private Map<AttendCenterFragment.ContentPage, View> mPageMap = new HashMap<>();
     private AttendCenterFragment.ContentPage mDestPage = AttendCenterFragment.ContentPage.Item1;
     private PagerAdapter mPagerAdapter = new PagerAdapter() {
@@ -76,6 +91,7 @@ public class AttendCenterFragment  extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_attend_center, null);
+        DaggerFragmentComponent.builder().dataSourceComponent(((MyApplication) getActivity().getApplication()).getDataSourceComponent()).build().inject(this);
         ButterKnife.bind(this, rootView);
 
         initTopBar();
@@ -171,23 +187,16 @@ public class AttendCenterFragment  extends BaseFragment {
         listView.setDivider(null);
 //                listView.setDividerHeight(-35);
         if (flag == 1) {
-            ArrayList<CreateAttendIntroItem> cail = (ArrayList<CreateAttendIntroItem>) initAilData(1);
-            CreateAttendIntroItemAdapter caiia = new CreateAttendIntroItemAdapter(cail, getContext());
+            CreateAttendIntroItemAdapter caiia = new CreateAttendIntroItemAdapter(getContext());
+            caiia.setDataSource(dsc);
             listView.setAdapter(caiia);
         } else {
-            ArrayList<ParticipateAttendIntroItem> pail = (ArrayList<ParticipateAttendIntroItem>) initAilData(2);
-            ParticipateAttendIntroItemAdapter paiia = new ParticipateAttendIntroItemAdapter(pail, getContext());
+            ParticipateAttendIntroItemAdapter paiia = new ParticipateAttendIntroItemAdapter(getContext());
+            paiia.setDataSource(dsp);
             listView.setAdapter(paiia);
         }
         // TODO 设置 ListView 为空的时候的视图
         return listView;
-    }
-
-    private ArrayList initAilData(int flag) {
-        if (flag == 1) {
-            return DataCenter.getAllCreateAttendIntroItem();
-        }
-        return DataCenter.getAllParticipateAttendIntroItem();
     }
 
     public enum ContentPage {

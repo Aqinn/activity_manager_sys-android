@@ -10,7 +10,10 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.aqinn.actmanagersysandroid.R;
+import com.aqinn.actmanagersysandroid.datafortest.ActIntroItem;
 import com.aqinn.actmanagersysandroid.datafortest.CreateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.datafortest.DataSource;
+import com.aqinn.actmanagersysandroid.datafortest.Observer;
 
 import java.util.List;
 
@@ -21,26 +24,42 @@ import butterknife.ButterKnife;
  * @author Aqinn
  * @date 2020/12/12 8:02 PM
  */
-public class CreateAttendIntroItemAdapter extends BaseAdapter {
+public class CreateAttendIntroItemAdapter extends BaseAdapter implements Observer {
 
     private static final String TAG = "CreateAttendIntroItemAd";
 
-    private List<CreateAttendIntroItem> createAttendIntroItemList;
+    private DataSource<CreateAttendIntroItem> mDataSource;
     private Context mContext;
 
-    public CreateAttendIntroItemAdapter(List<CreateAttendIntroItem> createAttendIntroItemList, Context mContext) {
-        this.createAttendIntroItemList = createAttendIntroItemList;
+    public CreateAttendIntroItemAdapter(Context mContext) {
         this.mContext = mContext;
+    }
+
+    public void setDataSource(DataSource<CreateAttendIntroItem> dataSource) {
+        if (this.mDataSource != null)
+            this.mDataSource.disposed(this);
+        this.mDataSource = dataSource;
+        this.mDataSource.attach(this);
+    }
+
+    public CreateAttendIntroItemAdapter(Context mContext, DataSource<CreateAttendIntroItem> dataSource) {
+        this.mContext = mContext;
+        this.mDataSource = dataSource;
+        this.mDataSource.attach(this);
+    }
+
+    private List<CreateAttendIntroItem> getCreateAttendIntroItemList() {
+        return this.mDataSource.getDatas();
     }
 
     @Override
     public int getCount() {
-        return createAttendIntroItemList.size();
+        return getCreateAttendIntroItemList().size();
     }
 
     @Override
     public Object getItem(int position) {
-        return createAttendIntroItemList.get(position);
+        return getCreateAttendIntroItemList().get(position);
     }
 
     @Override
@@ -51,14 +70,14 @@ public class CreateAttendIntroItemAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         CreateAttendIntroItemAdapter.ViewHolder viewHolder;
-        if (convertView == null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_create_attend_intro, parent, false);
             viewHolder = new CreateAttendIntroItemAdapter.ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (CreateAttendIntroItemAdapter.ViewHolder) convertView.getTag();
         }
-        CreateAttendIntroItem item = createAttendIntroItemList.get(position);
+        CreateAttendIntroItem item = getCreateAttendIntroItemList().get(position);
         viewHolder.tv_name.setText(item.getName());
         viewHolder.tv_time.setText(item.getTime());
         viewHolder.tv_type.setText(item.getType());
@@ -86,15 +105,25 @@ public class CreateAttendIntroItemAdapter extends BaseAdapter {
         return convertView;
     }
 
+    @Override
+    public void update() {
+        notifyDataSetChanged();
+    }
+
     static class ViewHolder {
         @BindView(R.id.cl_item_create_attend_intro_inner)
         ConstraintLayout cl_item_create_attend_intro_inner;
         @BindView(R.id.tv_name)
         TextView tv_name;
-        @BindView(R.id.tv_time) TextView tv_time;
-        @BindView(R.id.tv_type) TextView tv_type;
-        @BindView(R.id.tv_count) TextView tv_count;
-        @BindView(R.id.tv_status) TextView tv_status;
+        @BindView(R.id.tv_time)
+        TextView tv_time;
+        @BindView(R.id.tv_type)
+        TextView tv_type;
+        @BindView(R.id.tv_count)
+        TextView tv_count;
+        @BindView(R.id.tv_status)
+        TextView tv_status;
+
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }

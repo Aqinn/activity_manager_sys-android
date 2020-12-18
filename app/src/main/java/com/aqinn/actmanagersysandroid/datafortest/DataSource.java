@@ -16,9 +16,14 @@ public abstract class DataSource<T> {
         this.observers.add(o);
     }
 
+    public boolean disposed(Observer o) {
+        if (!this.observers.contains(o))
+            return false;
+        return this.observers.remove(o);
+    }
+
     public void notifyAllObserver() {
-        for (Observer o:observers
-             ) {
+        for (Observer o:observers) {
             o.update();
         }
     }

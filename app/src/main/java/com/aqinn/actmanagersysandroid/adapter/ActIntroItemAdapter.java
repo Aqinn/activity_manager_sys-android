@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.datafortest.ActIntroItem;
+import com.aqinn.actmanagersysandroid.datafortest.DataSource;
 import com.aqinn.actmanagersysandroid.datafortest.Observer;
 
 import java.util.ArrayList;
@@ -29,22 +30,38 @@ public class ActIntroItemAdapter extends BaseAdapter implements Observer {
 
     private static final String TAG = "ActIntroItemAdapter";
 
-    private List<ActIntroItem> actIntroItemList;
+    private DataSource<ActIntroItem> mDataSource;
     private Context mContext;
 
-    public ActIntroItemAdapter(List<ActIntroItem> actIntroItemList, Context mContext) {
-        this.actIntroItemList = actIntroItemList;
+    public ActIntroItemAdapter(Context mContext) {
         this.mContext = mContext;
+    }
+
+    public void setDataSource(DataSource<ActIntroItem> dataSource) {
+        if (this.mDataSource != null)
+            this.mDataSource.disposed(this);
+        this.mDataSource = dataSource;
+        this.mDataSource.attach(this);
+    }
+
+    public ActIntroItemAdapter(Context mContext, DataSource<ActIntroItem> dataSource) {
+        this.mContext = mContext;
+        this.mDataSource = dataSource;
+        this.mDataSource.attach(this);
+    }
+
+    private List<ActIntroItem> getActIntroItemList() {
+        return this.mDataSource.getDatas();
     }
 
     @Override
     public int getCount() {
-        return actIntroItemList.size();
+        return getActIntroItemList().size();
     }
 
     @Override
     public Object getItem(int position) {
-        return actIntroItemList.get(position);
+        return getActIntroItemList().get(position);
     }
 
     @Override
@@ -62,14 +79,14 @@ public class ActIntroItemAdapter extends BaseAdapter implements Observer {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        ActIntroItem item = actIntroItemList.get(position);
+        ActIntroItem item = getActIntroItemList().get(position);
         viewHolder.tv_name.setText(item.getName());
         viewHolder.tv_time.setText(item.getTime());
         viewHolder.tv_loc.setText(item.getLocation());
         viewHolder.tv_intro_text.setText("活动简介");
         viewHolder.tv_intro.setText(item.getIntro());
         viewHolder.tv_status.setText(item.getStatus());
-        Log.d(TAG, "getView: " + item.getStatus());
+//        Log.d(TAG, "getView: " + item.getStatus());
         int statusTextColor = R.color.thing_default;
         int statusBgColor = R.color.thing_default_bg;
         if ("进行中".equals(item.getStatus())) {
@@ -88,36 +105,6 @@ public class ActIntroItemAdapter extends BaseAdapter implements Observer {
         viewHolder.cl_item_act_intro_inner.setBackground(mContext.getDrawable(statusBgColor));
 //        viewHolder.cl_item_act_intro_inner.getBackground().mutate().setAlpha(153);
         return convertView;
-    }
-
-    public void add(ActIntroItem item) {
-        if (actIntroItemList == null) {
-            actIntroItemList = new ArrayList<ActIntroItem>();
-        }
-        actIntroItemList.add(item);
-        notifyDataSetChanged();
-    }
-
-    public void remove(String account) {
-        if (actIntroItemList == null) {
-            return;
-        }
-        int position = -1;
-        for (ActIntroItem aii:actIntroItemList) {
-
-        }
-        if (position == -1)
-            return;
-        actIntroItemList.remove(position);
-        notifyDataSetChanged();
-    }
-
-    public void remove(int position) {
-        if (actIntroItemList == null) {
-            return;
-        }
-        actIntroItemList.remove(position);
-        notifyDataSetChanged();
     }
 
     @Override

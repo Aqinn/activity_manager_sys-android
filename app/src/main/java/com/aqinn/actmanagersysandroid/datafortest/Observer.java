@@ -6,7 +6,7 @@ package com.aqinn.actmanagersysandroid.datafortest;
  */
 public interface Observer {
 
-    DataSource dataSource = null;
+
 
     void update();
 

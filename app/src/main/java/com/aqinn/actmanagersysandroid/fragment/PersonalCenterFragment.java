@@ -8,25 +8,36 @@ import android.view.View;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.UserDescRecyclerViewAdapter;
-import com.aqinn.actmanagersysandroid.datafortest.DataCenter;
+import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
+import com.aqinn.actmanagersysandroid.datafortest.DataSource;
+import com.aqinn.actmanagersysandroid.datafortest.DataSourceUserDescTest;
 import com.aqinn.actmanagersysandroid.datafortest.UserDesc;
+import com.aqinn.actmanagersysandroid.qualifiers.UserDescDataSource;
 import com.qmuiteam.qmui.widget.QMUICollapsingTopBarLayout;
 import com.qmuiteam.qmui.widget.QMUITopBar;
 import com.qmuiteam.qmui.widget.dialog.QMUIBottomSheet;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * 个人中心
+ *
  * @author Aqinn
  * @date 2020/12/12 9:01 PM
  */
 public class PersonalCenterFragment extends BaseFragment {
 
     private static final String TAG = "PersonalCenterFragment";
+
+    @Inject
+    @UserDescDataSource
+    public DataSource dsu;
 
     UserDescRecyclerViewAdapter userDescRecyclerViewAdapter;
     LinearLayoutManager mPagerLayoutManager;
@@ -42,6 +53,7 @@ public class PersonalCenterFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_personal, null);
+        DaggerFragmentComponent.builder().dataSourceComponent(((MyApplication) getActivity().getApplication()).getDataSourceComponent()).build().inject(this);
         ButterKnife.bind(this, rootView);
         initTopBar();
         mPagerLayoutManager = new LinearLayoutManager(getContext());
@@ -68,7 +80,7 @@ public class PersonalCenterFragment extends BaseFragment {
     }
 
     private UserDesc initUserDesc() {
-        return DataCenter.getAllUserDesc().get(0);
+        return ((UserDesc) dsu.getDatas().get(0));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.aqinn.actmanagersysandroid.fragment;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,15 +11,17 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.ActIntroItemAdapter;
+import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
+import com.aqinn.actmanagersysandroid.datafortest.DataSource;
+import com.aqinn.actmanagersysandroid.qualifiers.ActCreateDataSource;
 import com.aqinn.actmanagersysandroid.datafortest.ActIntroItem;
-import com.aqinn.actmanagersysandroid.datafortest.DataCenter;
-import com.qmuiteam.qmui.arch.QMUIFragment;
+import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
 import com.qmuiteam.qmui.layout.QMUIFrameLayout;
 import com.qmuiteam.qmui.skin.QMUISkinHelper;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
@@ -35,13 +36,13 @@ import com.qmuiteam.qmui.widget.popup.QMUIQuickAction;
 import com.qmuiteam.qmui.widget.tab.QMUITabBuilder;
 import com.qmuiteam.qmui.widget.tab.QMUITabSegment;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * 活动中心
@@ -60,7 +61,12 @@ public class ActCenterFragment extends BaseFragment {
     @BindView(R.id.contentViewPager)
     ViewPager mContentViewPager;
 
-
+    @Inject
+    @ActCreateDataSource
+    public DataSource dsc;
+    @Inject
+    @ActPartDataSource
+    public DataSource dsp;
     private Map<ContentPage, View> mPageMap = new HashMap<>();
     private Map<Integer, ListView> mListViewMap = new HashMap<>();
     private Map<Integer, ActIntroItemAdapter> mAdapterMap = new HashMap<>();
@@ -97,6 +103,7 @@ public class ActCenterFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_act_center, null);
+        DaggerFragmentComponent.builder().dataSourceComponent(((MyApplication) getActivity().getApplication()).getDataSourceComponent()).build().inject(this);
         ButterKnife.bind(this, rootView);
         initTopBar();
         initTabAndPager();
@@ -172,8 +179,8 @@ public class ActCenterFragment extends BaseFragment {
         listView.setLayoutParams(vglp);
         listView.setDivider(null);
         listView.setOnItemClickListener(new Avocl(flag));
-        ArrayList<ActIntroItem> aiiList = initAiilData(flag);
-        ActIntroItemAdapter aiia = new ActIntroItemAdapter(aiiList, getContext());
+        ActIntroItemAdapter aiia = new ActIntroItemAdapter(getContext());
+        aiia.setDataSource(flag == 1 ? dsc : dsp);
         listView.setAdapter(aiia);
         // TODO 设置 ListView 为空的时候的视图
         mListViewMap.put(flag, listView);
@@ -227,14 +234,6 @@ public class ActCenterFragment extends BaseFragment {
                     }
                 })
                 .show(v);
-    }
-
-    private ArrayList<ActIntroItem> initAiilData(int flag) {
-        Log.d(TAG, "initAiilData: " + flag);
-        if (flag == 1) {
-            return DataCenter.getAllActIntroItemICreate();
-        }
-        return DataCenter.getAllActIntroItemIParticipate();
     }
 
     @Override
@@ -294,7 +293,8 @@ public class ActCenterFragment extends BaseFragment {
                             @Override
                             public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
                                 quickAction.dismiss();
-                                mAdapterMap.get(2).remove(click_item_position);
+                                dsp.getDatas().remove(click_item_position);
+                                dsp.notifyAllObserver();
                                 // TODO 实际执行时需要考虑业务逻辑
                                 Toast.makeText(getContext(), "退出活动成功", Toast.LENGTH_SHORT).show();
                             }

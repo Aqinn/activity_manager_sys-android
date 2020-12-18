@@ -10,6 +10,9 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.aqinn.actmanagersysandroid.R;
+import com.aqinn.actmanagersysandroid.datafortest.CreateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.datafortest.DataSource;
+import com.aqinn.actmanagersysandroid.datafortest.Observer;
 import com.aqinn.actmanagersysandroid.datafortest.ParticipateAttendIntroItem;
 
 import java.util.List;
@@ -21,26 +24,42 @@ import butterknife.ButterKnife;
  * @author Aqinn
  * @date 2020/12/12 8:03 PM
  */
-public class ParticipateAttendIntroItemAdapter extends BaseAdapter {
+public class ParticipateAttendIntroItemAdapter extends BaseAdapter implements Observer {
 
     private static final String TAG = "ParticipateAttendIntroI";
 
-    private List<ParticipateAttendIntroItem> participateAttendIntroItemList;
+    private DataSource<ParticipateAttendIntroItem> mDataSource;
     private Context mContext;
 
-    public ParticipateAttendIntroItemAdapter(List<ParticipateAttendIntroItem> participateAttendIntroItemList, Context mContext) {
-        this.participateAttendIntroItemList = participateAttendIntroItemList;
+    public ParticipateAttendIntroItemAdapter(Context mContext) {
         this.mContext = mContext;
+    }
+
+    public void setDataSource(DataSource<ParticipateAttendIntroItem> dataSource) {
+        if (this.mDataSource != null)
+            this.mDataSource.disposed(this);
+        this.mDataSource = dataSource;
+        this.mDataSource.attach(this);
+    }
+
+    public ParticipateAttendIntroItemAdapter(Context mContext, DataSource<ParticipateAttendIntroItem> dataSource) {
+        this.mContext = mContext;
+        this.mDataSource = dataSource;
+        this.mDataSource.attach(this);
+    }
+
+    private List<ParticipateAttendIntroItem> getParticipateAttendIntroItemList() {
+        return this.mDataSource.getDatas();
     }
 
     @Override
     public int getCount() {
-        return participateAttendIntroItemList.size();
+        return getParticipateAttendIntroItemList().size();
     }
 
     @Override
     public Object getItem(int position) {
-        return participateAttendIntroItemList.get(position);
+        return getParticipateAttendIntroItemList().get(position);
     }
 
     @Override
@@ -58,7 +77,7 @@ public class ParticipateAttendIntroItemAdapter extends BaseAdapter {
         } else {
             viewHolder = (ParticipateAttendIntroItemAdapter.ViewHolder) convertView.getTag();
         }
-        ParticipateAttendIntroItem item = participateAttendIntroItemList.get(position);
+        ParticipateAttendIntroItem item = getParticipateAttendIntroItemList().get(position);
         viewHolder.tv_name.setText(item.getName());
         viewHolder.tv_time.setText(item.getTime());
         viewHolder.tv_type.setText(item.getType());
@@ -82,6 +101,11 @@ public class ParticipateAttendIntroItemAdapter extends BaseAdapter {
         viewHolder.cl_item_participate_attend_intro_inner.setBackground(mContext.getDrawable(statusBgColor));
 //        viewHolder.cl_item_participate_attend_intro_inner.getBackground().mutate().setAlpha(153);
         return convertView;
+    }
+
+    @Override
+    public void update() {
+        notifyDataSetChanged();
     }
 
     static class ViewHolder {

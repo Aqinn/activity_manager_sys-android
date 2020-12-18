@@ -3,20 +3,20 @@ package com.aqinn.actmanagersysandroid;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
+import com.aqinn.actmanagersysandroid.components.DaggerDataSourceComponent;
+import com.aqinn.actmanagersysandroid.components.DataSourceComponent;
 import com.qmuiteam.qmui.QMUILog;
 import com.qmuiteam.qmui.arch.QMUISwipeBackActivityManager;
-import com.qmuiteam.qmui.qqface.QMUIQQFaceCompiler;
 
 /**
  * @author Aqinn
  * @date 2020/12/11 7:32 PM
  */
 public class MyApplication extends Application {
+
+    private DataSourceComponent dataSourceComponent;
 
     @SuppressLint("StaticFieldLeak")
     private static Context context;
@@ -56,6 +56,11 @@ public class MyApplication extends Application {
             }
         });
         QMUISwipeBackActivityManager.init(this);
+        dataSourceComponent = DaggerDataSourceComponent.create();
+    }
+
+    public DataSourceComponent getDataSourceComponent() {
+        return dataSourceComponent;
     }
 
 }

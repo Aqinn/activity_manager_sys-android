@@ -9,11 +9,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.ActIntroItemAdapter;
+import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
 import com.aqinn.actmanagersysandroid.datafortest.ActIntroItem;
 import com.aqinn.actmanagersysandroid.datafortest.CreateAttendIntroItem;
-import com.aqinn.actmanagersysandroid.datafortest.DataCenter;
 import com.qmuiteam.qmui.alpha.QMUIAlphaImageButton;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
@@ -59,6 +60,7 @@ public class ActDetailFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_act_detail, null);
+        DaggerFragmentComponent.builder().dataSourceComponent(((MyApplication) getActivity().getApplication()).getDataSourceComponent()).build().inject(this);
         ButterKnife.bind(this, rootView);
         initTopBar();
         initData();
@@ -151,10 +153,7 @@ public class ActDetailFragment extends BaseFragment {
                             @Override
                             public void stopOrNot(boolean isStop) {
                                 if (isStop) {
-                                    for (CreateAttendIntroItem caii: DataCenter.getAllCreateAttendIntroItem()){
-                                        if (caii.getName().equals(mAii.getName()))
-                                            caii.setStatus("已结束");
-                                    }
+                                    // TODO 结束活动
                                 }
                             }
                         });
