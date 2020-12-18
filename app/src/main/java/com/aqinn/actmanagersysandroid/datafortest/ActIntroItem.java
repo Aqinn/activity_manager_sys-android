@@ -7,6 +7,8 @@ package com.aqinn.actmanagersysandroid.datafortest;
  */
 public class ActIntroItem {
 
+    private String creator;
+
     private String name;
 
     private String time;
@@ -17,12 +19,21 @@ public class ActIntroItem {
 
     private String status;
 
-    public ActIntroItem(String name, String time, String location, String intro, String status) {
+    public ActIntroItem(String creator, String name, String time, String location, String intro, String status) {
+        this.creator = creator;
         this.name = name;
         this.time = time;
         this.location = location;
         this.intro = intro;
         this.status = status;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
     public String getName() {

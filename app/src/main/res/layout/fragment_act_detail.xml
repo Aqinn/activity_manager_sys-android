@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.qmuiteam.qmui.widget.QMUIWindowInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.qmuiteam.qmui.widget.QMUITopBarLayout
+        android:id="@+id/topbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="93dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp">
+
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/inner_with_outer_margin"
+                android:gravity="center"
+                android:text="活动名称"
+                android:textSize="@dimen/act_detail_name_text_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_creator"
+                android:layout_marginStart="0dp"
+                app:layout_constraintStart_toStartOf="@id/et_name"
+                app:layout_constraintTop_toTopOf="@id/tv_creator_text"
+                app:layout_constraintBottom_toBottomOf="@id/tv_creator_text"/>
+
+            <TextView
+                android:id="@+id/tv_creator_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/act_detail_icon_text_margin"
+                android:layout_marginTop="@dimen/act_detail_inter_margin"
+                android:background="@drawable/bg_radius"
+                android:text="活动创建者"
+                android:textSize="@dimen/act_detail_text_text_size"
+                app:layout_constraintStart_toStartOf="@id/et_name"
+                app:layout_constraintTop_toBottomOf="@id/et_name" />
+
+            <TextView
+                android:id="@+id/tv_creator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="@dimen/list_item_interval"
+                android:text="活动创建者名称"
+                android:textSize="@dimen/act_detail_normal_text_size"
+                app:layout_constraintStart_toStartOf="@id/et_name"
+                app:layout_constraintTop_toBottomOf="@id/tv_creator_text" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_time"
+                android:layout_marginStart="0dp"
+                app:layout_constraintStart_toStartOf="@id/et_name"
+                app:layout_constraintTop_toTopOf="@id/tv_time_text"
+                app:layout_constraintBottom_toBottomOf="@id/tv_time_text"/>
+
+            <TextView
+                android:id="@+id/tv_time_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/act_detail_icon_text_margin"
+                android:layout_marginTop="@dimen/act_detail_inter_margin"
+                android:background="@drawable/bg_radius"
+                android:text="活动开始时间-活动结束时间"
+                android:textSize="@dimen/act_detail_text_text_size"
+                app:layout_constraintStart_toStartOf="@id/et_name"
+                app:layout_constraintTop_toBottomOf="@id/tv_creator" />
+
+            <EditText
+                android:id="@+id/et_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="@dimen/list_item_interval"
+                android:text="00:00 - 23:59"
+                android:textSize="@dimen/act_detail_normal_text_size"
+                app:layout_constraintStart_toStartOf="@id/et_name"
+                app:layout_constraintTop_toBottomOf="@id/tv_time_text" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_loc"
+                android:layout_marginStart="0dp"
+                app:layout_constraintStart_toStartOf="@id/et_name"
+                app:layout_constraintTop_toTopOf="@+id/tv_loc_text"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_loc_text"/>
+
+            <TextView
+                android:id="@+id/tv_loc_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/act_detail_icon_text_margin"
+                android:layout_marginTop="@dimen/act_detail_inter_margin"
+                android:background="@drawable/bg_radius"
+                android:text="活动地点"
+                android:textSize="@dimen/act_detail_text_text_size"
+                app:layout_constraintStart_toStartOf="@id/et_name"
+                app:layout_constraintTop_toBottomOf="@id/et_time" />
+
+            <EditText
+                android:id="@+id/et_loc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/inner_with_outer_margin"
+                android:layout_marginTop="@dimen/list_item_interval"
+                android:layout_marginEnd="@dimen/inner_with_outer_margin"
+                android:text="广东省珠海市北京师范大学珠海分校海华六栋B307"
+                android:textSize="@dimen/act_detail_normal_text_size"
+                app:layout_constraintTop_toBottomOf="@id/tv_loc_text" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_desc"
+                android:layout_marginStart="0dp"
+                app:layout_constraintStart_toStartOf="@id/et_name"
+                app:layout_constraintTop_toTopOf="@+id/tv_intro_text"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_intro_text"/>
+
+            <TextView
+                android:id="@+id/tv_intro_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/act_detail_icon_text_margin"
+                android:layout_marginTop="@dimen/act_detail_inter_margin"
+                android:background="@drawable/bg_radius"
+                android:text="活动简介"
+                android:textSize="@dimen/act_detail_text_text_size"
+                app:layout_constraintStart_toStartOf="@id/et_name"
+                app:layout_constraintTop_toBottomOf="@id/et_loc" />
+
+            <EditText
+                android:id="@+id/et_intro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/inner_with_outer_margin"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="@dimen/inner_with_outer_margin"
+                android:text="活动简介-详细"
+                android:textColor="?attr/qmui_config_color_gray_5"
+                android:textSize="@dimen/act_detail_desc_text_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_intro_text" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+
+</com.qmuiteam.qmui.widget.QMUIWindowInsetLayout>

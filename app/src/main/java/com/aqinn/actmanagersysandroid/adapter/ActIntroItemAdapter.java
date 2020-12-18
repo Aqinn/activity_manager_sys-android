@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.datafortest.ActIntroItem;
+import com.aqinn.actmanagersysandroid.datafortest.Observer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ import butterknife.ButterKnife;
  * @author Aqinn
  * @date 2020/12/12 3:29 PM
  */
-public class ActIntroItemAdapter extends BaseAdapter {
+public class ActIntroItemAdapter extends BaseAdapter implements Observer {
 
     private static final String TAG = "ActIntroItemAdapter";
 
@@ -97,11 +98,30 @@ public class ActIntroItemAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void remove(String account) {
+        if (actIntroItemList == null) {
+            return;
+        }
+        int position = -1;
+        for (ActIntroItem aii:actIntroItemList) {
+
+        }
+        if (position == -1)
+            return;
+        actIntroItemList.remove(position);
+        notifyDataSetChanged();
+    }
+
     public void remove(int position) {
         if (actIntroItemList == null) {
             return;
         }
         actIntroItemList.remove(position);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void update() {
         notifyDataSetChanged();
     }
 

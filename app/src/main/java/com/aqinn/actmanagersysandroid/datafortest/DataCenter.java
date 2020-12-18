@@ -23,27 +23,27 @@ public class DataCenter {
     static {
         // 我创建的活动
         allActIntroItemICreate = new ArrayList<ActIntroItem>();
-        allActIntroItemICreate.add(new ActIntroItem("测试创建活动名称1", "00:00 - 23:59", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
-        allActIntroItemICreate.add(new ActIntroItem("测试创建活动名称2", "10:00 - 23:00", "海华六栋 B308", "测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。", "未开始"));
-        allActIntroItemICreate.add(new ActIntroItem("测试创建活动名称3", "01:00 - 13:00", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
-        allActIntroItemICreate.add(new ActIntroItem("测试创建活动名称4", "02:00 - 20:59", "海华六栋 B307", "没啥的，就是测试一下", "未开始"));
-        allActIntroItemICreate.add(new ActIntroItem("测试创建活动名称5", "10:00 - 21:50", "海华六栋 B307", "没啥的，就是测试一下", "已结束"));
+        allActIntroItemICreate.add(new ActIntroItem("_aqinn", "测试创建活动名称1", "00:00 - 23:59", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
+        allActIntroItemICreate.add(new ActIntroItem("_aqinn", "测试创建活动名称2", "10:00 - 23:00", "海华六栋 B308", "测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。", "未开始"));
+        allActIntroItemICreate.add(new ActIntroItem("_aqinn", "测试创建活动名称3", "01:00 - 13:00", "海华六栋 B307", "zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅", "进行中"));
+        allActIntroItemICreate.add(new ActIntroItem("_aqinn", "测试创建活动名称4", "02:00 - 20:59", "海华六栋 B307", "没啥的，就是测试一下", "未开始"));
+        allActIntroItemICreate.add(new ActIntroItem("_aqinn", "测试创建活动名称5", "10:00 - 21:50", "海华六栋 B307", "没啥的，就是测试一下", "已结束"));
 
         // 我参与的活动
         allActIntroItemIParticipate = new ArrayList<ActIntroItem>();
-        allActIntroItemIParticipate.add(new ActIntroItem("测试参与活动名称1", "10:00 - 21:50", "海华六栋 B307", "没啥的，就是测试一下", "已结束"));
-        allActIntroItemIParticipate.add(new ActIntroItem("测试参与活动名称2", "01:00 - 13:00", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
-        allActIntroItemIParticipate.add(new ActIntroItem("测试参与活动名称3", "01:00 - 13:00", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
-        allActIntroItemIParticipate.add(new ActIntroItem("测试参与活动名称4", "10:00 - 21:50", "海华六栋 B307", "没啥的，就是测试一下", "已结束"));
-        allActIntroItemIParticipate.add(new ActIntroItem("测试参与活动名称5", "00:00 - 23:59", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
-        allActIntroItemIParticipate.add(new ActIntroItem("测试参与活动名称6", "14:00 - 23:59", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
-        allActIntroItemIParticipate.add(new ActIntroItem("测试参与活动名称7", "06:00 - 23:59", "海华六栋 B307", "没啥的，就是测试一下", "未开始"));
-        allActIntroItemIParticipate.add(new ActIntroItem("测试参与活动名称8", "07:00 - 08:00", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
-        allActIntroItemIParticipate.add(new ActIntroItem("测试参与活动名称9", "07:00 - 09:00", "海华六栋 B307", "没啥的，就是测试一下", "已结束"));
-        allActIntroItemIParticipate.add(new ActIntroItem("测试参与活动名称10", "10:10 - 20:20", "海华六栋 B307", "没啥的，就是测试一下", "已结束"));
-        allActIntroItemIParticipate.add(new ActIntroItem("测试参与活动名称11", "00:00 - 23:59", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
-        allActIntroItemIParticipate.add(new ActIntroItem("测试参与活动名称12", "00:00 - 23:59", "海华六栋 B307", "没啥的，就是测试一下", "未开始"));
-        allActIntroItemIParticipate.add(new ActIntroItem("测试参与活动名称13", "00:00 - 23:59", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
+        allActIntroItemIParticipate.add(new ActIntroItem("_aqinn", "测试参与活动名称1", "10:00 - 21:50", "海华六栋 B307", "没啥的，就是测试一下", "已结束"));
+        allActIntroItemIParticipate.add(new ActIntroItem("_aqinn", "测试参与活动名称2", "01:00 - 13:00", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
+        allActIntroItemIParticipate.add(new ActIntroItem("_aqinn", "测试参与活动名称3", "01:00 - 13:00", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
+        allActIntroItemIParticipate.add(new ActIntroItem("_aqinn", "测试参与活动名称4", "10:00 - 21:50", "海华六栋 B307", "没啥的，就是测试一下", "已结束"));
+        allActIntroItemIParticipate.add(new ActIntroItem("_aqinn", "测试参与活动名称5", "00:00 - 23:59", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
+        allActIntroItemIParticipate.add(new ActIntroItem("_aqinn", "测试参与活动名称6", "14:00 - 23:59", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
+        allActIntroItemIParticipate.add(new ActIntroItem("_aqinn", "测试参与活动名称7", "06:00 - 23:59", "海华六栋 B307", "没啥的，就是测试一下", "未开始"));
+        allActIntroItemIParticipate.add(new ActIntroItem("_aqinn", "测试参与活动名称8", "07:00 - 08:00", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
+        allActIntroItemIParticipate.add(new ActIntroItem("_aqinn", "测试参与活动名称9", "07:00 - 09:00", "海华六栋 B307", "没啥的，就是测试一下", "已结束"));
+        allActIntroItemIParticipate.add(new ActIntroItem("_aqinn", "测试参与活动名称10", "10:10 - 20:20", "海华六栋 B307", "没啥的，就是测试一下", "已结束"));
+        allActIntroItemIParticipate.add(new ActIntroItem("_aqinn", "测试参与活动名称11", "00:00 - 23:59", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
+        allActIntroItemIParticipate.add(new ActIntroItem("_aqinn", "测试参与活动名称12", "00:00 - 23:59", "海华六栋 B307", "没啥的，就是测试一下", "未开始"));
+        allActIntroItemIParticipate.add(new ActIntroItem("_aqinn", "测试参与活动名称13", "00:00 - 23:59", "海华六栋 B307", "没啥的，就是测试一下", "进行中"));
     }
 
     // 初始化 签到数据
