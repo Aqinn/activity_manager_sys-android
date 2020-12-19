@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,10 +24,19 @@ public class CommonUtil {
     private static final int CAMERA_ID_ANY = -1;
     private static final int CAMERA_ID_BACK = 99;
     private static final int CAMERA_ID_FRONT = 98;
+    private static Long randomLong = 100L;
 
     static {
         sdf_long = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         sdf_short = new SimpleDateFormat("yyyy-MM-dd");
+    }
+
+    public static String getNowString() {
+        return sdf_long.format(new Date());
+    }
+
+    public static Long getRandomLong() {
+        return ++randomLong;
     }
 
     public static void setCameraIdToSP(Context context, int tag) {

@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.aqinn.actmanagersysandroid.R;
-import com.aqinn.actmanagersysandroid.datafortest.UserDesc;
+import com.aqinn.actmanagersysandroid.data.show.UserDesc;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

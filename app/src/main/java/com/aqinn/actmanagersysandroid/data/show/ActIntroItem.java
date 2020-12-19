@@ -1,4 +1,4 @@
-package com.aqinn.actmanagersysandroid.datafortest;
+package com.aqinn.actmanagersysandroid.data.show;
 
 /**
  * 活动简介数据 - 仅展示用
@@ -6,6 +6,8 @@ package com.aqinn.actmanagersysandroid.datafortest;
  * @date 2020/12/12 3:34 PM
  */
 public class ActIntroItem {
+
+    private Long id;
 
     private String creator;
 
@@ -17,15 +19,25 @@ public class ActIntroItem {
 
     private String intro;
 
-    private String status;
+    // 活动状态 1: "未开始" 2: "进行中" 3: "已结束"
+    private Integer status;
 
-    public ActIntroItem(String creator, String name, String time, String location, String intro, String status) {
+    public ActIntroItem(Long id, String creator, String name, String time, String location, String intro, Integer status) {
+        this.id = id;
         this.creator = creator;
         this.name = name;
         this.time = time;
         this.location = location;
         this.intro = intro;
         this.status = status;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCreator() {
@@ -68,11 +80,11 @@ public class ActIntroItem {
         this.intro = intro;
     }
 
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 }

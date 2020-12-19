@@ -1,4 +1,4 @@
-package com.aqinn.actmanagersysandroid.datafortest;
+package com.aqinn.actmanagersysandroid.data.show;
 
 /**
  * @author Aqinn
@@ -6,14 +6,19 @@ package com.aqinn.actmanagersysandroid.datafortest;
  */
 public class CreateAttendIntroItem {
 
+    private Long id;
+
+    private Long actId;
+
     private String name;
 
     private String time;
 
-    private String type;
+    // 签到方式 1: "视频签到" 2: "自助签到"
+    private Integer type[];
 
-    // 签到状态
-    private String status;
+    // 签到状态 1: "未开始" 2: "进行中" 3: "已结束"
+    private Integer status;
 
     // 应签到人数
     private String shouldAttendCount;
@@ -24,7 +29,9 @@ public class CreateAttendIntroItem {
     // 未签到人数
     private String notAttendCount;
 
-    public CreateAttendIntroItem(String name, String time, String type, String status, String shouldAttendCount, String haveAttendCount, String notAttendCount) {
+    public CreateAttendIntroItem(Long id, Long actId, String name, String time, Integer type[], Integer status, String shouldAttendCount, String haveAttendCount, String notAttendCount) {
+        this.id = id;
+        this.actId = actId;
         this.name = name;
         this.time = time;
         this.type = type;
@@ -32,6 +39,22 @@ public class CreateAttendIntroItem {
         this.shouldAttendCount = shouldAttendCount;
         this.haveAttendCount = haveAttendCount;
         this.notAttendCount = notAttendCount;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getActId() {
+        return actId;
+    }
+
+    public void setActId(Long actId) {
+        this.actId = actId;
     }
 
     public String getName() {
@@ -50,19 +73,19 @@ public class CreateAttendIntroItem {
         this.time = time;
     }
 
-    public String getType() {
+    public Integer[] getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Integer[] type) {
         this.type = type;
     }
 
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

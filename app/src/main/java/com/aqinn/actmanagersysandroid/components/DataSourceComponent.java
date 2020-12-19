@@ -1,6 +1,8 @@
 package com.aqinn.actmanagersysandroid.components;
 
-import com.aqinn.actmanagersysandroid.datafortest.DataSource;
+import com.aqinn.actmanagersysandroid.ActManager;
+import com.aqinn.actmanagersysandroid.data.DataSource;
+import com.aqinn.actmanagersysandroid.modules.ActManagerModule;
 import com.aqinn.actmanagersysandroid.modules.DataSourceModule;
 import com.aqinn.actmanagersysandroid.qualifiers.ActCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
@@ -17,7 +19,7 @@ import dagger.Component;
  * @date 2020/12/18 4:02 PM
  */
 @Singleton
-@Component(modules = DataSourceModule.class)
+@Component(modules = {DataSourceModule.class, ActManagerModule.class})
 public interface DataSourceComponent {
 
     @ActCreateDataSource
@@ -34,5 +36,7 @@ public interface DataSourceComponent {
 
     @UserDescDataSource
     DataSource getUserDesc();
+
+    ActManager getActManager();
 
 }

@@ -1,7 +1,5 @@
 package com.aqinn.actmanagersysandroid.fragment;
 
-import android.animation.ValueAnimator;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -12,9 +10,8 @@ import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.UserDescRecyclerViewAdapter;
 import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
-import com.aqinn.actmanagersysandroid.datafortest.DataSource;
-import com.aqinn.actmanagersysandroid.datafortest.DataSourceUserDescTest;
-import com.aqinn.actmanagersysandroid.datafortest.UserDesc;
+import com.aqinn.actmanagersysandroid.data.DataSource;
+import com.aqinn.actmanagersysandroid.data.show.UserDesc;
 import com.aqinn.actmanagersysandroid.qualifiers.UserDescDataSource;
 import com.qmuiteam.qmui.widget.QMUICollapsingTopBarLayout;
 import com.qmuiteam.qmui.widget.QMUITopBar;

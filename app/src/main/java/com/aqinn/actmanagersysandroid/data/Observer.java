@@ -1,4 +1,4 @@
-package com.aqinn.actmanagersysandroid.datafortest;
+package com.aqinn.actmanagersysandroid.data;
 
 /**
  * @author Aqinn

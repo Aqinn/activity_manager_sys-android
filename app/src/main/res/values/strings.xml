@@ -8,4 +8,11 @@
     <string name="act_center_tab_2_title">我参与的活动</string>
     <string name="attend_center_tab_1_title">我创建的签到</string>
     <string name="attend_center_tab_2_title">我参与的签到</string>
+    <string name="thing_status_not_begin">未开始</string>
+    <string name="thing_status_ing">进行中</string>
+    <string name="thing_status_finish">已完成</string>
+    <string name="your_status_not">未签到</string>
+    <string name="your_status_yes">已签到</string>
+    <string name="attend_type_1">视频签到</string>
+    <string name="attend_type_2">自助签到</string>
 </resources>

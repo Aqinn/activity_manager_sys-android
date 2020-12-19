@@ -16,11 +16,10 @@ import com.qmuiteam.qmui.arch.QMUISwipeBackActivityManager;
  */
 public class MyApplication extends Application {
 
-    private DataSourceComponent dataSourceComponent;
+    private static DataSourceComponent dataSourceComponent;
 
     @SuppressLint("StaticFieldLeak")
     private static Context context;
-
     public static Context getContext() {
         return context;
     }
@@ -59,7 +58,7 @@ public class MyApplication extends Application {
         dataSourceComponent = DaggerDataSourceComponent.create();
     }
 
-    public DataSourceComponent getDataSourceComponent() {
+    public static DataSourceComponent getDataSourceComponent() {
         return dataSourceComponent;
     }
 

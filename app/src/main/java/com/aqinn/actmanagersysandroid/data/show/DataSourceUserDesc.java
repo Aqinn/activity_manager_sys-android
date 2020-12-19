@@ -1,19 +1,31 @@
-package com.aqinn.actmanagersysandroid.datafortest;
+package com.aqinn.actmanagersysandroid.data.show;
+
+import com.aqinn.actmanagersysandroid.data.DataSource;
+import com.aqinn.actmanagersysandroid.data.Observer;
+import com.aqinn.actmanagersysandroid.entity.User;
 
 import java.util.ArrayList;
-
-import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author Aqinn
  * @date 2020/12/18 3:42 PM
  */
-public class DataSourceUserDescTest extends DataSource<UserDesc> {
+public class DataSourceUserDesc extends DataSource<UserDesc> implements Observer {
 
-    public DataSourceUserDescTest() {
+    private DataSource mDataSource;
+
+    public DataSourceUserDesc() {
         observers = new ArrayList<>();
         datas = new ArrayList<>();
         initData();
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        if (this.mDataSource != null)
+            this.mDataSource.disposed(this);
+        this.mDataSource = dataSource;
+        this.mDataSource.attach(this);
     }
 
     private void initData() {
@@ -27,6 +39,24 @@ public class DataSourceUserDescTest extends DataSource<UserDesc> {
                 "2010年，推出个人粤语专辑《我没有变过 爱的习惯》；2012年11月，推出国语创作单曲《很想很想说再见》；" +
                 "2014年为TVB剧集《使徒行者》演唱主题曲《行者》。\n" +
                 "代表作有《美丽之最》《好人》《情歌》《Kong》《三十日》《男人KTV》《命硬》《很想很想说再见》。"));
+
+    }
+
+    /**
+     * 根据最新的数据源更新本数据源
+     * TODO 怎样可以更快地更新? 现在的做法太低效了。
+     */
+    private void updataData() {
+        datas.clear();
+        for (User u : ((List<User>) this.mDataSource.getDatas())) {
+            datas.add(new UserDesc(u.getAccount(), u.getName(), u.getSex() == 1 ? "男" : "女", u.getContact(), u.getIntro()));
+        }
+    }
+
+    @Override
+    public void update() {
+        updataData();
+        notifyAllObserver();
     }
 
 }

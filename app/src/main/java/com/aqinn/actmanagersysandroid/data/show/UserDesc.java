@@ -1,4 +1,4 @@
-package com.aqinn.actmanagersysandroid.datafortest;
+package com.aqinn.actmanagersysandroid.data.show;
 
 /**
  * 用户个人信息 - 仅展示用

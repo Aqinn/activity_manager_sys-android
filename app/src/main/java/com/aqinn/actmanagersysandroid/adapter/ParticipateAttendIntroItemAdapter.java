@@ -10,10 +10,9 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.aqinn.actmanagersysandroid.R;
-import com.aqinn.actmanagersysandroid.datafortest.CreateAttendIntroItem;
-import com.aqinn.actmanagersysandroid.datafortest.DataSource;
-import com.aqinn.actmanagersysandroid.datafortest.Observer;
-import com.aqinn.actmanagersysandroid.datafortest.ParticipateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.data.DataSource;
+import com.aqinn.actmanagersysandroid.data.Observer;
+import com.aqinn.actmanagersysandroid.data.show.ParticipateAttendIntroItem;
 
 import java.util.List;
 
@@ -80,24 +79,47 @@ public class ParticipateAttendIntroItemAdapter extends BaseAdapter implements Ob
         ParticipateAttendIntroItem item = getParticipateAttendIntroItemList().get(position);
         viewHolder.tv_name.setText(item.getName());
         viewHolder.tv_time.setText(item.getTime());
-        viewHolder.tv_type.setText(item.getType());
-        viewHolder.tv_u_status.setText(item.getuStatus());
-        viewHolder.tv_status.setText(item.getStatus());
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < item.getType().length; i++) {
+            if (item.getType()[i] == 1)
+                sb.append(mContext.getString(R.string.attend_type_1) + " ");
+            if (item.getType()[i] == 2)
+                sb.append(mContext.getString(R.string.attend_type_2) + " ");
+        }
+        viewHolder.tv_type.setText(sb.toString());
+        String statusText = "";
         int statusTextColor = R.color.thing_default;
         int statusBgColor = R.color.thing_default_bg;
-        if ("进行中".equals(item.getStatus())) {
+        if (2 == item.getStatus()) {
+            statusText = mContext.getResources().getString(R.string.thing_status_ing);
             statusTextColor = R.color.thing_ing;
             statusBgColor = R.drawable.background_thing_ing;
         }
-        if ("未开始".equals(item.getStatus())) {
+        if (1 == item.getStatus()) {
+            statusText = mContext.getResources().getString(R.string.thing_status_not_begin);
             statusTextColor = R.color.thing_not_begin;
             statusBgColor = R.drawable.background_thing_not_begin;
         }
-        if ("已结束".equals(item.getStatus())) {
+        if (3 == item.getStatus()) {
+            statusText = mContext.getResources().getString(R.string.thing_status_finish);
             statusTextColor = R.color.thing_finish;
             statusBgColor = R.drawable.background_thing_finish;
         }
+        viewHolder.tv_status.setText(statusText);
         viewHolder.tv_status.setTextColor(mContext.getResources().getColor(statusTextColor));
+        viewHolder.tv_u_status.setText("");
+        if (1 == item.getuStatus()) {
+            viewHolder.tv_u_status.setBackgroundColor(mContext.getResources().getColor(R.color.thing_ing));
+            viewHolder.tv_u_status.setTextColor(mContext.getResources().getColor(R.color.qmui_config_color_white));
+//            viewHolder.tv_u_status.setTextColor(mContext.getResources().getColor(R.color.thing_ing));
+            viewHolder.tv_u_status.setText(mContext.getResources().getString(R.string.your_status_yes));
+        }
+        if (2 == item.getuStatus()) {
+            viewHolder.tv_u_status.setBackgroundColor(mContext.getResources().getColor(R.color.thing_finish));
+            viewHolder.tv_u_status.setTextColor(mContext.getResources().getColor(R.color.qmui_config_color_white));
+//            viewHolder.tv_u_status.setTextColor(mContext.getResources().getColor(R.color.thing_finish));
+            viewHolder.tv_u_status.setText(mContext.getResources().getString(R.string.your_status_not));
+        }
         viewHolder.cl_item_participate_attend_intro_inner.setBackground(mContext.getDrawable(statusBgColor));
 //        viewHolder.cl_item_participate_attend_intro_inner.getBackground().mutate().setAlpha(153);
         return convertView;

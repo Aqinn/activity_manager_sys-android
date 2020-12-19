@@ -1,26 +1,25 @@
 package com.aqinn.actmanagersysandroid.fragment;
 
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aqinn.actmanagersysandroid.ActManager;
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.ActIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
-import com.aqinn.actmanagersysandroid.datafortest.ActIntroItem;
-import com.aqinn.actmanagersysandroid.datafortest.CreateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.data.show.ActIntroItem;
 import com.qmuiteam.qmui.alpha.QMUIAlphaImageButton;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
 import com.qmuiteam.qmui.widget.dialog.QMUIBottomSheet;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,11 +43,14 @@ public class ActDetailFragment extends BaseFragment {
     @BindView(R.id.et_intro)
     EditText etIntro;
 
+    @Inject
+    public ActManager actManager;
     private Integer mFlag = -1;
+    private boolean editEnable = false;
     private ActIntroItem mAii = null;
     private ActIntroItemAdapter mAiia = null;
     private QMUIAlphaImageButton qaib;
-    private int mCurrentDialogStyle = com.qmuiteam.qmui.R.style.QMUI_Dialog;
+    private final int mCurrentDialogStyle = com.qmuiteam.qmui.R.style.QMUI_Dialog;
 
     // TODO 仅测试用
     public ActDetailFragment(int flag, ActIntroItem aii, ActIntroItemAdapter aiia) {
@@ -57,26 +59,43 @@ public class ActDetailFragment extends BaseFragment {
         this.mAiia = aiia;
     }
 
+    // TODO 仅测试用
+    public ActDetailFragment(int flag, ActIntroItem aii, ActIntroItemAdapter aiia, boolean editEnable) {
+        mFlag = flag;
+        this.mAii = aii;
+        this.mAiia = aiia;
+        this.editEnable = editEnable;
+    }
+
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_act_detail, null);
-        DaggerFragmentComponent.builder().dataSourceComponent(((MyApplication) getActivity().getApplication()).getDataSourceComponent()).build().inject(this);
+        DaggerFragmentComponent.builder().dataSourceComponent(
+                MyApplication.getDataSourceComponent()
+        ).build().inject(this);
         ButterKnife.bind(this, rootView);
         initTopBar();
         initData();
         return rootView;
     }
 
+    /**
+     * 初始化页面数据
+     */
     private void initData() {
         tvCreator.setText(mAii.getCreator());
         etName.setText(mAii.getName());
         etTime.setText(mAii.getTime());
         etLoc.setText(mAii.getLocation());
         etIntro.setText(mAii.getIntro());
-
-        etEnabledChanged(0);
+        editModeOff();
+        if (editEnable)
+            editModeOn();
     }
 
+    /**
+     * 初始化顶部导航栏
+     */
     private void initTopBar() {
         mTopBar.setTitle("活动详情");
         mTopBar.addLeftBackImageButton().setOnClickListener(new View.OnClickListener() {
@@ -87,9 +106,7 @@ public class ActDetailFragment extends BaseFragment {
                         @Override
                         public void quit(boolean isQuit) {
                             if (isQuit) {
-                                qaib.setVisibility(View.INVISIBLE);
-                                etEnabledChanged(0);
-                                mTopBar.findViewById(R.id.topbar_right_change_button).setClickable(true);
+                                editModeOff();
                                 popBackStack();
                             }
                         }
@@ -109,20 +126,36 @@ public class ActDetailFragment extends BaseFragment {
         qaib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etEnabledChanged(0);
-                mTopBar.findViewById(R.id.topbar_right_change_button).setClickable(true);
-                qaib.setVisibility(View.INVISIBLE);
-                Toast.makeText(getContext(), "活动修改保存成功", Toast.LENGTH_SHORT).show();
+                ActIntroItem newAii = new ActIntroItem(mAii.getId(), mAii.getCreator(),
+                        etName.getText().toString(), etTime.getText().toString(),
+                        etLoc.getText().toString(), etIntro.getText().toString(),
+                        mAii.getStatus());
+                boolean success = actManager.editCreateAct(newAii);
+                if (success) {
+                    editModeOff();
+                    Toast.makeText(getContext(), "活动修改保存成功", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "活动修改保存失败", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         qaib.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * 弹出底部菜单栏
+     */
     private void showBottomSheetList() {
         final QMUIBottomSheet.BottomListSheetBuilder sh = new QMUIBottomSheet.BottomListSheetBuilder(getActivity())
                 .addItem("查看签到");
-        if (mFlag == 1)
-            sh.addItem("编辑活动").addItem("结束活动").addItem("创建签到");
+        if (mFlag == 1) {
+            sh.addItem("编辑活动");
+            if (mAii.getStatus() == 1)
+                sh.addItem("开始活动");
+            if (mAii.getStatus() == 2)
+                sh.addItem("结束活动");
+            sh.addItem("创建签到");
+        }
         if (mFlag == 2)
             sh.addItem("退出活动");
         sh.setOnSheetItemClickListener(new QMUIBottomSheet.BottomListSheetBuilder.OnSheetItemClickListener() {
@@ -137,27 +170,43 @@ public class ActDetailFragment extends BaseFragment {
                     case 1:
                         // 编辑活动
                         if (mFlag == 1) {
-                            etEnabledChanged(1);
-                            mTopBar.findViewById(R.id.topbar_right_change_button).setClickable(false);
-                            qaib.setVisibility(View.VISIBLE);
-                            Toast.makeText(getContext(), "编辑活动", Toast.LENGTH_SHORT).show();
+                            editModeOn();
+                            Toast.makeText(getContext(), "点击了编辑活动按钮", Toast.LENGTH_SHORT).show();
                         }
                         // 退出活动
                         else if (mFlag == 2) {
-                            Toast.makeText(getContext(), "退出活动", Toast.LENGTH_SHORT).show();
+                            boolean success = actManager.quitPartAct(mAii.getId());
+                            if (success)
+                                Toast.makeText(getContext(), "退出活动成功", Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(getContext(), "退出活动失败", Toast.LENGTH_SHORT).show();
                         }
                         break;
                     case 2:
+                        // 开始活动
+                        if (mAii.getStatus() == 1) {
+                            boolean success = actManager.startCreateAct(mAii.getId());
+                            if (success)
+                                Toast.makeText(getContext(), "开始活动成功", Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(getContext(), "开始活动失败", Toast.LENGTH_SHORT).show();
+                        }
                         // 结束活动
-                        showActStopCheck(new ActStopCheckCallable() {
-                            @Override
-                            public void stopOrNot(boolean isStop) {
-                                if (isStop) {
-                                    // TODO 结束活动
+                        else if (mAii.getStatus() == 2) {
+                            showActStopCheck(new ActStopCheckCallable() {
+                                @Override
+                                public void stopOrNot(boolean isStop) {
+                                    if (isStop) {
+                                        boolean success = actManager.stopCreateAct(mAii.getId());
+                                        if (success)
+                                            Toast.makeText(getContext(), "结束活动成功", Toast.LENGTH_SHORT).show();
+                                        else
+                                            Toast.makeText(getContext(), "结束活动失败", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
-                        });
-                        Toast.makeText(getContext(), "点击了结束活动", Toast.LENGTH_SHORT).show();
+                            });
+                            Toast.makeText(getContext(), "点击了结束活动", Toast.LENGTH_SHORT).show();
+                        }
                         break;
                     case 3:
                         // 创建签到
@@ -168,29 +217,6 @@ public class ActDetailFragment extends BaseFragment {
                 }
             }
         }).build().show();
-    }
-
-    private void showEditNotFinishDialog(final ShowEditNotFinishCallable senfc) {
-        new QMUIDialog.MessageDialogBuilder(getActivity())
-                .setTitle("提示")
-                .setMessage("修改还没保存，确定要退出吗？")
-                .setSkinManager(QMUISkinManager.defaultInstance(getContext()))
-                .addAction("继续修改", new QMUIDialogAction.ActionListener() {
-                    @Override
-                    public void onClick(QMUIDialog dialog, int index) {
-                        dialog.dismiss();
-                        senfc.quit(false);
-                    }
-                })
-                .addAction(0, "不保存并退出", QMUIDialogAction.ACTION_PROP_NEGATIVE, new QMUIDialogAction.ActionListener() {
-                    @Override
-                    public void onClick(QMUIDialog dialog, int index) {
-                        Toast.makeText(getActivity(), "退出成功", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                        senfc.quit(true);
-                    }
-                })
-                .create(mCurrentDialogStyle).show();
     }
 
     /**
@@ -225,6 +251,11 @@ public class ActDetailFragment extends BaseFragment {
         }
     }
 
+    /**
+     * 在点击结束活动按钮时弹出提示框
+     *
+     * @param ascc
+     */
     private void showActStopCheck(final ActStopCheckCallable ascc) {
         new QMUIDialog.MessageDialogBuilder(getActivity())
                 .setTitle("提示")
@@ -248,11 +279,63 @@ public class ActDetailFragment extends BaseFragment {
                 .create(mCurrentDialogStyle).show();
     }
 
-    interface ActStopCheckCallable{
+    /**
+     * 当在编辑状态时退出 Fragment 会弹出提示框
+     *
+     * @param senfc
+     */
+    private void showEditNotFinishDialog(final ShowEditNotFinishCallable senfc) {
+        new QMUIDialog.MessageDialogBuilder(getActivity())
+                .setTitle("提示")
+                .setMessage("修改还没保存，确定要退出吗？")
+                .setSkinManager(QMUISkinManager.defaultInstance(getContext()))
+                .addAction("继续修改", new QMUIDialogAction.ActionListener() {
+                    @Override
+                    public void onClick(QMUIDialog dialog, int index) {
+                        dialog.dismiss();
+                        senfc.quit(false);
+                    }
+                })
+                .addAction(0, "不保存并退出", QMUIDialogAction.ACTION_PROP_NEGATIVE, new QMUIDialogAction.ActionListener() {
+                    @Override
+                    public void onClick(QMUIDialog dialog, int index) {
+                        Toast.makeText(getActivity(), "退出成功", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        senfc.quit(true);
+                    }
+                })
+                .create(mCurrentDialogStyle).show();
+    }
+
+    /**
+     * 开启编辑模式
+     */
+    private void editModeOn() {
+        etEnabledChanged(1);
+        mTopBar.findViewById(R.id.topbar_right_change_button).setClickable(false);
+        qaib.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 关闭编辑模式
+     */
+    private void editModeOff() {
+        qaib.setVisibility(View.INVISIBLE);
+        etEnabledChanged(0);
+        mTopBar.findViewById(R.id.topbar_right_change_button).setClickable(true);
+    }
+
+    /**
+     * 回调: 当点击结束活动
+     */
+    interface ActStopCheckCallable {
         void stopOrNot(boolean isStop);
     }
 
-    interface ShowEditNotFinishCallable{
+    /**
+     * 回调: 当保存状态下退出 Fragment
+     */
+    interface ShowEditNotFinishCallable {
         void quit(boolean isQuit);
     }
 

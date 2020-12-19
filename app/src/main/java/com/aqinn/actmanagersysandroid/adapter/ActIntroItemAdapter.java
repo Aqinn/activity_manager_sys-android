@@ -1,7 +1,6 @@
 package com.aqinn.actmanagersysandroid.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +10,10 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.aqinn.actmanagersysandroid.R;
-import com.aqinn.actmanagersysandroid.datafortest.ActIntroItem;
-import com.aqinn.actmanagersysandroid.datafortest.DataSource;
-import com.aqinn.actmanagersysandroid.datafortest.Observer;
+import com.aqinn.actmanagersysandroid.data.show.ActIntroItem;
+import com.aqinn.actmanagersysandroid.data.DataSource;
+import com.aqinn.actmanagersysandroid.data.Observer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -85,22 +83,26 @@ public class ActIntroItemAdapter extends BaseAdapter implements Observer {
         viewHolder.tv_loc.setText(item.getLocation());
         viewHolder.tv_intro_text.setText("活动简介");
         viewHolder.tv_intro.setText(item.getIntro());
-        viewHolder.tv_status.setText(item.getStatus());
 //        Log.d(TAG, "getView: " + item.getStatus());
+        String statusText = "";
         int statusTextColor = R.color.thing_default;
         int statusBgColor = R.color.thing_default_bg;
-        if ("进行中".equals(item.getStatus())) {
+        if (2 == item.getStatus()) {
+            statusText = mContext.getResources().getString(R.string.thing_status_ing);
             statusTextColor = R.color.thing_ing;
             statusBgColor = R.drawable.background_thing_ing;
         }
-        if ("未开始".equals(item.getStatus())) {
+        if (1 == item.getStatus()) {
+            statusText = mContext.getResources().getString(R.string.thing_status_not_begin);
             statusTextColor = R.color.thing_not_begin;
             statusBgColor = R.drawable.background_thing_not_begin;
         }
-        if ("已结束".equals(item.getStatus())) {
+        if (3 == item.getStatus()) {
+            statusText = mContext.getResources().getString(R.string.thing_status_finish);
             statusTextColor = R.color.thing_finish;
             statusBgColor = R.drawable.background_thing_finish;
         }
+        viewHolder.tv_status.setText(statusText);
         viewHolder.tv_status.setTextColor(mContext.getResources().getColor(statusTextColor));
         viewHolder.cl_item_act_intro_inner.setBackground(mContext.getDrawable(statusBgColor));
 //        viewHolder.cl_item_act_intro_inner.getBackground().mutate().setAlpha(153);

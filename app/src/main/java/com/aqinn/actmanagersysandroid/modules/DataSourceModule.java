@@ -1,11 +1,11 @@
 package com.aqinn.actmanagersysandroid.modules;
 
-import com.aqinn.actmanagersysandroid.datafortest.DataSource;
-import com.aqinn.actmanagersysandroid.datafortest.DataSourceCreateActIntroItemTest;
-import com.aqinn.actmanagersysandroid.datafortest.DataSourceCreateAttendIntroItemTest;
-import com.aqinn.actmanagersysandroid.datafortest.DataSourceParticipateActIntroItemTest;
-import com.aqinn.actmanagersysandroid.datafortest.DataSourceParticipateAttendIntroItemTest;
-import com.aqinn.actmanagersysandroid.datafortest.DataSourceUserDescTest;
+import com.aqinn.actmanagersysandroid.data.DataSource;
+import com.aqinn.actmanagersysandroid.data.show.DataSourceCreateActIntroItem;
+import com.aqinn.actmanagersysandroid.data.show.DataSourceCreateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.data.show.DataSourceParticipateActIntroItem;
+import com.aqinn.actmanagersysandroid.data.show.DataSourceParticipateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.data.show.DataSourceUserDesc;
 import com.aqinn.actmanagersysandroid.qualifiers.ActCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
@@ -28,35 +28,35 @@ public class DataSourceModule {
     @ActCreateDataSource
     @Provides
     DataSource provideActCreate() {
-        return new DataSourceCreateActIntroItemTest();
+        return new DataSourceCreateActIntroItem();
     }
 
     @Singleton
     @ActPartDataSource
     @Provides
     DataSource provideActPart() {
-        return new DataSourceParticipateActIntroItemTest();
+        return new DataSourceParticipateActIntroItem();
     }
 
     @Singleton
     @AttendCreateDataSource
     @Provides
     DataSource provideAttendCreate() {
-        return new DataSourceCreateAttendIntroItemTest();
+        return new DataSourceCreateAttendIntroItem();
     }
 
     @Singleton
     @AttendPartDataSource
     @Provides
     DataSource provideAttendPart() {
-        return new DataSourceParticipateAttendIntroItemTest();
+        return new DataSourceParticipateAttendIntroItem();
     }
 
     @Singleton
     @UserDescDataSource
     @Provides
     DataSource provideUserDesc() {
-        return new DataSourceUserDescTest();
+        return new DataSourceUserDesc();
     }
 
 }

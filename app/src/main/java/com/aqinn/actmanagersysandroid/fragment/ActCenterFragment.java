@@ -14,13 +14,14 @@ import android.widget.Toast;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.aqinn.actmanagersysandroid.ActManager;
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.ActIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
-import com.aqinn.actmanagersysandroid.datafortest.DataSource;
+import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.ActCreateDataSource;
-import com.aqinn.actmanagersysandroid.datafortest.ActIntroItem;
+import com.aqinn.actmanagersysandroid.data.show.ActIntroItem;
 import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
 import com.qmuiteam.qmui.layout.QMUIFrameLayout;
 import com.qmuiteam.qmui.skin.QMUISkinHelper;
@@ -67,6 +68,8 @@ public class ActCenterFragment extends BaseFragment {
     @Inject
     @ActPartDataSource
     public DataSource dsp;
+    @Inject
+    public ActManager actManager;
     private Map<ContentPage, View> mPageMap = new HashMap<>();
     private Map<Integer, ListView> mListViewMap = new HashMap<>();
     private Map<Integer, ActIntroItemAdapter> mAdapterMap = new HashMap<>();
@@ -110,6 +113,9 @@ public class ActCenterFragment extends BaseFragment {
         return rootView;
     }
 
+    /**
+     * 初始化顶部导航栏
+     */
     private void initTopBar() {
         mTopBar.setTitle("活动中心");
         mTopBar.addRightImageButton(R.mipmap.icon_topbar_overflow, R.id.topbar_right_change_button)
@@ -121,6 +127,9 @@ public class ActCenterFragment extends BaseFragment {
                 });
     }
 
+    /**
+     * 弹出底部功能菜单
+     */
     private void showBottomSheetList() {
         new QMUIBottomSheet.BottomListSheetBuilder(getActivity())
                 .addItem("创建活动")
@@ -147,6 +156,9 @@ public class ActCenterFragment extends BaseFragment {
                 .show();
     }
 
+    /**
+     * 初始化页面
+     */
     private void initTabAndPager() {
         mContentViewPager.setAdapter(mPagerAdapter);
         mContentViewPager.setCurrentItem(mDestPage.getPosition(), false);
@@ -188,6 +200,7 @@ public class ActCenterFragment extends BaseFragment {
         return listView;
     }
 
+    // TODO 小弹窗展示活动详情
     private void showActDetail(View v) {
         QMUISkinValueBuilder builder = QMUISkinValueBuilder.acquire();
         QMUIFrameLayout frameLayout = new QMUIFrameLayout(getContext());
@@ -250,6 +263,7 @@ public class ActCenterFragment extends BaseFragment {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, final int click_item_position, long id) {
+            final ActIntroItem clickAii = (ActIntroItem) mAdapterMap.get(mFlag).getItem(click_item_position);
             QMUIQuickAction qqa = QMUIPopups.quickAction(getContext(),
                     QMUIDisplayHelper.dp2px(getContext(), 56),
                     QMUIDisplayHelper.dp2px(getContext(), 56))
@@ -261,7 +275,7 @@ public class ActCenterFragment extends BaseFragment {
                         @Override
                         public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
                             quickAction.dismiss();
-                            ActDetailFragment adf = new ActDetailFragment(mFlag, ((ActIntroItem) mAdapterMap.get(mFlag).getItem(click_item_position)), mAdapterMap.get(mFlag));
+                            ActDetailFragment adf = new ActDetailFragment(mFlag, clickAii, mAdapterMap.get(mFlag));
                             startFragment(adf);
                             Toast.makeText(getContext(), "查看详情成功", Toast.LENGTH_SHORT).show();
                         }
@@ -273,30 +287,53 @@ public class ActCenterFragment extends BaseFragment {
                             @Override
                             public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
                                 quickAction.dismiss();
+                                ActDetailFragment adf = new ActDetailFragment(mFlag, clickAii, mAdapterMap.get(mFlag), true);
+                                startFragment(adf);
                                 Toast.makeText(getContext(), "编辑活动成功", Toast.LENGTH_SHORT).show();
                             }
                         }
                 ));
-                qqa.addAction(new QMUIQuickAction.Action().text("结束活动").onClick(
-                        new QMUIQuickAction.OnClickListener() {
-                            @Override
-                            public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
-                                quickAction.dismiss();
-                                Toast.makeText(getContext(), "结束活动成功", Toast.LENGTH_SHORT).show();
+                if (clickAii.getStatus() == 1)
+                    qqa.addAction(new QMUIQuickAction.Action().text("开始活动").onClick(
+                            new QMUIQuickAction.OnClickListener() {
+                                @Override
+                                public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
+                                    quickAction.dismiss();
+                                    boolean success = actManager.startCreateAct(clickAii.getId());
+                                    if (success)
+                                        Toast.makeText(getContext(), "开始活动成功", Toast.LENGTH_SHORT).show();
+                                    else
+                                        Toast.makeText(getContext(), "开始活动失败", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                ));
+                    ));
+                if (clickAii.getStatus() == 2)
+                    qqa.addAction(new QMUIQuickAction.Action().text("结束活动").onClick(
+                            new QMUIQuickAction.OnClickListener() {
+                                @Override
+                                public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
+                                    quickAction.dismiss();
+                                    boolean success = actManager.stopCreateAct(clickAii.getId());
+                                    if (success)
+                                        Toast.makeText(getContext(), "结束活动成功", Toast.LENGTH_SHORT).show();
+                                    else
+                                        Toast.makeText(getContext(), "结束活动失败", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                    ));
             }
             if (mFlag == 2) {
+                if (clickAii.getStatus() != 3)
                 qqa.addAction(new QMUIQuickAction.Action().text("退出活动").onClick(
                         new QMUIQuickAction.OnClickListener() {
                             @Override
                             public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
                                 quickAction.dismiss();
-                                dsp.getDatas().remove(click_item_position);
-                                dsp.notifyAllObserver();
-                                // TODO 实际执行时需要考虑业务逻辑
-                                Toast.makeText(getContext(), "退出活动成功", Toast.LENGTH_SHORT).show();
+                                boolean success = actManager.quitPartAct(clickAii.getId());
+                                if (success)
+                                    Toast.makeText(getContext(), "退出活动成功", Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(getContext(), "退出活动失败", Toast.LENGTH_SHORT).show();
                             }
                         }
                 ));
