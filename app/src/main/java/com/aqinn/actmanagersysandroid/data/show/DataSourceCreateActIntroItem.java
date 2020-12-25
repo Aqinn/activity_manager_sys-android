@@ -3,6 +3,9 @@ package com.aqinn.actmanagersysandroid.data.show;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.data.Observer;
 import com.aqinn.actmanagersysandroid.entity.Act;
+import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
+
+import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +33,8 @@ public class DataSourceCreateActIntroItem extends DataSource<ActIntroItem> imple
     }
 
     private void initData() {
-        datas.add(new ActIntroItem(1L, "_aqinn", "测试创建活动名称1111", "00:00 - 23:59", "海华六栋 B307", "没啥的，就是测试一下", 2));
-        datas.add(new ActIntroItem(2L, "_aqinn", "测试创建活动名称2", "10:00 - 23:00", "海华六栋 B308", "测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。测试一下长度。", 1));
-        datas.add(new ActIntroItem(3L, "_aqinn", "测试创建活动名称3", "01:00 - 13:00", "海华六栋 B307", "zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅zbc好帅", 2));
-        datas.add(new ActIntroItem(4L, "_aqinn", "测试创建活动名称4", "02:00 - 20:59", "海华六栋 B307", "没啥的，就是测试一下", 1));
-        datas.add(new ActIntroItem(5L, "_aqinn", "测试创建活动名称5", "10:00 - 21:50", "海华六栋 B307", "没啥的，就是测试一下", 3));
+        List<ActIntroItem> actIntroItemList = LitePal.findAll(ActIntroItem.class);
+        datas.addAll(actIntroItemList);
     }
 
     /**

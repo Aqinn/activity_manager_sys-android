@@ -10,20 +10,20 @@ public class Attend {
 
     private Long id;
 
+    private Long uId;
+
     private Long actId;
 
-    private String begin;
-
-    private String end;
+    private String time;
 
     // 签到方式 1: "视频签到" 2: "自助签到"
     private Integer type[];
 
-    public Attend(Long id, Long actId, String begin, String end, Integer[] type) {
+    public Attend(Long id, Long uId, Long actId, String time, Integer[] type) {
         this.id = id;
+        this.uId = uId;
         this.actId = actId;
-        this.begin = begin;
-        this.end = end;
+        this.time = time;
         this.type = type;
     }
 
@@ -35,6 +35,14 @@ public class Attend {
         this.id = id;
     }
 
+    public Long getuId() {
+        return uId;
+    }
+
+    public void setuId(Long uId) {
+        this.uId = uId;
+    }
+
     public Long getActId() {
         return actId;
     }
@@ -43,20 +51,12 @@ public class Attend {
         this.actId = actId;
     }
 
-    public String getBegin() {
-        return begin;
+    public String getTime() {
+        return time;
     }
 
-    public void setBegin(String begin) {
-        this.begin = begin;
-    }
-
-    public String getEnd() {
-        return end;
-    }
-
-    public void setEnd(String end) {
-        this.end = end;
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public Integer[] getType() {

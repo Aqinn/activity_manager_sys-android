@@ -10,6 +10,8 @@ import com.aqinn.actmanagersysandroid.components.DataSourceComponent;
 import com.qmuiteam.qmui.QMUILog;
 import com.qmuiteam.qmui.arch.QMUISwipeBackActivityManager;
 
+import org.litepal.LitePal;
+
 /**
  * @author Aqinn
  * @date 2020/12/11 7:32 PM
@@ -28,6 +30,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
+        LitePal.initialize(this);
         QMUILog.setDelegete(new QMUILog.QMUILogDelegate() {
             @Override
             public void e(String tag, String msg, Object... obj) {

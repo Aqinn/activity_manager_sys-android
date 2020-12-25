@@ -2,6 +2,7 @@ package com.aqinn.actmanagersysandroid.adapter;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.aqinn.actmanagersysandroid.R;
-import com.aqinn.actmanagersysandroid.data.show.UserDesc;
+import com.aqinn.actmanagersysandroid.entity.show.UserDesc;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,7 +41,7 @@ public class UserDescRecyclerViewAdapter extends RecyclerView.Adapter<UserDescRe
         // 设置 ViewHolder 里的属性
         viewHolder.setAccount(mUserDesc.getAccount());
         viewHolder.setName(mUserDesc.getName());
-        viewHolder.setSex(mUserDesc.getSex());
+        viewHolder.setSex(mUserDesc.getSex() == 1 ? "男" : "女");
         viewHolder.setContact(mUserDesc.getContact());
         viewHolder.setDesc(mUserDesc.getDesc());
     }
@@ -67,18 +68,30 @@ public class UserDescRecyclerViewAdapter extends RecyclerView.Adapter<UserDescRe
         ConstraintLayout cl_top;
         @BindView(R.id.cl_bottom)
         ConstraintLayout cl_bottom;
-        @BindView(R.id.tv_account_text) TextView tv_account_text;
-        @BindView(R.id.tv_account) TextView tv_account;
-        @BindView(R.id.tv_name_text) TextView tv_name_text;
-        @BindView(R.id.tv_name) TextView tv_name;
-        @BindView(R.id.tv_sex_text) TextView tv_sex_text;
-        @BindView(R.id.tv_sex) TextView tv_sex;
-        @BindView(R.id.tv_contact_text) TextView tv_contact_text;
-        @BindView(R.id.tv_contact) TextView tv_contact;
-        @BindView(R.id.tv_desc_text) TextView tv_desc_text;
-        @BindView(R.id.tv_desc) TextView tv_desc;
-        @BindView(R.id.bt_gather_face) Button bt_gather_face;
-        @BindView(R.id.bt_settings) Button bt_settings;
+        @BindView(R.id.tv_account_text)
+        TextView tv_account_text;
+        @BindView(R.id.tv_account)
+        TextView tv_account;
+        @BindView(R.id.tv_name_text)
+        TextView tv_name_text;
+        @BindView(R.id.tv_name)
+        TextView tv_name;
+        @BindView(R.id.tv_sex_text)
+        TextView tv_sex_text;
+        @BindView(R.id.tv_sex)
+        TextView tv_sex;
+        @BindView(R.id.tv_contact_text)
+        TextView tv_contact_text;
+        @BindView(R.id.tv_contact)
+        TextView tv_contact;
+        @BindView(R.id.tv_desc_text)
+        TextView tv_desc_text;
+        @BindView(R.id.tv_desc)
+        TextView tv_desc;
+        @BindView(R.id.bt_gather_face)
+        Button bt_gather_face;
+        @BindView(R.id.bt_settings)
+        Button bt_settings;
 
         private UserDescRecyclerViewAdapter mAdapter;
 
@@ -89,19 +102,23 @@ public class UserDescRecyclerViewAdapter extends RecyclerView.Adapter<UserDescRe
             mAdapter = adapter;
         }
 
-        public void setAccount(String account){
+        public void setAccount(String account) {
             tv_account.setText(account);
         }
-        public void setName(String name){
+
+        public void setName(String name) {
             tv_name.setText(name);
         }
-        public void setSex(String sex){
+
+        public void setSex(String sex) {
             tv_sex.setText(sex);
         }
-        public void setContact(String contact){
+
+        public void setContact(String contact) {
             tv_contact.setText(contact);
         }
-        public void setDesc(String desc){
+
+        public void setDesc(String desc) {
             tv_desc.setText(desc);
         }
 

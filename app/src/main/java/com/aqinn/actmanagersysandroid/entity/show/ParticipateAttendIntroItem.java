@@ -1,4 +1,6 @@
-package com.aqinn.actmanagersysandroid.data.show;
+package com.aqinn.actmanagersysandroid.entity.show;
+
+import org.litepal.crud.LitePalSupport;
 
 /**
  * 我参与的签到简介数据 - 仅展示用
@@ -6,7 +8,7 @@ package com.aqinn.actmanagersysandroid.data.show;
  * @author Aqinn
  * @date 2020/12/12 5:30 PM
  */
-public class ParticipateAttendIntroItem {
+public class ParticipateAttendIntroItem extends LitePalSupport {
 
     private Long id;
 
@@ -16,7 +18,7 @@ public class ParticipateAttendIntroItem {
 
     private String time;
 
-    private Integer type[];
+    private Integer type;
 
     // 你的签到情况 1: "已签到" 2: "未签到"
     private Integer uStatus;
@@ -24,7 +26,7 @@ public class ParticipateAttendIntroItem {
     // 签到状态 活动状态 1: "未开始" 2: "进行中" 3: "已结束"
     private Integer status;
 
-    public ParticipateAttendIntroItem(Long id, Long actId, String name, String time, Integer type[], Integer uStatus, Integer status) {
+    public ParticipateAttendIntroItem(Long id, Long actId, String name, String time, Integer type, Integer uStatus, Integer status) {
         this.id = id;
         this.actId = actId;
         this.name = name;
@@ -66,11 +68,11 @@ public class ParticipateAttendIntroItem {
         this.time = time;
     }
 
-    public Integer[] getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(Integer[] type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 

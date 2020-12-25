@@ -12,7 +12,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.data.Observer;
-import com.aqinn.actmanagersysandroid.data.show.ParticipateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.entity.show.ParticipateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.utils.CommonUtil;
 
 import java.util.List;
 
@@ -80,10 +81,11 @@ public class ParticipateAttendIntroItemAdapter extends BaseAdapter implements Ob
         viewHolder.tv_name.setText(item.getName());
         viewHolder.tv_time.setText(item.getTime());
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < item.getType().length; i++) {
-            if (item.getType()[i] == 1)
+        Integer type[] = CommonUtil.dec2typeArr(item.getType());
+        for (int i = 0; i < type.length; i++) {
+            if (type[i] == 1)
                 sb.append(mContext.getString(R.string.attend_type_1) + " ");
-            if (item.getType()[i] == 2)
+            if (type[i] == 2)
                 sb.append(mContext.getString(R.string.attend_type_2) + " ");
         }
         viewHolder.tv_type.setText(sb.toString());

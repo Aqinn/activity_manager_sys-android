@@ -1,11 +1,13 @@
-package com.aqinn.actmanagersysandroid.data.show;
+package com.aqinn.actmanagersysandroid.entity.show;
+
+import org.litepal.crud.LitePalSupport;
 
 /**
  * 活动简介数据 - 仅展示用
  * @author Aqinn
  * @date 2020/12/12 3:34 PM
  */
-public class ActIntroItem {
+public class ActIntroItem extends LitePalSupport {
 
     private Long id;
 

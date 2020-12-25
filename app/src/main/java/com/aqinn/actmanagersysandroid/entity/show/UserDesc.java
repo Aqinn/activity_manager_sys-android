@@ -1,23 +1,25 @@
-package com.aqinn.actmanagersysandroid.data.show;
+package com.aqinn.actmanagersysandroid.entity.show;
+
+import org.litepal.crud.LitePalSupport;
 
 /**
  * 用户个人信息 - 仅展示用
  * @author Aqinn
  * @date 2020/12/13 12:41 PM
  */
-public class UserDesc {
+public class UserDesc extends LitePalSupport {
 
     private String account;
 
     private String name;
 
-    private String sex;
+    private Integer sex;
 
     private String contact;
 
     private String desc;
 
-    public UserDesc(String account, String name, String sex, String contact, String desc) {
+    public UserDesc(String account, String name, Integer sex, String contact, String desc) {
         this.account = account;
         this.name = name;
         this.sex = sex;
@@ -41,11 +43,11 @@ public class UserDesc {
         this.name = name;
     }
 
-    public String getSex() {
+    public Integer getSex() {
         return sex;
     }
 
-    public void setSex(String sex) {
+    public void setSex(Integer sex) {
         this.sex = sex;
     }
 

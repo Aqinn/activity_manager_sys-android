@@ -2,9 +2,9 @@ package com.aqinn.actmanagersysandroid;
 
 
 import com.aqinn.actmanagersysandroid.components.DaggerActManagerComponent;
-import com.aqinn.actmanagersysandroid.data.show.ActIntroItem;
-import com.aqinn.actmanagersysandroid.data.show.CreateAttendIntroItem;
 import com.aqinn.actmanagersysandroid.data.DataSource;
+import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
+import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
 import com.aqinn.actmanagersysandroid.qualifiers.ActCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
@@ -20,7 +20,9 @@ import javax.inject.Inject;
  * @author Aqinn
  * @date 2020/12/18 5:33 PM
  */
-public class ActManager {
+public class ShowManager {
+
+    private static final String TAG = "ShowManager";
 
     @Inject
     @ActCreateDataSource
@@ -40,7 +42,7 @@ public class ActManager {
     @UserDescDataSource
     public DataSource users;
 
-    public ActManager() {
+    public ShowManager() {
         DaggerActManagerComponent.builder().dataSourceComponent(MyApplication.getDataSourceComponent()).build().inject(this);
     }
 

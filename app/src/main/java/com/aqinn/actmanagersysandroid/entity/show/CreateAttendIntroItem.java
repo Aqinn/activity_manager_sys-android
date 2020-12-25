@@ -1,10 +1,12 @@
-package com.aqinn.actmanagersysandroid.data.show;
+package com.aqinn.actmanagersysandroid.entity.show;
+
+import org.litepal.crud.LitePalSupport;
 
 /**
  * @author Aqinn
  * @date 2020/12/12 7:55 PM
  */
-public class CreateAttendIntroItem {
+public class CreateAttendIntroItem extends LitePalSupport {
 
     private Long id;
 
@@ -15,21 +17,21 @@ public class CreateAttendIntroItem {
     private String time;
 
     // 签到方式 1: "视频签到" 2: "自助签到"
-    private Integer type[];
+    private Integer type;
 
     // 签到状态 1: "未开始" 2: "进行中" 3: "已结束"
     private Integer status;
 
     // 应签到人数
-    private String shouldAttendCount;
+    private Integer shouldAttendCount;
 
     // 已签到人数
-    private String haveAttendCount;
+    private Integer haveAttendCount;
 
     // 未签到人数
-    private String notAttendCount;
+    private Integer notAttendCount;
 
-    public CreateAttendIntroItem(Long id, Long actId, String name, String time, Integer type[], Integer status, String shouldAttendCount, String haveAttendCount, String notAttendCount) {
+    public CreateAttendIntroItem(Long id, Long actId, String name, String time, Integer type, Integer status, Integer shouldAttendCount, Integer haveAttendCount, Integer notAttendCount) {
         this.id = id;
         this.actId = actId;
         this.name = name;
@@ -73,11 +75,11 @@ public class CreateAttendIntroItem {
         this.time = time;
     }
 
-    public Integer[] getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(Integer[] type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
@@ -89,27 +91,42 @@ public class CreateAttendIntroItem {
         this.status = status;
     }
 
-    public String getShouldAttendCount() {
+    public Integer getShouldAttendCount() {
         return shouldAttendCount;
     }
 
-    public void setShouldAttendCount(String shouldAttendCount) {
+    public void setShouldAttendCount(Integer shouldAttendCount) {
         this.shouldAttendCount = shouldAttendCount;
     }
 
-    public String getHaveAttendCount() {
+    public Integer getHaveAttendCount() {
         return haveAttendCount;
     }
 
-    public void setHaveAttendCount(String haveAttendCount) {
+    public void setHaveAttendCount(Integer haveAttendCount) {
         this.haveAttendCount = haveAttendCount;
     }
 
-    public String getNotAttendCount() {
+    public Integer getNotAttendCount() {
         return notAttendCount;
     }
 
-    public void setNotAttendCount(String notAttendCount) {
+    public void setNotAttendCount(Integer notAttendCount) {
         this.notAttendCount = notAttendCount;
+    }
+
+    @Override
+    public String toString() {
+        return "CreateAttendIntroItem{" +
+                "id=" + id +
+                ", actId=" + actId +
+                ", name='" + name + '\'' +
+                ", time='" + time + '\'' +
+                ", type=" + type +
+                ", status=" + status +
+                ", shouldAttendCount=" + shouldAttendCount +
+                ", haveAttendCount=" + haveAttendCount +
+                ", notAttendCount=" + notAttendCount +
+                '}';
     }
 }

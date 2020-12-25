@@ -1,6 +1,6 @@
 package com.aqinn.actmanagersysandroid.components;
 
-import com.aqinn.actmanagersysandroid.ActManager;
+import com.aqinn.actmanagersysandroid.ShowManager;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.modules.ActManagerModule;
 import com.aqinn.actmanagersysandroid.modules.DataSourceModule;
@@ -37,6 +37,6 @@ public interface DataSourceComponent {
     @UserDescDataSource
     DataSource getUserDesc();
 
-    ActManager getActManager();
+    ShowManager getActManager();
 
 }

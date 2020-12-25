@@ -14,14 +14,14 @@ import android.widget.Toast;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.aqinn.actmanagersysandroid.ActManager;
+import com.aqinn.actmanagersysandroid.ShowManager;
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.ActIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
 import com.aqinn.actmanagersysandroid.data.DataSource;
+import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
 import com.aqinn.actmanagersysandroid.qualifiers.ActCreateDataSource;
-import com.aqinn.actmanagersysandroid.data.show.ActIntroItem;
 import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
 import com.qmuiteam.qmui.layout.QMUIFrameLayout;
 import com.qmuiteam.qmui.skin.QMUISkinHelper;
@@ -69,7 +69,7 @@ public class ActCenterFragment extends BaseFragment {
     @ActPartDataSource
     public DataSource dsp;
     @Inject
-    public ActManager actManager;
+    public ShowManager showManager;
     private Map<ContentPage, View> mPageMap = new HashMap<>();
     private Map<Integer, ListView> mListViewMap = new HashMap<>();
     private Map<Integer, ActIntroItemAdapter> mAdapterMap = new HashMap<>();
@@ -299,7 +299,7 @@ public class ActCenterFragment extends BaseFragment {
                                 @Override
                                 public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
                                     quickAction.dismiss();
-                                    boolean success = actManager.startCreateAct(clickAii.getId());
+                                    boolean success = showManager.startCreateAct(clickAii.getId());
                                     if (success)
                                         Toast.makeText(getContext(), "开始活动成功", Toast.LENGTH_SHORT).show();
                                     else
@@ -313,7 +313,7 @@ public class ActCenterFragment extends BaseFragment {
                                 @Override
                                 public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
                                     quickAction.dismiss();
-                                    boolean success = actManager.stopCreateAct(clickAii.getId());
+                                    boolean success = showManager.stopCreateAct(clickAii.getId());
                                     if (success)
                                         Toast.makeText(getContext(), "结束活动成功", Toast.LENGTH_SHORT).show();
                                     else
@@ -329,7 +329,7 @@ public class ActCenterFragment extends BaseFragment {
                             @Override
                             public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
                                 quickAction.dismiss();
-                                boolean success = actManager.quitPartAct(clickAii.getId());
+                                boolean success = showManager.quitPartAct(clickAii.getId());
                                 if (success)
                                     Toast.makeText(getContext(), "退出活动成功", Toast.LENGTH_SHORT).show();
                                 else
@@ -381,11 +381,15 @@ public class ActCenterFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         // 返回 Fragment 的时候，需要滚动一下，不然功能菜单无法出现。可能是需要滚动触发某些组件的状态更新？原因待检查。
-        for (ListView lv : mListViewMap.values()) {
-            if (lv.getChildAt(0).getTop() == 0)
-                lv.smoothScrollBy(1, 1);
+        for (int i = 1; i <= 2; i++) {
+            if (!mAdapterMap.containsKey(i) || !mListViewMap.containsKey(i))
+                continue;
+            if (mAdapterMap.get(i).isEmpty())
+                continue;
+            if (mListViewMap.get(i).getChildAt(0).getTop() == 0)
+                mListViewMap.get(i).smoothScrollBy(1, 1);
             else
-                lv.smoothScrollBy(-1, 1);
+                mListViewMap.get(i).smoothScrollBy(-1, 1);
         }
     }
 

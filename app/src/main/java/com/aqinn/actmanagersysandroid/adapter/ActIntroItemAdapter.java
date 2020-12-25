@@ -10,9 +10,9 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.aqinn.actmanagersysandroid.R;
-import com.aqinn.actmanagersysandroid.data.show.ActIntroItem;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.data.Observer;
+import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
 
 import java.util.List;
 

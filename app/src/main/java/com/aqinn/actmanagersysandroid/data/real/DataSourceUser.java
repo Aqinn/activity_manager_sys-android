@@ -24,9 +24,4 @@ public class DataSourceUser extends DataSource<User> {
         datas.add(new User(3L, "zzf", "biubiubiu", "zfung", "444502543@qq.com", 1, "《 I NEVER TOLD YOU 》"));
     }
 
-    private Long getRandomLong() {
-        return CommonUtil.getRandomLong();
-    }
-
-
 }

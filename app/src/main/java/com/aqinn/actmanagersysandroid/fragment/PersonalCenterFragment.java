@@ -11,7 +11,7 @@ import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.UserDescRecyclerViewAdapter;
 import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
 import com.aqinn.actmanagersysandroid.data.DataSource;
-import com.aqinn.actmanagersysandroid.data.show.UserDesc;
+import com.aqinn.actmanagersysandroid.entity.show.UserDesc;
 import com.aqinn.actmanagersysandroid.qualifiers.UserDescDataSource;
 import com.qmuiteam.qmui.widget.QMUICollapsingTopBarLayout;
 import com.qmuiteam.qmui.widget.QMUITopBar;
@@ -77,6 +77,8 @@ public class PersonalCenterFragment extends BaseFragment {
     }
 
     private UserDesc initUserDesc() {
+        if (dsu.getDatas().isEmpty())
+            return new UserDesc("没有登录", "没有登录", 1, "没有登录", "没有登录");
         return ((UserDesc) dsu.getDatas().get(0));
     }
 

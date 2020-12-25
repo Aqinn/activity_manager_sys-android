@@ -1,6 +1,6 @@
 package com.aqinn.actmanagersysandroid.components;
 
-import com.aqinn.actmanagersysandroid.ActManager;
+import com.aqinn.actmanagersysandroid.ShowManager;
 import com.aqinn.actmanagersysandroid.scopes.ManagerScope;
 
 import dagger.Component;
@@ -13,6 +13,6 @@ import dagger.Component;
 @Component(dependencies = DataSourceComponent.class)
 public interface ActManagerComponent {
 
-    void inject(ActManager actManager);
+    void inject(ShowManager showManager);
 
 }

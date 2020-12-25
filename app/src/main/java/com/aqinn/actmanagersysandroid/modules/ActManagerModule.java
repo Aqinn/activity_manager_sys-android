@@ -1,6 +1,6 @@
 package com.aqinn.actmanagersysandroid.modules;
 
-import com.aqinn.actmanagersysandroid.ActManager;
+import com.aqinn.actmanagersysandroid.ShowManager;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,8 +13,8 @@ import dagger.Provides;
 public class ActManagerModule {
 
      @Provides
-     ActManager providerActManager(){
-          return new ActManager();
+     ShowManager providerActManager(){
+          return new ShowManager();
      }
 
 }

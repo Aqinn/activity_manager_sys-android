@@ -15,17 +15,19 @@ import android.widget.Toast;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.aqinn.actmanagersysandroid.ActManager;
+import com.aqinn.actmanagersysandroid.ShowManager;
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
+import com.aqinn.actmanagersysandroid.adapter.ActIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.adapter.CreateAttendIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.adapter.ParticipateAttendIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
-import com.aqinn.actmanagersysandroid.data.show.CreateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
 import com.aqinn.actmanagersysandroid.data.DataSource;
-import com.aqinn.actmanagersysandroid.data.show.ParticipateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.entity.show.ParticipateAttendIntroItem;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendPartDataSource;
+import com.aqinn.actmanagersysandroid.utils.CommonUtil;
 import com.qmuiteam.qmui.layout.QMUIFrameLayout;
 import com.qmuiteam.qmui.skin.QMUISkinHelper;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
@@ -74,7 +76,7 @@ public class AttendCenterFragment extends BaseFragment {
     @AttendPartDataSource
     public DataSource dsp;
     @Inject
-    public ActManager actManager;
+    public ShowManager showManager;
     private int mCurrentDialogStyle = com.qmuiteam.qmui.R.style.QMUI_Dialog;
     private Map<AttendCenterFragment.ContentPage, View> mPageMap = new HashMap<>();
     private Map<Integer, ListView> mListViewMap = new HashMap<>();
@@ -214,13 +216,11 @@ public class AttendCenterFragment extends BaseFragment {
 //                listView.setDividerHeight(-35);
         listView.setOnItemClickListener(new AttendCenterFragment.Avocl(flag));
         if (flag == 1) {
-            CreateAttendIntroItemAdapter caiia = new CreateAttendIntroItemAdapter(getContext());
-            caiia.setDataSource(dsc);
+            CreateAttendIntroItemAdapter caiia = new CreateAttendIntroItemAdapter(getContext(), dsc);
             listView.setAdapter(caiia);
             this.caiia = caiia;
         } else {
-            ParticipateAttendIntroItemAdapter paiia = new ParticipateAttendIntroItemAdapter(getContext());
-            paiia.setDataSource(dsp);
+            ParticipateAttendIntroItemAdapter paiia = new ParticipateAttendIntroItemAdapter(getContext(), dsp);
             listView.setAdapter(paiia);
             this.paiia = paiia;
         }
@@ -281,7 +281,7 @@ public class AttendCenterFragment extends BaseFragment {
                                 @Override
                                 public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
                                     quickAction.dismiss();
-                                    boolean success = actManager.startCreateAttend(clickCaii.getId());
+                                    boolean success = showManager.startCreateAttend(clickCaii.getId());
                                     if (success)
                                         Toast.makeText(getContext(), "开启签到成功", Toast.LENGTH_SHORT).show();
                                     else
@@ -295,7 +295,7 @@ public class AttendCenterFragment extends BaseFragment {
                                 @Override
                                 public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
                                     quickAction.dismiss();
-                                    boolean success = actManager.stopCreateAttend(clickCaii.getId());
+                                    boolean success = showManager.stopCreateAttend(clickCaii.getId());
                                     if (success)
                                         Toast.makeText(getContext(), "停止签到成功", Toast.LENGTH_SHORT).show();
                                     else
@@ -305,8 +305,9 @@ public class AttendCenterFragment extends BaseFragment {
                     ));
                 if (clickCaii.getStatus() == 1) {
                     boolean flag = false;
-                    for (int i = 0; i < clickCaii.getType().length; i++) {
-                        if (clickCaii.getType()[i] == 1) {
+                    Integer type[] = CommonUtil.dec2typeArr(clickCaii.getType());
+                    for (int i = 0; i < type.length; i++) {
+                        if (type[i] == 1) {
                             flag = true;
                             break;
                         }
@@ -326,8 +327,9 @@ public class AttendCenterFragment extends BaseFragment {
             if (mFlag == 2) {
                 if (clickPaii.getuStatus() == 2) {
                     boolean flag = false;
-                    for (int i = 0; i < clickPaii.getType().length; i++) {
-                        if (clickPaii.getType()[i] == 2) {
+                    Integer type[] = CommonUtil.dec2typeArr(clickCaii.getType());
+                    for (int i = 0; i < type.length; i++) {
+                        if (type[i] == 2) {
                             flag = true;
                             break;
                         }
@@ -380,7 +382,7 @@ public class AttendCenterFragment extends BaseFragment {
 
         final View editView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_create_attend_detail, null);
         editView.setBackground(QMUIResHelper.getAttrDrawable(getContext(), R.attr.qmui_skin_support_popup_bg));
-        CreateAttendIntroItem caii = actManager.getCreateAttendIntroById(attId);
+        CreateAttendIntroItem caii = showManager.getCreateAttendIntroById(attId);
         EditText et_time = (EditText) editView.findViewById(R.id.et_time);
         et_time.setText(caii.getTime());
         frameLayout.addView(editView, lp);
@@ -405,7 +407,7 @@ public class AttendCenterFragment extends BaseFragment {
                 .onDismiss(new PopupWindow.OnDismissListener() {
                     @Override
                     public void onDismiss() {
-                        boolean success = actManager.changeCreateAttendTime(attId, ((EditText) editView.findViewById(R.id.et_time)).getText().toString());
+                        boolean success = showManager.changeCreateAttendTime(attId, ((EditText) editView.findViewById(R.id.et_time)).getText().toString());
                         if (success)
                             Toast.makeText(getContext(), "修改签到时间已完成", Toast.LENGTH_SHORT).show();
                         else
@@ -419,9 +421,10 @@ public class AttendCenterFragment extends BaseFragment {
      * 弹窗编辑签到方式
      */
     private void showEditAttendTimePopup(final CreateAttendIntroItem caii) {
-        int[] caiiType = new int[caii.getType().length];
-        for (int i = 0; i < caii.getType().length; i++) {
-            caiiType[i] = caii.getType()[i] - 1;
+        Integer type[] = CommonUtil.dec2typeArr(caii.getType());
+        int[] caiiType = new int[type.length];
+        for (int i = 0; i < type.length; i++) {
+            caiiType[i] = type[i] - 1;
         }
 //        final String[] items = new String[]{"视频签到", "自助签到", "视频弱签到(暂时没用)", "自助弱签到(暂时没用)"};
         final String[] items = new String[]{"视频签到", "自助签到"};
@@ -451,14 +454,32 @@ public class AttendCenterFragment extends BaseFragment {
                     caiiType[i] = builder.getCheckedItemIndexes()[i] + 1;
                 }
                 Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
-                CreateAttendIntroItem newCaii = new CreateAttendIntroItem(caii.getId(),caii.getActId(),
-                        caii.getName(), caii.getTime(), caiiType, caii.getStatus(),
+                CreateAttendIntroItem newCaii = new CreateAttendIntroItem(caii.getId(), caii.getActId(),
+                        caii.getName(), caii.getTime(), CommonUtil.typeArr2dec(caiiType), caii.getStatus(),
                         caii.getShouldAttendCount(), caii.getHaveAttendCount(), caii.getNotAttendCount());
-                actManager.changeCreateAttendType(newCaii);
+                showManager.changeCreateAttendType(newCaii);
                 dialog.dismiss();
             }
         });
         builder.create(mCurrentDialogStyle).show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // 返回 Fragment 的时候，需要滚动一下，不然功能菜单无法出现。可能是需要滚动触发某些组件的状态更新？原因待检查。
+        if (caiia != null && mListViewMap.containsKey(1)) {
+            if (mListViewMap.get(1).getChildAt(0).getTop() == 0)
+                mListViewMap.get(1).smoothScrollBy(1, 1);
+            else
+                mListViewMap.get(1).smoothScrollBy(-1, 1);
+        }
+        if (paiia != null && mListViewMap.containsKey(2)) {
+            if (mListViewMap.get(2).getChildAt(0).getTop() == 0)
+                mListViewMap.get(2).smoothScrollBy(1, 1);
+            else
+                mListViewMap.get(2).smoothScrollBy(-1, 1);
+        }
     }
 
     public enum ContentPage {

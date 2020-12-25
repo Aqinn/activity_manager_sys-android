@@ -6,12 +6,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aqinn.actmanagersysandroid.ActManager;
+import com.aqinn.actmanagersysandroid.ShowManager;
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.ActIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
-import com.aqinn.actmanagersysandroid.data.show.ActIntroItem;
+import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
 import com.qmuiteam.qmui.alpha.QMUIAlphaImageButton;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
@@ -44,7 +44,7 @@ public class ActDetailFragment extends BaseFragment {
     EditText etIntro;
 
     @Inject
-    public ActManager actManager;
+    public ShowManager showManager;
     private Integer mFlag = -1;
     private boolean editEnable = false;
     private ActIntroItem mAii = null;
@@ -130,7 +130,7 @@ public class ActDetailFragment extends BaseFragment {
                         etName.getText().toString(), etTime.getText().toString(),
                         etLoc.getText().toString(), etIntro.getText().toString(),
                         mAii.getStatus());
-                boolean success = actManager.editCreateAct(newAii);
+                boolean success = showManager.editCreateAct(newAii);
                 if (success) {
                     editModeOff();
                     Toast.makeText(getContext(), "活动修改保存成功", Toast.LENGTH_SHORT).show();
@@ -175,7 +175,7 @@ public class ActDetailFragment extends BaseFragment {
                         }
                         // 退出活动
                         else if (mFlag == 2) {
-                            boolean success = actManager.quitPartAct(mAii.getId());
+                            boolean success = showManager.quitPartAct(mAii.getId());
                             if (success)
                                 Toast.makeText(getContext(), "退出活动成功", Toast.LENGTH_SHORT).show();
                             else
@@ -185,7 +185,7 @@ public class ActDetailFragment extends BaseFragment {
                     case 2:
                         // 开始活动
                         if (mAii.getStatus() == 1) {
-                            boolean success = actManager.startCreateAct(mAii.getId());
+                            boolean success = showManager.startCreateAct(mAii.getId());
                             if (success)
                                 Toast.makeText(getContext(), "开始活动成功", Toast.LENGTH_SHORT).show();
                             else
@@ -197,7 +197,7 @@ public class ActDetailFragment extends BaseFragment {
                                 @Override
                                 public void stopOrNot(boolean isStop) {
                                     if (isStop) {
-                                        boolean success = actManager.stopCreateAct(mAii.getId());
+                                        boolean success = showManager.stopCreateAct(mAii.getId());
                                         if (success)
                                             Toast.makeText(getContext(), "结束活动成功", Toast.LENGTH_SHORT).show();
                                         else
