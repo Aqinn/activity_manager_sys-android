@@ -8,6 +8,8 @@ import org.litepal.crud.LitePalSupport;
  */
 public class CreateAttendIntroItem extends LitePalSupport {
 
+    private Long ownerId;
+
     private Long id;
 
     private Long actId;
@@ -31,7 +33,8 @@ public class CreateAttendIntroItem extends LitePalSupport {
     // 未签到人数
     private Integer notAttendCount;
 
-    public CreateAttendIntroItem(Long id, Long actId, String name, String time, Integer type, Integer status, Integer shouldAttendCount, Integer haveAttendCount, Integer notAttendCount) {
+    public CreateAttendIntroItem(Long ownerId, Long id, Long actId, String name, String time, Integer type, Integer status, Integer shouldAttendCount, Integer haveAttendCount, Integer notAttendCount) {
+        this.ownerId = ownerId;
         this.id = id;
         this.actId = actId;
         this.name = name;
@@ -41,6 +44,14 @@ public class CreateAttendIntroItem extends LitePalSupport {
         this.shouldAttendCount = shouldAttendCount;
         this.haveAttendCount = haveAttendCount;
         this.notAttendCount = notAttendCount;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public Long getId() {
@@ -118,7 +129,8 @@ public class CreateAttendIntroItem extends LitePalSupport {
     @Override
     public String toString() {
         return "CreateAttendIntroItem{" +
-                "id=" + id +
+                "ownerId=" + ownerId +
+                ", id=" + id +
                 ", actId=" + actId +
                 ", name='" + name + '\'' +
                 ", time='" + time + '\'' +

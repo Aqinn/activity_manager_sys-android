@@ -18,7 +18,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.aqinn.actmanagersysandroid.ShowManager;
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
-import com.aqinn.actmanagersysandroid.adapter.ActIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.adapter.CreateAttendIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.adapter.ParticipateAttendIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
@@ -27,6 +26,11 @@ import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.entity.show.ParticipateAttendIntroItem;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendPartDataSource;
+import com.aqinn.actmanagersysandroid.service.ActService;
+import com.aqinn.actmanagersysandroid.service.AttendService;
+import com.aqinn.actmanagersysandroid.service.UserActService;
+import com.aqinn.actmanagersysandroid.service.UserAttendService;
+import com.aqinn.actmanagersysandroid.service.UserService;
 import com.aqinn.actmanagersysandroid.utils.CommonUtil;
 import com.qmuiteam.qmui.layout.QMUIFrameLayout;
 import com.qmuiteam.qmui.skin.QMUISkinHelper;
@@ -69,6 +73,16 @@ public class AttendCenterFragment extends BaseFragment {
     @BindView(R.id.contentViewPager)
     ViewPager mContentViewPager;
 
+    @Inject
+    public UserService userService;
+    @Inject
+    public ActService actService;
+    @Inject
+    public UserActService userActService;
+    @Inject
+    public AttendService attendService;
+    @Inject
+    public UserAttendService userAttendService;
     @Inject
     @AttendCreateDataSource
     public DataSource dsc;
@@ -114,7 +128,8 @@ public class AttendCenterFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_attend_center, null);
-        DaggerFragmentComponent.builder().dataSourceComponent(((MyApplication) getActivity().getApplication()).getDataSourceComponent()).build().inject(this);
+        DaggerFragmentComponent.builder().dataSourceComponent(((MyApplication) getActivity().getApplication()).getDataSourceComponent())
+                .retrofitServiceComponent(MyApplication.getRetrofitServiceComponent()).build().inject(this);
         ButterKnife.bind(this, rootView);
 
         initTopBar();
@@ -327,7 +342,7 @@ public class AttendCenterFragment extends BaseFragment {
             if (mFlag == 2) {
                 if (clickPaii.getuStatus() == 2) {
                     boolean flag = false;
-                    Integer type[] = CommonUtil.dec2typeArr(clickCaii.getType());
+                    Integer type[] = CommonUtil.dec2typeArr(clickPaii.getType());
                     for (int i = 0; i < type.length; i++) {
                         if (type[i] == 2) {
                             flag = true;
@@ -454,7 +469,7 @@ public class AttendCenterFragment extends BaseFragment {
                     caiiType[i] = builder.getCheckedItemIndexes()[i] + 1;
                 }
                 Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
-                CreateAttendIntroItem newCaii = new CreateAttendIntroItem(caii.getId(), caii.getActId(),
+                CreateAttendIntroItem newCaii = new CreateAttendIntroItem(caii.getOwnerId(), caii.getId(), caii.getActId(),
                         caii.getName(), caii.getTime(), CommonUtil.typeArr2dec(caiiType), caii.getStatus(),
                         caii.getShouldAttendCount(), caii.getHaveAttendCount(), caii.getNotAttendCount());
                 showManager.changeCreateAttendType(newCaii);

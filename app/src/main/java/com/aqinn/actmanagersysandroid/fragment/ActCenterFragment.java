@@ -23,6 +23,11 @@ import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
 import com.aqinn.actmanagersysandroid.qualifiers.ActCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
+import com.aqinn.actmanagersysandroid.service.ActService;
+import com.aqinn.actmanagersysandroid.service.AttendService;
+import com.aqinn.actmanagersysandroid.service.UserActService;
+import com.aqinn.actmanagersysandroid.service.UserAttendService;
+import com.aqinn.actmanagersysandroid.service.UserService;
 import com.qmuiteam.qmui.layout.QMUIFrameLayout;
 import com.qmuiteam.qmui.skin.QMUISkinHelper;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
@@ -62,6 +67,16 @@ public class ActCenterFragment extends BaseFragment {
     @BindView(R.id.contentViewPager)
     ViewPager mContentViewPager;
 
+    @Inject
+    public UserService userService;
+    @Inject
+    public ActService actService;
+    @Inject
+    public UserActService userActService;
+    @Inject
+    public AttendService attendService;
+    @Inject
+    public UserAttendService userAttendService;
     @Inject
     @ActCreateDataSource
     public DataSource dsc;
@@ -106,7 +121,8 @@ public class ActCenterFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_act_center, null);
-        DaggerFragmentComponent.builder().dataSourceComponent(((MyApplication) getActivity().getApplication()).getDataSourceComponent()).build().inject(this);
+        DaggerFragmentComponent.builder().dataSourceComponent(((MyApplication) getActivity().getApplication()).getDataSourceComponent())
+                .retrofitServiceComponent(MyApplication.getRetrofitServiceComponent()).build().inject(this);
         ButterKnife.bind(this, rootView);
         initTopBar();
         initTabAndPager();

@@ -14,7 +14,7 @@ import dagger.Component;
  * @date 2020/12/18 4:23 PM
  */
 @FragmentScope
-@Component(dependencies = DataSourceComponent.class)
+@Component(dependencies = {DataSourceComponent.class, RetrofitServiceComponent.class})
 public interface FragmentComponent {
 
     void inject(MainFragment mainFragment);

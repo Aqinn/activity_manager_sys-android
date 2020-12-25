@@ -11,12 +11,15 @@ import androidx.annotation.Nullable;
 
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.activity.MainActivity;
+import com.aqinn.actmanagersysandroid.utils.RetrofitUtils;
 import com.qmuiteam.qmui.arch.QMUIFragment;
 import com.qmuiteam.qmui.arch.SwipeBackLayout;
 import com.qmuiteam.qmui.util.QMUIDisplayHelper;
 import com.qmuiteam.qmui.util.QMUIViewHelper;
 import com.qmuiteam.qmui.widget.QMUITopBar;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
+
+import retrofit2.Retrofit;
 
 /**
  * @author Aqinn
@@ -78,5 +81,9 @@ public abstract class BaseFragment extends QMUIFragment {
 //    public Object onLastFragmentFinish() {
 //        return new HomeFragment();
 //    }
+
+    protected Retrofit getRetrofit() {
+        return RetrofitUtils.getRetrofit();
+    }
 
 }

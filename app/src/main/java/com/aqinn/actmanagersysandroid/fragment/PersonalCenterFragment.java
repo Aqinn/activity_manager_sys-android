@@ -13,6 +13,11 @@ import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.entity.show.UserDesc;
 import com.aqinn.actmanagersysandroid.qualifiers.UserDescDataSource;
+import com.aqinn.actmanagersysandroid.service.ActService;
+import com.aqinn.actmanagersysandroid.service.AttendService;
+import com.aqinn.actmanagersysandroid.service.UserActService;
+import com.aqinn.actmanagersysandroid.service.UserAttendService;
+import com.aqinn.actmanagersysandroid.service.UserService;
 import com.qmuiteam.qmui.widget.QMUICollapsingTopBarLayout;
 import com.qmuiteam.qmui.widget.QMUITopBar;
 import com.qmuiteam.qmui.widget.dialog.QMUIBottomSheet;
@@ -33,6 +38,16 @@ public class PersonalCenterFragment extends BaseFragment {
     private static final String TAG = "PersonalCenterFragment";
 
     @Inject
+    public UserService userService;
+    @Inject
+    public ActService actService;
+    @Inject
+    public UserActService userActService;
+    @Inject
+    public AttendService attendService;
+    @Inject
+    public UserAttendService userAttendService;
+    @Inject
     @UserDescDataSource
     public DataSource dsu;
 
@@ -50,7 +65,8 @@ public class PersonalCenterFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_personal, null);
-        DaggerFragmentComponent.builder().dataSourceComponent(((MyApplication) getActivity().getApplication()).getDataSourceComponent()).build().inject(this);
+        DaggerFragmentComponent.builder().dataSourceComponent(((MyApplication) getActivity().getApplication()).getDataSourceComponent())
+                .retrofitServiceComponent(MyApplication.getRetrofitServiceComponent()).build().inject(this);
         ButterKnife.bind(this, rootView);
         initTopBar();
         mPagerLayoutManager = new LinearLayoutManager(getContext());
@@ -78,7 +94,7 @@ public class PersonalCenterFragment extends BaseFragment {
 
     private UserDesc initUserDesc() {
         if (dsu.getDatas().isEmpty())
-            return new UserDesc("没有登录", "没有登录", 1, "没有登录", "没有登录");
+            return new UserDesc(-1L, "没有登录", "没有登录", 1, "没有登录", "没有登录");
         return ((UserDesc) dsu.getDatas().get(0));
     }
 

@@ -3,6 +3,7 @@ package com.aqinn.actmanagersysandroid.data.show;
 import com.aqinn.actmanagersysandroid.ShowManager;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.data.Observer;
+import com.aqinn.actmanagersysandroid.data.Refreshable;
 import com.aqinn.actmanagersysandroid.entity.Act;
 import com.aqinn.actmanagersysandroid.entity.Attend;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
@@ -17,7 +18,7 @@ import java.util.List;
  * @author Aqinn
  * @date 2020/12/18 3:42 PM
  */
-public class DataSourceParticipateAttendIntroItem extends DataSource<ParticipateAttendIntroItem> {
+public class DataSourceParticipateAttendIntroItem extends DataSource<ParticipateAttendIntroItem> implements Refreshable {
 
 
     public DataSourceParticipateAttendIntroItem() {
@@ -32,4 +33,11 @@ public class DataSourceParticipateAttendIntroItem extends DataSource<Participate
         datas.addAll(participateAttendIntroItemList);
     }
 
+    @Override
+    public void refresh(Object o) {
+        List<ParticipateAttendIntroItem> participateAttendIntroItemList = (List<ParticipateAttendIntroItem>) o;
+        datas.clear();
+        datas.addAll(participateAttendIntroItemList);
+        notifyAllObserver();
+    }
 }

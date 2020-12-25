@@ -10,6 +10,8 @@ import org.litepal.crud.LitePalSupport;
  */
 public class ParticipateAttendIntroItem extends LitePalSupport {
 
+    private Long ownerId;
+
     private Long id;
 
     private Long actId;
@@ -26,7 +28,8 @@ public class ParticipateAttendIntroItem extends LitePalSupport {
     // 签到状态 活动状态 1: "未开始" 2: "进行中" 3: "已结束"
     private Integer status;
 
-    public ParticipateAttendIntroItem(Long id, Long actId, String name, String time, Integer type, Integer uStatus, Integer status) {
+    public ParticipateAttendIntroItem(Long ownerId, Long id, Long actId, String name, String time, Integer type, Integer uStatus, Integer status) {
+        this.ownerId = ownerId;
         this.id = id;
         this.actId = actId;
         this.name = name;
@@ -34,6 +37,14 @@ public class ParticipateAttendIntroItem extends LitePalSupport {
         this.type = type;
         this.uStatus = uStatus;
         this.status = status;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public Long getId() {
@@ -90,5 +101,19 @@ public class ParticipateAttendIntroItem extends LitePalSupport {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "ParticipateAttendIntroItem{" +
+                "ownerId=" + ownerId +
+                ", id=" + id +
+                ", actId=" + actId +
+                ", name='" + name + '\'' +
+                ", time='" + time + '\'' +
+                ", type=" + type +
+                ", uStatus=" + uStatus +
+                ", status=" + status +
+                '}';
     }
 }

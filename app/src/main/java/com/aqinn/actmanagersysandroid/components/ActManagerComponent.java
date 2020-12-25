@@ -10,7 +10,7 @@ import dagger.Component;
  * @date 2020/12/18 5:34 PM
  */
 @ManagerScope
-@Component(dependencies = DataSourceComponent.class)
+@Component(dependencies = {DataSourceComponent.class, RetrofitServiceComponent.class})
 public interface ActManagerComponent {
 
     void inject(ShowManager showManager);

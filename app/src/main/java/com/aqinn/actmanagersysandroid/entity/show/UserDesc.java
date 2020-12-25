@@ -9,6 +9,8 @@ import org.litepal.crud.LitePalSupport;
  */
 public class UserDesc extends LitePalSupport {
 
+    private Long id;
+
     private String account;
 
     private String name;
@@ -19,12 +21,21 @@ public class UserDesc extends LitePalSupport {
 
     private String desc;
 
-    public UserDesc(String account, String name, Integer sex, String contact, String desc) {
+    public UserDesc(Long id, String account, String name, Integer sex, String contact, String desc) {
+        this.id = id;
         this.account = account;
         this.name = name;
         this.sex = sex;
         this.contact = contact;
         this.desc = desc;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getAccount() {
@@ -65,5 +76,17 @@ public class UserDesc extends LitePalSupport {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDesc{" +
+                "id=" + id +
+                ", account='" + account + '\'' +
+                ", name='" + name + '\'' +
+                ", sex=" + sex +
+                ", contact='" + contact + '\'' +
+                ", desc='" + desc + '\'' +
+                '}';
     }
 }

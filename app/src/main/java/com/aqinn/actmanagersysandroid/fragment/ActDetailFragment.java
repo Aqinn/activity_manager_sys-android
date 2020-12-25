@@ -12,6 +12,11 @@ import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.ActIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
+import com.aqinn.actmanagersysandroid.service.ActService;
+import com.aqinn.actmanagersysandroid.service.AttendService;
+import com.aqinn.actmanagersysandroid.service.UserActService;
+import com.aqinn.actmanagersysandroid.service.UserAttendService;
+import com.aqinn.actmanagersysandroid.service.UserService;
 import com.qmuiteam.qmui.alpha.QMUIAlphaImageButton;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
@@ -44,6 +49,16 @@ public class ActDetailFragment extends BaseFragment {
     EditText etIntro;
 
     @Inject
+    public UserService userService;
+    @Inject
+    public ActService actService;
+    @Inject
+    public UserActService userActService;
+    @Inject
+    public AttendService attendService;
+    @Inject
+    public UserAttendService userAttendService;
+    @Inject
     public ShowManager showManager;
     private Integer mFlag = -1;
     private boolean editEnable = false;
@@ -70,9 +85,8 @@ public class ActDetailFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_act_detail, null);
-        DaggerFragmentComponent.builder().dataSourceComponent(
-                MyApplication.getDataSourceComponent()
-        ).build().inject(this);
+        DaggerFragmentComponent.builder().dataSourceComponent(MyApplication.getDataSourceComponent())
+                .retrofitServiceComponent(MyApplication.getRetrofitServiceComponent()).build().inject(this);
         ButterKnife.bind(this, rootView);
         initTopBar();
         initData();
@@ -126,7 +140,7 @@ public class ActDetailFragment extends BaseFragment {
         qaib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActIntroItem newAii = new ActIntroItem(mAii.getId(), mAii.getCreator(),
+                ActIntroItem newAii = new ActIntroItem(mAii.getOwnerId(), mAii.getId(), mAii.getCreator(),
                         etName.getText().toString(), etTime.getText().toString(),
                         etLoc.getText().toString(), etIntro.getText().toString(),
                         mAii.getStatus());

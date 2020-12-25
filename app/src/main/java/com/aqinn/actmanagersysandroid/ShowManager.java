@@ -10,6 +10,11 @@ import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.UserDescDataSource;
+import com.aqinn.actmanagersysandroid.service.ActService;
+import com.aqinn.actmanagersysandroid.service.AttendService;
+import com.aqinn.actmanagersysandroid.service.UserActService;
+import com.aqinn.actmanagersysandroid.service.UserAttendService;
+import com.aqinn.actmanagersysandroid.service.UserService;
 import com.aqinn.actmanagersysandroid.utils.CommonUtil;
 
 import java.util.List;
@@ -43,7 +48,9 @@ public class ShowManager {
     public DataSource users;
 
     public ShowManager() {
-        DaggerActManagerComponent.builder().dataSourceComponent(MyApplication.getDataSourceComponent()).build().inject(this);
+        DaggerActManagerComponent.builder().dataSourceComponent(MyApplication.getDataSourceComponent())
+                .retrofitServiceComponent(MyApplication.getRetrofitServiceComponent())
+                .build().inject(this);
     }
 
     /**

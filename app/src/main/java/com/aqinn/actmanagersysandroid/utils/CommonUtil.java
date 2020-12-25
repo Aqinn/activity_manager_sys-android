@@ -25,6 +25,8 @@ public class CommonUtil {
     private static final int CAMERA_ID_BACK = 99;
     private static final int CAMERA_ID_FRONT = 98;
     private static Long randomLong = 100L;
+    private static final String NOW_USER_KEY = "AMSysNowUserKey";
+    public static final Long ERR_USER_ID = -1L;
 
     static {
         sdf_long = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -68,6 +70,18 @@ public class CommonUtil {
 
     public static Long getRandomLong() {
         return ++randomLong;
+    }
+
+    public static void setNowUserIdToSP(Context context, Long tag) {
+        SharedPreferences preferences = context.getSharedPreferences("ActManaSysAndroidCache", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putLong(NOW_USER_KEY, tag);
+        edit.commit();
+    }
+
+    public static Long getNowUserIdFromSP(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences("ActManaSysAndroidCache", Context.MODE_PRIVATE);
+        return preferences.getLong(NOW_USER_KEY, ERR_USER_ID);
     }
 
     public static void setCameraIdToSP(Context context, int tag) {
