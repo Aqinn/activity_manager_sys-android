@@ -137,7 +137,7 @@
             android:drawableLeft="@mipmap/icon_face"
             android:drawableRight="@mipmap/icon_goto"
             android:drawablePadding="5dp"
-            android:gravity="center |left"
+            android:gravity="center_vertical"
             android:paddingStart="@dimen/personal_setting_bt_padding_left"
             android:text="人脸采集"
             android:textSize="@dimen/personal_setting_bt_text_size"
@@ -153,12 +153,28 @@
             android:drawableLeft="@mipmap/icon_setting"
             android:drawableRight="@mipmap/icon_goto"
             android:drawablePadding="5dp"
-            android:gravity="center |left"
+            android:gravity="center_vertical"
             android:paddingStart="@dimen/personal_setting_bt_padding_left"
             android:text="设置"
             android:textSize="@dimen/personal_setting_bt_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bt_gather_face" />
+
+        <Button
+            android:id="@+id/bt_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/personal_setting_bt_interval"
+            android:background="@drawable/bg_radius"
+            android:drawableLeft="@mipmap/icon_logout"
+            android:drawableRight="@mipmap/icon_goto"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/personal_setting_bt_padding_left"
+            android:text="退出登录"
+            android:textSize="@dimen/personal_setting_bt_text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bt_settings" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

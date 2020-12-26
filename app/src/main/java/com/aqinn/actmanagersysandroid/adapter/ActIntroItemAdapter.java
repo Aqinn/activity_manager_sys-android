@@ -30,6 +30,7 @@ public class ActIntroItemAdapter extends BaseAdapter implements Observer {
 
     private DataSource<ActIntroItem> mDataSource;
     private Context mContext;
+    private List<ActIntroItem> mActIntroItemList;
 
     public ActIntroItemAdapter(Context mContext) {
         this.mContext = mContext;
@@ -40,16 +41,18 @@ public class ActIntroItemAdapter extends BaseAdapter implements Observer {
             this.mDataSource.disposed(this);
         this.mDataSource = dataSource;
         this.mDataSource.attach(this);
+        this.mActIntroItemList = this.mDataSource.getDatas();
     }
 
     public ActIntroItemAdapter(Context mContext, DataSource<ActIntroItem> dataSource) {
         this.mContext = mContext;
         this.mDataSource = dataSource;
         this.mDataSource.attach(this);
+        this.mActIntroItemList = this.mDataSource.getDatas();
     }
 
     private List<ActIntroItem> getActIntroItemList() {
-        return this.mDataSource.getDatas();
+        return this.mActIntroItemList;
     }
 
     @Override
@@ -111,6 +114,7 @@ public class ActIntroItemAdapter extends BaseAdapter implements Observer {
 
     @Override
     public void update() {
+        this.mActIntroItemList = this.mDataSource.getDatas();
         notifyDataSetChanged();
     }
 

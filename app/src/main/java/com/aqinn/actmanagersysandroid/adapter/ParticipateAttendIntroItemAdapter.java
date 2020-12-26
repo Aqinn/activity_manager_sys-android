@@ -30,6 +30,7 @@ public class ParticipateAttendIntroItemAdapter extends BaseAdapter implements Ob
 
     private DataSource<ParticipateAttendIntroItem> mDataSource;
     private Context mContext;
+    private List<ParticipateAttendIntroItem> mParticipateAttendIntroItemList;
 
     public ParticipateAttendIntroItemAdapter(Context mContext) {
         this.mContext = mContext;
@@ -40,16 +41,18 @@ public class ParticipateAttendIntroItemAdapter extends BaseAdapter implements Ob
             this.mDataSource.disposed(this);
         this.mDataSource = dataSource;
         this.mDataSource.attach(this);
+        this.mParticipateAttendIntroItemList = this.mDataSource.getDatas();
     }
 
     public ParticipateAttendIntroItemAdapter(Context mContext, DataSource<ParticipateAttendIntroItem> dataSource) {
         this.mContext = mContext;
         this.mDataSource = dataSource;
         this.mDataSource.attach(this);
+        this.mParticipateAttendIntroItemList = this.mDataSource.getDatas();
     }
 
     private List<ParticipateAttendIntroItem> getParticipateAttendIntroItemList() {
-        return this.mDataSource.getDatas();
+        return this.mParticipateAttendIntroItemList;
     }
 
     @Override
@@ -129,6 +132,7 @@ public class ParticipateAttendIntroItemAdapter extends BaseAdapter implements Ob
 
     @Override
     public void update() {
+        this.mParticipateAttendIntroItemList = this.mDataSource.getDatas();
         notifyDataSetChanged();
     }
 

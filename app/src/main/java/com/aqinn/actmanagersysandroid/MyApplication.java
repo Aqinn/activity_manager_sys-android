@@ -131,107 +131,72 @@ public class MyApplication extends Application {
         dataSourceComponent = DaggerDataSourceComponent.create();
         retrofitServiceComponent = DaggerRetrofitServiceComponent.create();
         DaggerApplicationComponent.builder().dataSourceComponent(dataSourceComponent).retrofitServiceComponent(retrofitServiceComponent).build().inject(this);
-        Disposable disposable = Observable.create(new ObservableOnSubscribe<String>() {
-            @Override
-            public void subscribe(@NonNull ObservableEmitter<String> emitter) throws Exception {
-                emitter.onNext("加载用户数据");
-                emitter.onNext("加载活动数据");
-                emitter.onNext("加载我创建的签到数据");
-                emitter.onNext("加载我参与的签到数据");
-                emitter.onComplete();
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String s) throws Exception {
-                        switch (s) {
-                            case "加载用户数据":
-                                Observable<ApiResult<UserDesc>> observableUserDesc = showItemService.getUserDesc(23L);
-                                observableUserDesc.subscribeOn(Schedulers.io())
-                                        .observeOn(Schedulers.io())
-                                        .subscribe(new Consumer<ApiResult<UserDesc>>() {
-                                            @Override
-                                            public void accept(ApiResult<UserDesc> userDescApiResult) throws Exception {
-                                                ((Refreshable) dsUsers).refresh(userDescApiResult.data);
-                                                CommonUtil.setNowUserIdToSP(getContext(), userDescApiResult.data.getId());
-                                                nowUserId = CommonUtil.getNowUserIdFromSP(getContext());
-                                                nowUserAccount = userDescApiResult.data.getAccount();
-                                            }
-                                        }, new Consumer<Throwable>() {
-                                            @Override
-                                            public void accept(Throwable throwable) throws Exception {
-                                                Log.d(TAG, "MyApplication.onCreate() 加载用户数据出错: " + throwable.getMessage());
-                                            }
-                                        });
-                                break;
-                            case "加载活动数据":
-                                Observable<ApiResult<List<ActIntroItem>>> observableActIntroItem
-                                        = showItemService.getActIntroItem(23L);
-                                observableActIntroItem.subscribeOn(Schedulers.io())
-                                        .observeOn(Schedulers.io())
-                                        .subscribe(new Consumer<ApiResult<List<ActIntroItem>>>() {
-                                            @Override
-                                            public void accept(ApiResult<List<ActIntroItem>> listApiResult) throws Exception {
-                                                ((Refreshable) dsActC).refresh(listApiResult.data);
-                                                ((Refreshable) dsActP).refresh(listApiResult.data);
-                                            }
-                                        }, new Consumer<Throwable>() {
-                                            @Override
-                                            public void accept(Throwable throwable) throws Exception {
-                                                Log.d(TAG, "MyApplication.onCreate() 加载活动数据出错: " + throwable.getMessage());
-                                            }
-                                        });
-                                break;
-                            case "加载我创建的签到数据":
-                                Observable<ApiResult<List<CreateAttendIntroItem>>> observableCreateAttendIntroItem
-                                        = showItemService.getCreateAttendIntroItem(23L);
-                                observableCreateAttendIntroItem.subscribeOn(Schedulers.io())
-                                        .observeOn(Schedulers.io())
-                                        .subscribe(new Consumer<ApiResult<List<CreateAttendIntroItem>>>() {
-                                            @Override
-                                            public void accept(ApiResult<List<CreateAttendIntroItem>> listApiResult) throws Exception {
-                                                ((Refreshable) dsAttC).refresh(listApiResult.data);
-                                            }
-                                        }, new Consumer<Throwable>() {
-                                            @Override
-                                            public void accept(Throwable throwable) throws Exception {
-                                                Log.d(TAG, "MyApplication.onCreate() 加载我创建的签到数据出错: " + throwable.getMessage());
-                                            }
-                                        });
-                                break;
-                            case "加载我参与的签到数据":
-                                Observable<ApiResult<List<ParticipateAttendIntroItem>>> observableParticipateAttendIntroItem
-                                        = showItemService.getParticipateAttendIntroItem(23L);
-                                observableParticipateAttendIntroItem.subscribeOn(Schedulers.io())
-                                        .observeOn(Schedulers.io())
-                                        .subscribe(new Consumer<ApiResult<List<ParticipateAttendIntroItem>>>() {
-                                            @Override
-                                            public void accept(ApiResult<List<ParticipateAttendIntroItem>> listApiResult) throws Exception {
-                                                ((Refreshable) dsAttP).refresh(listApiResult.data);
-                                            }
-                                        }, new Consumer<Throwable>() {
-                                            @Override
-                                            public void accept(Throwable throwable) throws Exception {
-                                                Log.d(TAG, "MyApplication.onCreate() 加载我参与的签到数据出错: " + throwable.getMessage());
-                                            }
-                                        });
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Log.d(TAG, "onError: " + throwable.getMessage());
-                    }
-                }, new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        Log.d(TAG, "onComplete: 后台刷新数据完成");
-                    }
-                });
+//        // 初始化数据
+//        Disposable disposable = Observable.create((ObservableOnSubscribe<String>) emitter -> {
+//            emitter.onNext("加载用户数据");
+//            emitter.onNext("加载活动数据");
+//            emitter.onNext("加载我创建的签到数据");
+//            emitter.onNext("加载我参与的签到数据");
+//            emitter.onComplete();
+//        }).subscribeOn(Schedulers.io())
+//                .observeOn(Schedulers.io())
+//                .subscribe(s -> {
+//                    switch (s) {
+//                        case "加载用户数据":
+//                            Observable<ApiResult<UserDesc>> observableUserDesc = showItemService.getUserDesc(23L);
+//                            observableUserDesc.subscribeOn(Schedulers.io())
+//                                    .observeOn(Schedulers.io())
+//                                    .subscribe(userDescApiResult -> {
+//                                        ((Refreshable) dsUsers).refresh(userDescApiResult.data);
+//                                        CommonUtil.setNowUserIdToSP(getContext(), userDescApiResult.data.getId());
+//                                        nowUserId = CommonUtil.getNowUserIdFromSP(getContext());
+//                                        nowUserAccount = userDescApiResult.data.getAccount();
+//                                    }, throwable -> {
+//                                        Log.d(TAG, "MyApplication.onCreate() 加载用户数据出错: " + throwable.getMessage());
+//                                    });
+//                            break;
+//                        case "加载活动数据":
+//                            Observable<ApiResult<List<ActIntroItem>>> observableActIntroItem
+//                                    = showItemService.getActIntroItem(23L);
+//                            observableActIntroItem.subscribeOn(Schedulers.io())
+//                                    .observeOn(Schedulers.io())
+//                                    .subscribe(listApiResult -> {
+//                                        ((Refreshable) dsActC).refresh(listApiResult.data);
+//                                        ((Refreshable) dsActP).refresh(listApiResult.data);
+//                                    }, throwable -> {
+//                                        Log.d(TAG, "MyApplication.onCreate() 加载活动数据出错: " + throwable.getMessage());
+//                                    });
+//                            break;
+//                        case "加载我创建的签到数据":
+//                            Observable<ApiResult<List<CreateAttendIntroItem>>> observableCreateAttendIntroItem
+//                                    = showItemService.getCreateAttendIntroItem(23L);
+//                            observableCreateAttendIntroItem.subscribeOn(Schedulers.io())
+//                                    .observeOn(Schedulers.io())
+//                                    .subscribe(listApiResult -> {
+//                                        ((Refreshable) dsAttC).refresh(listApiResult.data);
+//                                    }, throwable -> {
+//                                        Log.d(TAG, "MyApplication.onCreate() 加载我创建的签到数据出错: " + throwable.getMessage());
+//                                    });
+//                            break;
+//                        case "加载我参与的签到数据":
+//                            Observable<ApiResult<List<ParticipateAttendIntroItem>>> observableParticipateAttendIntroItem
+//                                    = showItemService.getParticipateAttendIntroItem(23L);
+//                            observableParticipateAttendIntroItem.subscribeOn(Schedulers.io())
+//                                    .observeOn(Schedulers.io())
+//                                    .subscribe(listApiResult -> {
+//                                        ((Refreshable) dsAttP).refresh(listApiResult.data);
+//                                    }, throwable -> {
+//                                        Log.d(TAG, "MyApplication.onCreate() 加载我参与的签到数据出错: " + throwable.getMessage());
+//                                    });
+//                            break;
+//                        default:
+//                            break;
+//                    }
+//                }, throwable -> {
+//                    Log.d(TAG, "onError: " + throwable.getMessage());
+//                }, () -> {
+//                    Log.d(TAG, "onComplete: 后台刷新数据完成");
+//                });
     }
 
     public static DataSourceComponent getDataSourceComponent() {

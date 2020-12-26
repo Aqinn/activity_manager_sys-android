@@ -6,8 +6,6 @@ package com.aqinn.actmanagersysandroid.data;
  */
 public interface Observer {
 
-
-
     void update();
 
 }

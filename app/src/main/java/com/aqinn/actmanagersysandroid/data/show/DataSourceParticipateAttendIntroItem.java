@@ -1,5 +1,6 @@
 package com.aqinn.actmanagersysandroid.data.show;
 
+import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.ShowManager;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.data.Observer;
@@ -7,6 +8,7 @@ import com.aqinn.actmanagersysandroid.data.Refreshable;
 import com.aqinn.actmanagersysandroid.entity.Act;
 import com.aqinn.actmanagersysandroid.entity.Attend;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
+import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
 import com.aqinn.actmanagersysandroid.entity.show.ParticipateAttendIntroItem;
 
 import org.litepal.LitePal;
@@ -29,13 +31,15 @@ public class DataSourceParticipateAttendIntroItem extends DataSource<Participate
 
     private void initData() {
         // 我创建的签到
-        List<ParticipateAttendIntroItem> participateAttendIntroItemList = LitePal.findAll(ParticipateAttendIntroItem.class);
+        List<ParticipateAttendIntroItem> participateAttendIntroItemList = LitePal.where("ownerId = ?", String.valueOf(MyApplication.nowUserId)).find(ParticipateAttendIntroItem.class);
         datas.addAll(participateAttendIntroItemList);
     }
 
     @Override
     public void refresh(Object o) {
         List<ParticipateAttendIntroItem> participateAttendIntroItemList = (List<ParticipateAttendIntroItem>) o;
+        LitePal.deleteAll(ParticipateAttendIntroItem.class, "ownerId = ?", String.valueOf(participateAttendIntroItemList.get(0).getOwnerId()));
+        LitePal.saveAll(participateAttendIntroItemList);
         datas.clear();
         datas.addAll(participateAttendIntroItemList);
         notifyAllObserver();

@@ -3,6 +3,9 @@ package com.aqinn.actmanagersysandroid.adapter;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,23 +13,42 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
+import com.aqinn.actmanagersysandroid.activity.LoginActivity;
+import com.aqinn.actmanagersysandroid.data.DataSource;
+import com.aqinn.actmanagersysandroid.data.Observer;
 import com.aqinn.actmanagersysandroid.entity.show.UserDesc;
+import com.aqinn.actmanagersysandroid.utils.CommonUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * @author Aqinn
  * @date 2020/12/12 9:06 PM
  */
-public class UserDescRecyclerViewAdapter extends RecyclerView.Adapter<UserDescRecyclerViewAdapter.ViewHolder> {
+public class UserDescRecyclerViewAdapter extends RecyclerView.Adapter<UserDescRecyclerViewAdapter.ViewHolder> implements Observer {
 
+    private static final String TAG = "UserDescRecyclerViewAda";
+
+    private Context mContext;
+    private DataSource<UserDesc> mDataSource;
     private UserDesc mUserDesc;
     private AdapterView.OnItemClickListener mOnItemClickListener;
 
-    public UserDescRecyclerViewAdapter(UserDesc userDesc) {
-        mUserDesc = userDesc;
+    public UserDescRecyclerViewAdapter(Context context, DataSource<UserDesc> dataSource) {
+        mContext = context;
+        mDataSource = dataSource;
+        mDataSource.attach(this);
+        mUserDesc = initUserDesc();
+    }
+
+    private UserDesc initUserDesc() {
+        if (mDataSource.getDatas().isEmpty())
+            return new UserDesc(-1L, "没有登录", "没有登录", 1, "没有登录", "没有登录");
+        return ((UserDesc) mDataSource.getDatas().get(0));
     }
 
     @Override
@@ -62,7 +84,13 @@ public class UserDescRecyclerViewAdapter extends RecyclerView.Adapter<UserDescRe
         }
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    @Override
+    public void update() {
+        this.mUserDesc = initUserDesc();
+        notifyDataSetChanged();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.cl_top)
         ConstraintLayout cl_top;
@@ -92,6 +120,9 @@ public class UserDescRecyclerViewAdapter extends RecyclerView.Adapter<UserDescRe
         Button bt_gather_face;
         @BindView(R.id.bt_settings)
         Button bt_settings;
+        @BindView(R.id.bt_logout)
+        Button bt_logout;
+
 
         private UserDescRecyclerViewAdapter mAdapter;
 
@@ -126,5 +157,23 @@ public class UserDescRecyclerViewAdapter extends RecyclerView.Adapter<UserDescRe
         public void onClick(View v) {
             mAdapter.onItemHolderClick(this);
         }
+
+        @OnClick(R.id.bt_gather_face)
+        public void gatherFace() {
+            Log.d(TAG, "gatherFace: 点击了人脸采集按钮");
+        }
+
+        @OnClick(R.id.bt_settings)
+        public void showSetting() {
+            Log.d(TAG, "showSetting: 点击了设置按钮");
+        }
+
+        @OnClick(R.id.bt_logout)
+        public void logout() {
+            Log.d(TAG, "logout: 点击了退出登录按钮");
+            CommonUtil.setNowUserIdToSP(mContext, -1L);
+            mContext.startActivity(new Intent(mContext, LoginActivity.class));
+        }
+
     }
 }

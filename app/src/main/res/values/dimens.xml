@@ -26,4 +26,13 @@
     <dimen name="attend_detail_margin">15dp</dimen>
     <dimen name="attend_detail_margin_inter">0dp</dimen>
     <dimen name="attend_detail_name_text_size">28dp</dimen>
+    <dimen name="tobbar_height">93dp</dimen>
+    <dimen name="register_input_left_margin">10dp</dimen>
+
+
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="fragment_horizontal_margin">16dp</dimen>
+    <dimen name="fragment_vertical_margin">16dp</dimen>
+    <dimen name="register_common_content_spacing">0dp</dimen>
 </resources>

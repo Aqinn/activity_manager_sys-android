@@ -31,6 +31,7 @@ public class CreateAttendIntroItemAdapter extends BaseAdapter implements Observe
 
     private DataSource<CreateAttendIntroItem> mDataSource;
     private Context mContext;
+    private List<CreateAttendIntroItem> mCreateAttendIntroItemList;
 
     public CreateAttendIntroItemAdapter(Context mContext) {
         this.mContext = mContext;
@@ -41,16 +42,18 @@ public class CreateAttendIntroItemAdapter extends BaseAdapter implements Observe
             this.mDataSource.disposed(this);
         this.mDataSource = dataSource;
         this.mDataSource.attach(this);
+        this.mCreateAttendIntroItemList = this.mDataSource.getDatas();
     }
 
     public CreateAttendIntroItemAdapter(Context mContext, DataSource<CreateAttendIntroItem> dataSource) {
         this.mContext = mContext;
         this.mDataSource = dataSource;
         this.mDataSource.attach(this);
+        this.mCreateAttendIntroItemList = this.mDataSource.getDatas();
     }
 
     private List<CreateAttendIntroItem> getCreateAttendIntroItemList() {
-        return this.mDataSource.getDatas();
+        return this.mCreateAttendIntroItemList;
     }
 
     @Override
@@ -120,6 +123,7 @@ public class CreateAttendIntroItemAdapter extends BaseAdapter implements Observe
 
     @Override
     public void update() {
+        this.mCreateAttendIntroItemList = this.mDataSource.getDatas();
         notifyDataSetChanged();
     }
 

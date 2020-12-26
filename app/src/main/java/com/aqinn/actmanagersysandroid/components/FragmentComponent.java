@@ -1,5 +1,7 @@
 package com.aqinn.actmanagersysandroid.components;
 
+import com.aqinn.actmanagersysandroid.fragment.LoginFragment;
+import com.aqinn.actmanagersysandroid.fragment.RegisterFragment;
 import com.aqinn.actmanagersysandroid.scopes.FragmentScope;
 import com.aqinn.actmanagersysandroid.fragment.ActCenterFragment;
 import com.aqinn.actmanagersysandroid.fragment.ActDetailFragment;
@@ -26,5 +28,9 @@ public interface FragmentComponent {
     void inject(AttendCenterFragment attendCenterFragment);
 
     void inject(PersonalCenterFragment personalCenterFragment);
+
+    void inject(LoginFragment loginFragment);
+
+    void inject(RegisterFragment registerFragment);
 
 }

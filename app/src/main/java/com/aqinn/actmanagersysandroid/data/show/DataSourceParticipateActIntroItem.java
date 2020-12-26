@@ -1,5 +1,7 @@
 package com.aqinn.actmanagersysandroid.data.show;
 
+import android.util.Log;
+
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.data.Refreshable;
@@ -17,6 +19,8 @@ import java.util.List;
  */
 public class DataSourceParticipateActIntroItem extends DataSource<ActIntroItem> implements Refreshable {
 
+    private static final String TAG = "DataSourceParticipateAc";
+
     public DataSourceParticipateActIntroItem() {
         // 我参与的活动
         observers = new ArrayList<>();
@@ -25,8 +29,12 @@ public class DataSourceParticipateActIntroItem extends DataSource<ActIntroItem> 
     }
 
     private void initData() {
-        List<ActIntroItem> actIntroItemList = LitePal.findAll(ActIntroItem.class);
-        datas.addAll(actIntroItemList);
+        List<ActIntroItem> actIntroItemList = LitePal.where("ownerId = ?", String.valueOf(MyApplication.nowUserId)).find(ActIntroItem.class);
+        for (ActIntroItem aii:actIntroItemList) {
+            if (!MyApplication.nowUserAccount.equals(aii.getCreator())) {
+                datas.add(aii);
+            }
+        }
     }
 
     @Override
@@ -34,9 +42,13 @@ public class DataSourceParticipateActIntroItem extends DataSource<ActIntroItem> 
         List<ActIntroItem> actIntroItemList = (List<ActIntroItem>) o;
         List<ActIntroItem> temp = new ArrayList<>();
         for (ActIntroItem aii:actIntroItemList) {
-            if (!MyApplication.nowUserAccount.equals(aii.getCreator()))
+            if (!MyApplication.nowUserAccount.equals(aii.getCreator())) {
                 temp.add(aii);
+            }
         }
+        Log.d(TAG, "refresh: temp.size()" + temp.size());
+        LitePal.saveAll(temp);
+        Log.d(TAG, "refresh: saveAll() done.");
         datas.clear();
         datas.addAll(temp);
         notifyAllObserver();

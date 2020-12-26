@@ -26,6 +26,9 @@ public class CommonUtil {
     private static final int CAMERA_ID_FRONT = 98;
     private static Long randomLong = 100L;
     private static final String NOW_USER_KEY = "AMSysNowUserKey";
+    private static final String NOW_USER_USERNAME = "AMSysNowUsername";
+    private static final String REMEMBER_USERNAME = "RememberUsername";
+    private static final String REMEMBER_PWD = "RememberPwd";
     public static final Long ERR_USER_ID = -1L;
 
     static {
@@ -82,6 +85,42 @@ public class CommonUtil {
     public static Long getNowUserIdFromSP(Context context) {
         SharedPreferences preferences = context.getSharedPreferences("ActManaSysAndroidCache", Context.MODE_PRIVATE);
         return preferences.getLong(NOW_USER_KEY, ERR_USER_ID);
+    }
+
+    public static void setNowUsernameToSP(Context context, String tag) {
+        SharedPreferences preferences = context.getSharedPreferences("ActManaSysAndroidCache", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putString(NOW_USER_USERNAME, tag);
+        edit.commit();
+    }
+
+    public static String getNowUsernameFromSP(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences("ActManaSysAndroidCache", Context.MODE_PRIVATE);
+        return preferences.getString(NOW_USER_USERNAME, null);
+    }
+
+    public static void setUsernameToSP(Context context, String tag) {
+        SharedPreferences preferences = context.getSharedPreferences("ActManaSysAndroidCache", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putString(REMEMBER_USERNAME, tag);
+        edit.commit();
+    }
+
+    public static String getUsernameFromSP(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences("ActManaSysAndroidCache", Context.MODE_PRIVATE);
+        return preferences.getString(REMEMBER_USERNAME, null);
+    }
+
+    public static void setPwdToSP(Context context, String tag) {
+        SharedPreferences preferences = context.getSharedPreferences("ActManaSysAndroidCache", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putString(REMEMBER_PWD, tag);
+        edit.commit();
+    }
+
+    public static String getPwdFromSP(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences("ActManaSysAndroidCache", Context.MODE_PRIVATE);
+        return preferences.getString(REMEMBER_PWD, null);
     }
 
     public static void setCameraIdToSP(Context context, int tag) {

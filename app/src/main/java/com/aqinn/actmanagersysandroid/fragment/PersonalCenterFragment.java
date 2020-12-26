@@ -2,6 +2,7 @@ package com.aqinn.actmanagersysandroid.fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,31 +72,10 @@ public class PersonalCenterFragment extends BaseFragment {
         initTopBar();
         mPagerLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mPagerLayoutManager);
-        UserDesc userDesc = null;
-        userDesc = initUserDesc();
-        userDescRecyclerViewAdapter = new UserDescRecyclerViewAdapter(userDesc);
+        userDescRecyclerViewAdapter = new UserDescRecyclerViewAdapter(getContext(), dsu);
         mRecyclerView.setAdapter(userDescRecyclerViewAdapter);
-//        mCollapsingTopBarLayout.setScrimUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            @Override
-//            public void onAnimationUpdate(ValueAnimator animation) {
-//                Log.i(TAG, "scrim: " + animation.getAnimatedValue());
-//            }
-//        });
-//
-//        mCollapsingTopBarLayout.addOnOffsetUpdateListener(new QMUICollapsingTopBarLayout.OnOffsetUpdateListener() {
-//            @Override
-//            public void onOffsetChanged(QMUICollapsingTopBarLayout layout, int offset, float expandFraction) {
-//                Log.i(TAG, "offset = " + offset + "; expandFraction = " + expandFraction);
-//            }
-//        });
 
         return rootView;
-    }
-
-    private UserDesc initUserDesc() {
-        if (dsu.getDatas().isEmpty())
-            return new UserDesc(-1L, "没有登录", "没有登录", 1, "没有登录", "没有登录");
-        return ((UserDesc) dsu.getDatas().get(0));
     }
 
     @Override
@@ -104,7 +84,7 @@ public class PersonalCenterFragment extends BaseFragment {
     }
 
     private void initTopBar() {
-        mCollapsingTopBarLayout.setTitle("个人中心");
+        mCollapsingTopBarLayout.setTitle("个人中心 " + MyApplication.nowUserId);
         mTopBar.addRightImageButton(R.mipmap.icon_topbar_overflow, R.id.topbar_right_change_button)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
