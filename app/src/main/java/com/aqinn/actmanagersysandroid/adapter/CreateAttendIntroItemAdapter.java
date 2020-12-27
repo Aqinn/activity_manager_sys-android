@@ -31,7 +31,6 @@ public class CreateAttendIntroItemAdapter extends BaseAdapter implements Observe
 
     private DataSource<CreateAttendIntroItem> mDataSource;
     private Context mContext;
-    private List<CreateAttendIntroItem> mCreateAttendIntroItemList;
 
     public CreateAttendIntroItemAdapter(Context mContext) {
         this.mContext = mContext;
@@ -42,18 +41,16 @@ public class CreateAttendIntroItemAdapter extends BaseAdapter implements Observe
             this.mDataSource.disposed(this);
         this.mDataSource = dataSource;
         this.mDataSource.attach(this);
-        this.mCreateAttendIntroItemList = this.mDataSource.getDatas();
     }
 
     public CreateAttendIntroItemAdapter(Context mContext, DataSource<CreateAttendIntroItem> dataSource) {
         this.mContext = mContext;
         this.mDataSource = dataSource;
         this.mDataSource.attach(this);
-        this.mCreateAttendIntroItemList = this.mDataSource.getDatas();
     }
 
     private List<CreateAttendIntroItem> getCreateAttendIntroItemList() {
-        return this.mCreateAttendIntroItemList;
+        return this.mDataSource.getDatas();
     }
 
     @Override
@@ -99,15 +96,15 @@ public class CreateAttendIntroItemAdapter extends BaseAdapter implements Observe
         String statusText = "";
         int statusTextColor = R.color.thing_default;
         int statusBgColor = R.color.thing_default_bg;
-        if (2 == item.getStatus()) {
-            statusText = mContext.getResources().getString(R.string.thing_status_ing);
-            statusTextColor = R.color.thing_ing;
-            statusBgColor = R.drawable.background_thing_ing;
-        }
         if (1 == item.getStatus()) {
             statusText = mContext.getResources().getString(R.string.thing_status_not_begin);
             statusTextColor = R.color.thing_not_begin;
             statusBgColor = R.drawable.background_thing_not_begin;
+        }
+        if (2 == item.getStatus()) {
+            statusText = mContext.getResources().getString(R.string.thing_status_ing);
+            statusTextColor = R.color.thing_ing;
+            statusBgColor = R.drawable.background_thing_ing;
         }
         if (3 == item.getStatus()) {
             statusText = mContext.getResources().getString(R.string.thing_status_finish);
@@ -123,7 +120,6 @@ public class CreateAttendIntroItemAdapter extends BaseAdapter implements Observe
 
     @Override
     public void update() {
-        this.mCreateAttendIntroItemList = this.mDataSource.getDatas();
         notifyDataSetChanged();
     }
 

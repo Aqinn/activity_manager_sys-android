@@ -93,7 +93,7 @@ public class MyServiceManager implements ServiceManager {
 
     public MyServiceManager() {
         MyApplication.getServiceManagerInjectComponent().inject(this);
-        Log.d(TAG, "MyServiceManager: ShowManager => " + showManager);
+        Log.d("singleTest", "MyServiceManager: dsAttC => " + dsAttC);
         this.mContext = MyApplication.getContext();
     }
 

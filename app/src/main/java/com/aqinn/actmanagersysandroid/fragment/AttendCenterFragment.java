@@ -121,6 +121,7 @@ public class AttendCenterFragment extends BaseFragment {
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_attend_center, null);
         MyApplication.getFragmentComponent().inject(this);
+        Log.d("singleTest", "onCreateView: dsc" + dsc);
         ButterKnife.bind(this, rootView);
 
         initTopBar();

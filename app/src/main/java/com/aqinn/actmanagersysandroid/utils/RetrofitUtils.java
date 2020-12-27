@@ -20,7 +20,8 @@ public class RetrofitUtils {
 
     private static final String TAG = "RetrofitUtils";
 
-    private static final String BASE_URL = "http://10.16.97.117:8080/";
+//    private static final String BASE_URL = "http://10.16.97.117:8080/";
+    private static final String BASE_URL = "http://192.168.43.78:8080/";
     private static OkHttpClient.Builder builder = new OkHttpClient.Builder();
     private static Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
