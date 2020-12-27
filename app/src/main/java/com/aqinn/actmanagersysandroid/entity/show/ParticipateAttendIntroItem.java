@@ -10,9 +10,11 @@ import org.litepal.crud.LitePalSupport;
  */
 public class ParticipateAttendIntroItem extends LitePalSupport {
 
+    private Long id;
+
     private Long ownerId;
 
-    private Long id;
+    private Long attendId;
 
     private Long actId;
 
@@ -28,15 +30,24 @@ public class ParticipateAttendIntroItem extends LitePalSupport {
     // 签到状态 活动状态 1: "未开始" 2: "进行中" 3: "已结束"
     private Integer status;
 
-    public ParticipateAttendIntroItem(Long ownerId, Long id, Long actId, String name, String time, Integer type, Integer uStatus, Integer status) {
-        this.ownerId = ownerId;
+    public ParticipateAttendIntroItem(Long id, Long ownerId, Long attendId, Long actId, String name, String time, Integer type, Integer uStatus, Integer status) {
         this.id = id;
+        this.ownerId = ownerId;
+        this.attendId = attendId;
         this.actId = actId;
         this.name = name;
         this.time = time;
         this.type = type;
         this.uStatus = uStatus;
         this.status = status;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getOwnerId() {
@@ -47,12 +58,12 @@ public class ParticipateAttendIntroItem extends LitePalSupport {
         this.ownerId = ownerId;
     }
 
-    public Long getId() {
-        return id;
+    public Long getAttendId() {
+        return attendId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setAttendId(Long attendId) {
+        this.attendId = attendId;
     }
 
     public Long getActId() {
@@ -106,8 +117,9 @@ public class ParticipateAttendIntroItem extends LitePalSupport {
     @Override
     public String toString() {
         return "ParticipateAttendIntroItem{" +
-                "ownerId=" + ownerId +
-                ", id=" + id +
+                "id=" + id +
+                ", ownerId=" + ownerId +
+                ", attendId=" + attendId +
                 ", actId=" + actId +
                 ", name='" + name + '\'' +
                 ", time='" + time + '\'' +

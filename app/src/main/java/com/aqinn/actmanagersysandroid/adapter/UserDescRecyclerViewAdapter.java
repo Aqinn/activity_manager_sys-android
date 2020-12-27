@@ -1,6 +1,7 @@
 package com.aqinn.actmanagersysandroid.adapter;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -171,8 +172,10 @@ public class UserDescRecyclerViewAdapter extends RecyclerView.Adapter<UserDescRe
         @OnClick(R.id.bt_logout)
         public void logout() {
             Log.d(TAG, "logout: 点击了退出登录按钮");
-            CommonUtil.setNowUserIdToSP(mContext, -1L);
+            CommonUtil.setNowUserIdToSP(mContext, CommonUtil.ERR_USER_ID);
+            CommonUtil.setNowUsernameToSP(mContext, null);
             mContext.startActivity(new Intent(mContext, LoginActivity.class));
+            ((FragmentActivity) mContext).finish();
         }
 
     }

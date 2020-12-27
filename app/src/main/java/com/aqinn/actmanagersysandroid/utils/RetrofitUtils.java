@@ -4,6 +4,8 @@ import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -19,6 +21,7 @@ public class RetrofitUtils {
     private static final String TAG = "RetrofitUtils";
 
     private static final String BASE_URL = "http://10.16.97.117:8080/";
+    private static OkHttpClient.Builder builder = new OkHttpClient.Builder();
     private static Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -26,13 +29,18 @@ public class RetrofitUtils {
             .client(getOkHttpClient())
             .build();
 
+    private static OkHttpClient getOkHttpClient() {
+        return builder.addInterceptor(buildLoggerInterceptor())
+                .connectTimeout(3, TimeUnit.SECONDS).build();
+    }
+
     /**
-     * 获取 OkHttpClient
-     * 可以用于打印请求参数的日志
+     * 创建可以用于打印请求参数的日志的 Builder
      * （因为使用了 Rxjava + Retrofit 所以不可以直接打印 Request 的参数）
+     *
      * @return
      */
-    private static OkHttpClient getOkHttpClient() {
+    private static HttpLoggingInterceptor buildLoggerInterceptor() {
         HttpLoggingInterceptor.Level level = HttpLoggingInterceptor.Level.BODY;
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
             @Override
@@ -41,9 +49,7 @@ public class RetrofitUtils {
             }
         });
         loggingInterceptor.setLevel(level);
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.addInterceptor(loggingInterceptor);
-        return builder.build();
+        return loggingInterceptor;
     }
 
     public static Retrofit getRetrofit() {

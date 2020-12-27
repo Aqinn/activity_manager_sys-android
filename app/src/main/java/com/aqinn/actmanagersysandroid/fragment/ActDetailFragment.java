@@ -1,5 +1,6 @@
 package com.aqinn.actmanagersysandroid.fragment;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -10,8 +11,10 @@ import com.aqinn.actmanagersysandroid.ShowManager;
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.ActIntroItemAdapter;
-import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
+import com.aqinn.actmanagersysandroid.data.ApiResult;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
+import com.aqinn.actmanagersysandroid.presenter.MyServiceManager;
+import com.aqinn.actmanagersysandroid.presenter.ServiceManager;
 import com.aqinn.actmanagersysandroid.service.ActService;
 import com.aqinn.actmanagersysandroid.service.AttendService;
 import com.aqinn.actmanagersysandroid.service.UserActService;
@@ -28,6 +31,10 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author Aqinn
@@ -49,17 +56,9 @@ public class ActDetailFragment extends BaseFragment {
     EditText etIntro;
 
     @Inject
-    public UserService userService;
-    @Inject
-    public ActService actService;
-    @Inject
-    public UserActService userActService;
-    @Inject
-    public AttendService attendService;
-    @Inject
-    public UserAttendService userAttendService;
-    @Inject
-    public ShowManager showManager;
+    public ServiceManager serviceManager;
+
+    private Context mContext = getContext();
     private Integer mFlag = -1;
     private boolean editEnable = false;
     private ActIntroItem mAii = null;
@@ -85,8 +84,7 @@ public class ActDetailFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_act_detail, null);
-        DaggerFragmentComponent.builder().dataSourceComponent(MyApplication.getDataSourceComponent())
-                .retrofitServiceComponent(MyApplication.getRetrofitServiceComponent()).build().inject(this);
+        MyApplication.getFragmentComponent().inject(this);
         ButterKnife.bind(this, rootView);
         initTopBar();
         initData();
@@ -140,17 +138,16 @@ public class ActDetailFragment extends BaseFragment {
         qaib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActIntroItem newAii = new ActIntroItem(mAii.getOwnerId(), mAii.getId(), mAii.getCreator(),
+                ActIntroItem newAii = new ActIntroItem(mAii.getId(), mAii.getOwnerId(), mAii.getActId(), mAii.getCreator(),
                         etName.getText().toString(), etTime.getText().toString(),
                         etLoc.getText().toString(), etIntro.getText().toString(),
                         mAii.getStatus());
-                boolean success = showManager.editCreateAct(newAii);
-                if (success) {
-                    editModeOff();
-                    Toast.makeText(getContext(), "活动修改保存成功", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "活动修改保存失败", Toast.LENGTH_SHORT).show();
-                }
+                serviceManager.editAct(newAii, new ServiceManager.EditActCallback() {
+                    @Override
+                    public void onFinish() {
+                        editModeOff();
+                    }
+                });
             }
         });
         qaib.setVisibility(View.INVISIBLE);
@@ -189,34 +186,20 @@ public class ActDetailFragment extends BaseFragment {
                         }
                         // 退出活动
                         else if (mFlag == 2) {
-                            boolean success = showManager.quitPartAct(mAii.getId());
-                            if (success)
-                                Toast.makeText(getContext(), "退出活动成功", Toast.LENGTH_SHORT).show();
-                            else
-                                Toast.makeText(getContext(), "退出活动失败", Toast.LENGTH_SHORT).show();
+                            serviceManager.quitAct(mAii.getId());
                         }
                         break;
                     case 2:
                         // 开始活动
                         if (mAii.getStatus() == 1) {
-                            boolean success = showManager.startCreateAct(mAii.getId());
-                            if (success)
-                                Toast.makeText(getContext(), "开始活动成功", Toast.LENGTH_SHORT).show();
-                            else
-                                Toast.makeText(getContext(), "开始活动失败", Toast.LENGTH_SHORT).show();
+                            serviceManager.startAct(mAii.getId());
                         }
                         // 结束活动
                         else if (mAii.getStatus() == 2) {
                             showActStopCheck(new ActStopCheckCallable() {
                                 @Override
                                 public void stopOrNot(boolean isStop) {
-                                    if (isStop) {
-                                        boolean success = showManager.stopCreateAct(mAii.getId());
-                                        if (success)
-                                            Toast.makeText(getContext(), "结束活动成功", Toast.LENGTH_SHORT).show();
-                                        else
-                                            Toast.makeText(getContext(), "结束活动失败", Toast.LENGTH_SHORT).show();
-                                    }
+                                    serviceManager.stopAct(mAii.getId());
                                 }
                             });
                             Toast.makeText(getContext(), "点击了结束活动", Toast.LENGTH_SHORT).show();

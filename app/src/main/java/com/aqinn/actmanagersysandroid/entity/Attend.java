@@ -16,15 +16,27 @@ public class Attend {
 
     private String time;
 
-    // 签到方式 1: "视频签到" 2: "自助签到"
-    private Integer type[];
+    // 签到方式 01: "视频签到" 10: "自助签到" 11: "两个都有签到"
+    private Integer type;
 
-    public Attend(Long id, Long uId, Long actId, String time, Integer[] type) {
+    // 签到状态 1: 未开始 2: 进行中 3: 已结束
+    private Integer isOpen;
+
+    public Attend(Long id, Long uId, Long actId, String time, Integer type, Integer isOpen) {
         this.id = id;
         this.uId = uId;
         this.actId = actId;
         this.time = time;
         this.type = type;
+        this.isOpen = isOpen;
+    }
+
+    public Attend(Long uId, Long actId, String time, Integer type, Integer isOpen) {
+        this.uId = uId;
+        this.actId = actId;
+        this.time = time;
+        this.type = type;
+        this.isOpen = isOpen;
     }
 
     public Long getId() {
@@ -59,11 +71,31 @@ public class Attend {
         this.time = time;
     }
 
-    public Integer[] getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(Integer[] type) {
+    public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Integer getIsOpen() {
+        return isOpen;
+    }
+
+    public void setIsOpen(Integer isOpen) {
+        this.isOpen = isOpen;
+    }
+
+    @Override
+    public String toString() {
+        return "Attend{" +
+                "id=" + id +
+                ", uId=" + uId +
+                ", actId=" + actId +
+                ", time='" + time + '\'' +
+                ", type=" + type +
+                ", isOpen=" + isOpen +
+                '}';
     }
 }

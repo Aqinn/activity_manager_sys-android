@@ -23,6 +23,7 @@ import androidx.fragment.app.FragmentContainerView;
 
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
+import com.aqinn.actmanagersysandroid.fragment.ErrorFragment;
 import com.aqinn.actmanagersysandroid.fragment.MainFragment;
 import com.aqinn.actmanagersysandroid.utils.CommonUtil;
 import com.qmuiteam.qmui.arch.QMUIFragment;
@@ -67,10 +68,10 @@ public class MainActivity extends BaseFragmentActivity {
     }
 
     private void init(){
-        MyApplication.nowUserId = CommonUtil.getNowUserIdFromSP(this);
-        MyApplication.nowUserAccount = CommonUtil.getNowUsernameFromSP(this);
-        if (MyApplication.nowUserAccount == null) {
-            Log.d(TAG, "init: MyApplication.nowUserAccount == null");
+        if (CommonUtil.getNowUsernameFromSP(this) == null || CommonUtil.getUsernameFromSP(this).equals(CommonUtil.ERR_USER_ID)) {
+            Log.d(TAG, "init: 无当前登录用户");
+            ErrorFragment fragment = new ErrorFragment("数据错误", "您还没有登录");
+            startFragment(fragment);
             return;
         }
         MainFragment fragment = new MainFragment();

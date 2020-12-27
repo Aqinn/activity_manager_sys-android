@@ -21,31 +21,26 @@ import dagger.Provides;
 @Module
 public class RetrofitServiceModule {
 
-//    @RetrofitServiceScope
     @Provides
     UserService providerUserService() {
         return RetrofitUtils.getRetrofit().create(UserService.class);
     }
 
-//    @RetrofitServiceScope
     @Provides
     ActService providerActService() {
         return RetrofitUtils.getRetrofit().create(ActService.class);
     }
 
-//    @RetrofitServiceScope
     @Provides
     AttendService providerAttendService() {
         return RetrofitUtils.getRetrofit().create(AttendService.class);
     }
 
-//    @RetrofitServiceScope
     @Provides
     UserActService providerUserActService() {
         return RetrofitUtils.getRetrofit().create(UserActService.class);
     }
 
-//    @RetrofitServiceScope
     @Provides
     UserAttendService providerUserAttendService() {
         return RetrofitUtils.getRetrofit().create(UserAttendService.class);
@@ -57,3 +52,5 @@ public class RetrofitServiceModule {
     }
 
 }
+//    @RetrofitServiceScope
+//    @Singleton

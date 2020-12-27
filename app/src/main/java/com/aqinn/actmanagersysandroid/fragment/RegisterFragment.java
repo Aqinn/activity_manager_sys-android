@@ -8,8 +8,11 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
 import com.aqinn.actmanagersysandroid.R;
+import com.aqinn.actmanagersysandroid.presenter.ServiceManager;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
 import com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +43,9 @@ public class RegisterFragment extends BaseFragment {
     GridLayout glInput;
     @BindView(R.id.bt_register)
     QMUIRoundButton btRegister;
+
+    @Inject
+    public ServiceManager serviceManager;
 
 
     @Override

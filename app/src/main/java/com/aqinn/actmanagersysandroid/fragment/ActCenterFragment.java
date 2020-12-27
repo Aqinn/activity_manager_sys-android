@@ -1,5 +1,6 @@
 package com.aqinn.actmanagersysandroid.fragment;
 
+import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +19,11 @@ import com.aqinn.actmanagersysandroid.ShowManager;
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.ActIntroItemAdapter;
-import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
+import com.aqinn.actmanagersysandroid.data.ApiResult;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
+import com.aqinn.actmanagersysandroid.presenter.MyServiceManager;
+import com.aqinn.actmanagersysandroid.presenter.ServiceManager;
 import com.aqinn.actmanagersysandroid.qualifiers.ActCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
 import com.aqinn.actmanagersysandroid.service.ActService;
@@ -28,6 +31,7 @@ import com.aqinn.actmanagersysandroid.service.AttendService;
 import com.aqinn.actmanagersysandroid.service.UserActService;
 import com.aqinn.actmanagersysandroid.service.UserAttendService;
 import com.aqinn.actmanagersysandroid.service.UserService;
+import com.aqinn.actmanagersysandroid.utils.RetrofitUtils;
 import com.qmuiteam.qmui.layout.QMUIFrameLayout;
 import com.qmuiteam.qmui.skin.QMUISkinHelper;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
@@ -49,6 +53,12 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * 活动中心
@@ -68,23 +78,14 @@ public class ActCenterFragment extends BaseFragment {
     ViewPager mContentViewPager;
 
     @Inject
-    public UserService userService;
-    @Inject
-    public ActService actService;
-    @Inject
-    public UserActService userActService;
-    @Inject
-    public AttendService attendService;
-    @Inject
-    public UserAttendService userAttendService;
-    @Inject
     @ActCreateDataSource
     public DataSource dsc;
     @Inject
     @ActPartDataSource
     public DataSource dsp;
     @Inject
-    public ShowManager showManager;
+    public ServiceManager serviceManager;
+
     private Map<ContentPage, View> mPageMap = new HashMap<>();
     private Map<Integer, ListView> mListViewMap = new HashMap<>();
     private Map<Integer, ActIntroItemAdapter> mAdapterMap = new HashMap<>();
@@ -121,8 +122,7 @@ public class ActCenterFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_act_center, null);
-        DaggerFragmentComponent.builder().dataSourceComponent(((MyApplication) getActivity().getApplication()).getDataSourceComponent())
-                .retrofitServiceComponent(MyApplication.getRetrofitServiceComponent()).build().inject(this);
+        MyApplication.getFragmentComponent().inject(this);
         ButterKnife.bind(this, rootView);
         initTopBar();
         initTabAndPager();
@@ -305,7 +305,7 @@ public class ActCenterFragment extends BaseFragment {
                                 quickAction.dismiss();
                                 ActDetailFragment adf = new ActDetailFragment(mFlag, clickAii, mAdapterMap.get(mFlag), true);
                                 startFragment(adf);
-                                Toast.makeText(getContext(), "编辑活动成功", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "打开编辑活动界面成功", Toast.LENGTH_SHORT).show();
                             }
                         }
                 ));
@@ -315,11 +315,7 @@ public class ActCenterFragment extends BaseFragment {
                                 @Override
                                 public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
                                     quickAction.dismiss();
-                                    boolean success = showManager.startCreateAct(clickAii.getId());
-                                    if (success)
-                                        Toast.makeText(getContext(), "开始活动成功", Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(getContext(), "开始活动失败", Toast.LENGTH_SHORT).show();
+                                    serviceManager.startAct(clickAii.getId());
                                 }
                             }
                     ));
@@ -329,30 +325,22 @@ public class ActCenterFragment extends BaseFragment {
                                 @Override
                                 public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
                                     quickAction.dismiss();
-                                    boolean success = showManager.stopCreateAct(clickAii.getId());
-                                    if (success)
-                                        Toast.makeText(getContext(), "结束活动成功", Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(getContext(), "结束活动失败", Toast.LENGTH_SHORT).show();
+                                    serviceManager.stopAct(clickAii.getId());
                                 }
                             }
                     ));
             }
             if (mFlag == 2) {
                 if (clickAii.getStatus() != 3)
-                qqa.addAction(new QMUIQuickAction.Action().text("退出活动").onClick(
-                        new QMUIQuickAction.OnClickListener() {
-                            @Override
-                            public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
-                                quickAction.dismiss();
-                                boolean success = showManager.quitPartAct(clickAii.getId());
-                                if (success)
-                                    Toast.makeText(getContext(), "退出活动成功", Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(getContext(), "退出活动失败", Toast.LENGTH_SHORT).show();
+                    qqa.addAction(new QMUIQuickAction.Action().text("退出活动").onClick(
+                            new QMUIQuickAction.OnClickListener() {
+                                @Override
+                                public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
+                                    quickAction.dismiss();
+                                    serviceManager.quitAct(clickAii.getId());
+                                }
                             }
-                        }
-                ));
+                    ));
             }
             qqa.addAction(new QMUIQuickAction.Action().text("查看签到").onClick(
                     new QMUIQuickAction.OnClickListener() {

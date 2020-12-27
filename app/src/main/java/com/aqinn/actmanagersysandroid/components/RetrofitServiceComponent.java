@@ -19,8 +19,7 @@ import dagger.Component;
  * @date 2020/12/25 3:13 PM
  */
 @Component(modules = RetrofitServiceModule.class)
-public
-interface RetrofitServiceComponent {
+public interface RetrofitServiceComponent {
 
     UserService getUserService();
 

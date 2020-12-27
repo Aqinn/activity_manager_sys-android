@@ -5,47 +5,29 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
-import com.aqinn.actmanagersysandroid.components.DaggerApplicationComponent;
 import com.aqinn.actmanagersysandroid.components.DaggerDataSourceComponent;
+import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
 import com.aqinn.actmanagersysandroid.components.DaggerRetrofitServiceComponent;
+import com.aqinn.actmanagersysandroid.components.DaggerServiceManagerComponent;
+import com.aqinn.actmanagersysandroid.components.DaggerServiceManagerInjectComponent;
+import com.aqinn.actmanagersysandroid.components.DaggerShowManagerComponent;
+import com.aqinn.actmanagersysandroid.components.DaggerShowManagerInjectComponent;
 import com.aqinn.actmanagersysandroid.components.DataSourceComponent;
+import com.aqinn.actmanagersysandroid.components.FragmentComponent;
 import com.aqinn.actmanagersysandroid.components.RetrofitServiceComponent;
-import com.aqinn.actmanagersysandroid.data.ApiResult;
-import com.aqinn.actmanagersysandroid.data.DataSource;
-import com.aqinn.actmanagersysandroid.data.Refreshable;
-import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
-import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
-import com.aqinn.actmanagersysandroid.entity.show.ParticipateAttendIntroItem;
-import com.aqinn.actmanagersysandroid.entity.show.UserDesc;
-import com.aqinn.actmanagersysandroid.qualifiers.ActCreateDataSource;
-import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
-import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
-import com.aqinn.actmanagersysandroid.qualifiers.AttendPartDataSource;
-import com.aqinn.actmanagersysandroid.qualifiers.UserDescDataSource;
-import com.aqinn.actmanagersysandroid.service.ActService;
-import com.aqinn.actmanagersysandroid.service.AttendService;
-import com.aqinn.actmanagersysandroid.service.ShowItemService;
-import com.aqinn.actmanagersysandroid.service.UserActService;
-import com.aqinn.actmanagersysandroid.service.UserAttendService;
-import com.aqinn.actmanagersysandroid.service.UserService;
-import com.aqinn.actmanagersysandroid.utils.CommonUtil;
+import com.aqinn.actmanagersysandroid.components.ServiceManagerComponent;
+import com.aqinn.actmanagersysandroid.components.ServiceManagerInjectComponent;
+import com.aqinn.actmanagersysandroid.components.ShowManagerComponent;
+import com.aqinn.actmanagersysandroid.components.ShowManagerInjectComponent;
+import com.aqinn.actmanagersysandroid.modules.DataSourceModule;
+import com.aqinn.actmanagersysandroid.modules.RetrofitServiceModule;
+import com.aqinn.actmanagersysandroid.modules.ServiceManagerModule;
+import com.aqinn.actmanagersysandroid.modules.ShowManagerModule;
 import com.qmuiteam.qmui.QMUILog;
 import com.qmuiteam.qmui.arch.QMUISwipeBackActivityManager;
 
 import org.litepal.LitePal;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author Aqinn
@@ -57,40 +39,42 @@ public class MyApplication extends Application {
 
     private static DataSourceComponent dataSourceComponent;
     private static RetrofitServiceComponent retrofitServiceComponent;
+    private static ShowManagerComponent showManagerComponent;
+    private static ServiceManagerComponent serviceManagerComponent;
+    private static FragmentComponent fragmentComponent;
+    private static ShowManagerInjectComponent showManagerInjectComponent;
+    private static ServiceManagerInjectComponent serviceManagerInjectComponent;
 
-    @Inject
-    public UserService userService;
-    @Inject
-    public ActService actService;
-    @Inject
-    public UserActService userActService;
-    @Inject
-    public AttendService attendService;
-    @Inject
-    public UserAttendService userAttendService;
-    @Inject
-    @ActCreateDataSource
-    public DataSource dsActC;
-    @Inject
-    @ActPartDataSource
-    public DataSource dsActP;
-    @Inject
-    @AttendCreateDataSource
-    public DataSource dsAttC;
-    @Inject
-    @AttendPartDataSource
-    public DataSource dsAttP;
-    @Inject
-    @UserDescDataSource
-    public DataSource dsUsers;
-    @Inject
-    public ShowItemService showItemService;
+//    @Inject
+//    public UserService userService;
+//    @Inject
+//    public ActService actService;
+//    @Inject
+//    public UserActService userActService;
+//    @Inject
+//    public AttendService attendService;
+//    @Inject
+//    public UserAttendService userAttendService;
+//    @Inject
+//    @ActCreateDataSource
+//    public DataSource dsActC;
+//    @Inject
+//    @ActPartDataSource
+//    public DataSource dsActP;
+//    @Inject
+//    @AttendCreateDataSource
+//    public DataSource dsAttC;
+//    @Inject
+//    @AttendPartDataSource
+//    public DataSource dsAttP;
+//    @Inject
+//    @UserDescDataSource
+//    public DataSource dsUsers;
+//    @Inject
+//    public ShowItemService showItemService;
 
     @SuppressLint("StaticFieldLeak")
     private static Context context;
-
-    public static Long nowUserId = CommonUtil.ERR_USER_ID;
-    public static String nowUserAccount = "";
 
     public static Context getContext() {
         return context;
@@ -128,75 +112,20 @@ public class MyApplication extends Application {
             }
         });
         QMUISwipeBackActivityManager.init(this);
-        dataSourceComponent = DaggerDataSourceComponent.create();
-        retrofitServiceComponent = DaggerRetrofitServiceComponent.create();
-        DaggerApplicationComponent.builder().dataSourceComponent(dataSourceComponent).retrofitServiceComponent(retrofitServiceComponent).build().inject(this);
-//        // 初始化数据
-//        Disposable disposable = Observable.create((ObservableOnSubscribe<String>) emitter -> {
-//            emitter.onNext("加载用户数据");
-//            emitter.onNext("加载活动数据");
-//            emitter.onNext("加载我创建的签到数据");
-//            emitter.onNext("加载我参与的签到数据");
-//            emitter.onComplete();
-//        }).subscribeOn(Schedulers.io())
-//                .observeOn(Schedulers.io())
-//                .subscribe(s -> {
-//                    switch (s) {
-//                        case "加载用户数据":
-//                            Observable<ApiResult<UserDesc>> observableUserDesc = showItemService.getUserDesc(23L);
-//                            observableUserDesc.subscribeOn(Schedulers.io())
-//                                    .observeOn(Schedulers.io())
-//                                    .subscribe(userDescApiResult -> {
-//                                        ((Refreshable) dsUsers).refresh(userDescApiResult.data);
-//                                        CommonUtil.setNowUserIdToSP(getContext(), userDescApiResult.data.getId());
-//                                        nowUserId = CommonUtil.getNowUserIdFromSP(getContext());
-//                                        nowUserAccount = userDescApiResult.data.getAccount();
-//                                    }, throwable -> {
-//                                        Log.d(TAG, "MyApplication.onCreate() 加载用户数据出错: " + throwable.getMessage());
-//                                    });
-//                            break;
-//                        case "加载活动数据":
-//                            Observable<ApiResult<List<ActIntroItem>>> observableActIntroItem
-//                                    = showItemService.getActIntroItem(23L);
-//                            observableActIntroItem.subscribeOn(Schedulers.io())
-//                                    .observeOn(Schedulers.io())
-//                                    .subscribe(listApiResult -> {
-//                                        ((Refreshable) dsActC).refresh(listApiResult.data);
-//                                        ((Refreshable) dsActP).refresh(listApiResult.data);
-//                                    }, throwable -> {
-//                                        Log.d(TAG, "MyApplication.onCreate() 加载活动数据出错: " + throwable.getMessage());
-//                                    });
-//                            break;
-//                        case "加载我创建的签到数据":
-//                            Observable<ApiResult<List<CreateAttendIntroItem>>> observableCreateAttendIntroItem
-//                                    = showItemService.getCreateAttendIntroItem(23L);
-//                            observableCreateAttendIntroItem.subscribeOn(Schedulers.io())
-//                                    .observeOn(Schedulers.io())
-//                                    .subscribe(listApiResult -> {
-//                                        ((Refreshable) dsAttC).refresh(listApiResult.data);
-//                                    }, throwable -> {
-//                                        Log.d(TAG, "MyApplication.onCreate() 加载我创建的签到数据出错: " + throwable.getMessage());
-//                                    });
-//                            break;
-//                        case "加载我参与的签到数据":
-//                            Observable<ApiResult<List<ParticipateAttendIntroItem>>> observableParticipateAttendIntroItem
-//                                    = showItemService.getParticipateAttendIntroItem(23L);
-//                            observableParticipateAttendIntroItem.subscribeOn(Schedulers.io())
-//                                    .observeOn(Schedulers.io())
-//                                    .subscribe(listApiResult -> {
-//                                        ((Refreshable) dsAttP).refresh(listApiResult.data);
-//                                    }, throwable -> {
-//                                        Log.d(TAG, "MyApplication.onCreate() 加载我参与的签到数据出错: " + throwable.getMessage());
-//                                    });
-//                            break;
-//                        default:
-//                            break;
-//                    }
-//                }, throwable -> {
-//                    Log.d(TAG, "onError: " + throwable.getMessage());
-//                }, () -> {
-//                    Log.d(TAG, "onComplete: 后台刷新数据完成");
-//                });
+        dataSourceComponent = DaggerDataSourceComponent.builder().dataSourceModule(new DataSourceModule()).build();
+        retrofitServiceComponent = DaggerRetrofitServiceComponent.builder().retrofitServiceModule(new RetrofitServiceModule()).build();
+        showManagerComponent = DaggerShowManagerComponent.builder().showManagerModule(new ShowManagerModule()).build();
+        serviceManagerComponent = DaggerServiceManagerComponent.builder().serviceManagerModule(new ServiceManagerModule()).build();
+        showManagerInjectComponent = DaggerShowManagerInjectComponent.builder().dataSourceComponent(dataSourceComponent).build();
+        serviceManagerInjectComponent = DaggerServiceManagerInjectComponent.builder()
+                .dataSourceComponent(dataSourceComponent)
+                .retrofitServiceComponent(retrofitServiceComponent)
+                .showManagerComponent(showManagerComponent)
+                .build();
+        fragmentComponent = DaggerFragmentComponent.builder()
+                .dataSourceComponent(dataSourceComponent)
+                .serviceManagerComponent(serviceManagerComponent)
+                .build();
     }
 
     public static DataSourceComponent getDataSourceComponent() {
@@ -207,5 +136,23 @@ public class MyApplication extends Application {
         return retrofitServiceComponent;
     }
 
+    public static ShowManagerComponent getShowManagerComponent() {
+        return showManagerComponent;
+    }
 
+    public static ServiceManagerComponent getServiceManagerComponent() {
+        return serviceManagerComponent;
+    }
+
+    public static FragmentComponent getFragmentComponent() {
+        return fragmentComponent;
+    }
+
+    public static ShowManagerInjectComponent getShowManagerInjectComponent() {
+        return showManagerInjectComponent;
+    }
+
+    public static ServiceManagerInjectComponent getServiceManagerInjectComponent() {
+        return serviceManagerInjectComponent;
+    }
 }

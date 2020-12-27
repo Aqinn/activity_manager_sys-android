@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.activity.MainActivity;
-import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
 import com.aqinn.actmanagersysandroid.data.ApiResult;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.data.Refreshable;
@@ -24,6 +23,7 @@ import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
 import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
 import com.aqinn.actmanagersysandroid.entity.show.ParticipateAttendIntroItem;
 import com.aqinn.actmanagersysandroid.entity.show.UserDesc;
+import com.aqinn.actmanagersysandroid.presenter.ServiceManager;
 import com.aqinn.actmanagersysandroid.qualifiers.ActCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
@@ -79,16 +79,6 @@ public class LoginFragment extends BaseFragment {
     TextView tvCopyright;
 
     @Inject
-    public UserService userService;
-    @Inject
-    public ActService actService;
-    @Inject
-    public UserActService userActService;
-    @Inject
-    public AttendService attendService;
-    @Inject
-    public UserAttendService userAttendService;
-    @Inject
     @ActCreateDataSource
     public DataSource dsActC;
     @Inject
@@ -104,14 +94,13 @@ public class LoginFragment extends BaseFragment {
     @UserDescDataSource
     public DataSource dsUsers;
     @Inject
-    public ShowItemService showItemService;
+    public ServiceManager serviceManager;
 
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_login, null);
         ButterKnife.bind(this, rootView);
-        DaggerFragmentComponent.builder().dataSourceComponent(MyApplication.getDataSourceComponent())
-                .retrofitServiceComponent(MyApplication.getRetrofitServiceComponent()).build().inject(this);
+        MyApplication.getFragmentComponent().inject(this);
         return rootView;
     }
 
@@ -137,27 +126,7 @@ public class LoginFragment extends BaseFragment {
             return;
         }
         // 验证登录信息
-        Observable<ApiResult> observable = userService.userLogin(etUsername.getText().toString(), etPassword.getText().toString());
-        Disposable disposable = observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(apiResult -> {
-                    Log.d(TAG, "toMainActivity: 登录成功，正在跳转");
-                    if (cbRm.isChecked()) {
-                        CommonUtil.setUsernameToSP(getContext(), etUsername.getText().toString());
-                        CommonUtil.setPwdToSP(getContext(), etPassword.getText().toString());
-                    }
-                    LinkedTreeMap linkedTreeMap = (LinkedTreeMap) apiResult.data;
-                    Object o = linkedTreeMap.get("id");
-                    Double d = (Double) o;
-                    Long userId = d.longValue();
-                    MyApplication.nowUserId = userId;
-                    MyApplication.nowUserAccount = etUsername.getText().toString();
-                    CommonUtil.setNowUserIdToSP(getContext(), userId);
-                    CommonUtil.setNowUsernameToSP(getContext(), etUsername.getText().toString());
-                    Intent intent = new Intent(getContext(), MainActivity.class);
-                    startActivity(intent);
-                }, throwable -> {
-                    Log.d(TAG, "toMainActivity: 登录失败 => " + throwable.getMessage());
-                });
+        serviceManager.login(getActivity(), etUsername.getText().toString(), etPassword.getText().toString(), cbRm.isChecked());
     }
 
     private boolean verifyAccount(String account) {

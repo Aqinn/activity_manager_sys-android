@@ -10,9 +10,11 @@ import org.litepal.crud.LitePalSupport;
  */
 public class ActIntroItem extends LitePalSupport {
 
+    private Long id;
+
     private Long ownerId;
 
-    private Long id;
+    private Long actId;
 
     private String creator;
 
@@ -27,15 +29,24 @@ public class ActIntroItem extends LitePalSupport {
     // 活动状态 1: "未开始" 2: "进行中" 3: "已结束"
     private Integer status;
 
-    public ActIntroItem(Long ownerId, Long id, String creator, String name, String time, String location, String intro, Integer status) {
-        this.ownerId = ownerId;
+    public ActIntroItem(Long id, Long ownerId, Long actId, String creator, String name, String time, String location, String intro, Integer status) {
         this.id = id;
+        this.ownerId = ownerId;
+        this.actId = actId;
         this.creator = creator;
         this.name = name;
         this.time = time;
         this.location = location;
         this.intro = intro;
         this.status = status;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getOwnerId() {
@@ -46,12 +57,12 @@ public class ActIntroItem extends LitePalSupport {
         this.ownerId = ownerId;
     }
 
-    public Long getId() {
-        return id;
+    public Long getActId() {
+        return actId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setActId(Long actId) {
+        this.actId = actId;
     }
 
     public String getCreator() {
@@ -105,8 +116,9 @@ public class ActIntroItem extends LitePalSupport {
     @Override
     public String toString() {
         return "ActIntroItem{" +
-                "ownerId=" + ownerId +
-                ", id=" + id +
+                "id=" + id +
+                ", ownerId=" + ownerId +
+                ", actId=" + actId +
                 ", creator='" + creator + '\'' +
                 ", name='" + name + '\'' +
                 ", time='" + time + '\'' +

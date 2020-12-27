@@ -29,9 +29,10 @@ public class DataSourceParticipateActIntroItem extends DataSource<ActIntroItem> 
     }
 
     private void initData() {
-        List<ActIntroItem> actIntroItemList = LitePal.where("ownerId = ?", String.valueOf(MyApplication.nowUserId)).find(ActIntroItem.class);
+        List<ActIntroItem> actIntroItemList = LitePal.where("ownerId = ?", String.valueOf(CommonUtil.getNowUserIdFromSP(MyApplication.getContext()))).find(ActIntroItem.class);
+        String nowUserAccount = CommonUtil.getNowUsernameFromSP(MyApplication.getContext());
         for (ActIntroItem aii:actIntroItemList) {
-            if (!MyApplication.nowUserAccount.equals(aii.getCreator())) {
+            if (!nowUserAccount.equals(aii.getCreator())) {
                 datas.add(aii);
             }
         }
@@ -41,8 +42,9 @@ public class DataSourceParticipateActIntroItem extends DataSource<ActIntroItem> 
     public void refresh(Object o) {
         List<ActIntroItem> actIntroItemList = (List<ActIntroItem>) o;
         List<ActIntroItem> temp = new ArrayList<>();
+        String nowUserAccount = CommonUtil.getNowUsernameFromSP(MyApplication.getContext());
         for (ActIntroItem aii:actIntroItemList) {
-            if (!MyApplication.nowUserAccount.equals(aii.getCreator())) {
+            if (!nowUserAccount.equals(aii.getCreator())) {
                 temp.add(aii);
             }
         }
@@ -53,4 +55,5 @@ public class DataSourceParticipateActIntroItem extends DataSource<ActIntroItem> 
         datas.addAll(temp);
         notifyAllObserver();
     }
+
 }

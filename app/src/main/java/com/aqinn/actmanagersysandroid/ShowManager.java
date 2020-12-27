@@ -1,7 +1,8 @@
 package com.aqinn.actmanagersysandroid;
 
 
-import com.aqinn.actmanagersysandroid.components.DaggerActManagerComponent;
+import android.content.ContentValues;
+
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
 import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
@@ -10,18 +11,16 @@ import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.UserDescDataSource;
-import com.aqinn.actmanagersysandroid.service.ActService;
-import com.aqinn.actmanagersysandroid.service.AttendService;
-import com.aqinn.actmanagersysandroid.service.UserActService;
-import com.aqinn.actmanagersysandroid.service.UserAttendService;
-import com.aqinn.actmanagersysandroid.service.UserService;
-import com.aqinn.actmanagersysandroid.utils.CommonUtil;
+
+import org.litepal.LitePal;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 /**
+ * 管理数据的展示
+ *
  * @author Aqinn
  * @date 2020/12/18 5:33 PM
  */
@@ -35,36 +34,35 @@ public class ShowManager {
     @Inject
     @ActPartDataSource
     public DataSource actP;
-
     @Inject
     @AttendCreateDataSource
     public DataSource attC;
     @Inject
     @AttendPartDataSource
     public DataSource attP;
-
     @Inject
     @UserDescDataSource
     public DataSource users;
 
     public ShowManager() {
-        DaggerActManagerComponent.builder().dataSourceComponent(MyApplication.getDataSourceComponent())
-                .retrofitServiceComponent(MyApplication.getRetrofitServiceComponent())
-                .build().inject(this);
+        MyApplication.getShowManagerInjectComponent().inject(this);
     }
 
     /**
      * 停止创建的活动
      *
-     * @param actId
+     * @param id
      * @return
      */
-    public boolean stopCreateAct(Long actId) {
+    public boolean stopCreateAct(Long id) {
+        ContentValues values = new ContentValues();
+        values.put("status", 3);
+        int res = LitePal.update(ActIntroItem.class, values, id);
+        if (res <= 0)
+            return false;
         boolean success = false;
         for (ActIntroItem aii : (List<ActIntroItem>) actC.getDatas()) {
-            if (aii.getId().equals(actId)) {
-                if (aii.getStatus() != 2)
-                    break;
+            if (aii.getId().equals(id)) {
                 aii.setStatus(3);
                 actC.notifyAllObserver();
                 success = true;
@@ -77,14 +75,17 @@ public class ShowManager {
     /**
      * 退出参与的活动
      *
-     * @param actId
+     * @param id
      * @return
      */
     // TODO 还要把数据库中此人参与活动的记录移除
-    public boolean quitPartAct(Long actId) {
+    public boolean quitPartAct(Long id) {
+        int res = LitePal.delete(ActIntroItem.class, id);
+        if (res <= 0)
+            return false;
         boolean success = false;
         for (ActIntroItem aii : (List<ActIntroItem>) actP.getDatas()) {
-            if (aii.getId().equals(actId)) {
+            if (aii.getId().equals(id)) {
                 actP.getDatas().remove(aii);
                 actP.notifyAllObserver();
                 success = true;
@@ -101,9 +102,15 @@ public class ShowManager {
      * @return
      */
     public boolean editCreateAct(ActIntroItem newAii) {
+        int res = newAii.update(newAii.getId());
+        if (res <= 0)
+            return false;
         boolean success = false;
         for (ActIntroItem aii : (List<ActIntroItem>) actC.getDatas()) {
             if (aii.getId().equals(newAii.getId())) {
+                aii.setOwnerId(newAii.getOwnerId());
+                aii.setActId(newAii.getActId());
+                aii.setCreator(newAii.getCreator());
                 aii.setName(newAii.getTime());
                 aii.setStatus(newAii.getStatus());
                 aii.setIntro(newAii.getIntro());
@@ -120,15 +127,18 @@ public class ShowManager {
     /**
      * 开始创建的活动
      *
-     * @param actId
+     * @param id
      * @return
      */
-    public boolean startCreateAct(Long actId) {
+    public boolean startCreateAct(Long id) {
+        ContentValues values = new ContentValues();
+        values.put("status", 2);
+        int res = LitePal.update(ActIntroItem.class, values, id);
+        if (res <= 0)
+            return false;
         boolean success = false;
         for (ActIntroItem aii : (List<ActIntroItem>) actC.getDatas()) {
-            if (aii.getId().equals(actId)) {
-                if (aii.getStatus() != 1)
-                    break;
+            if (aii.getId().equals(id)) {
                 aii.setStatus(2);
                 actC.notifyAllObserver();
                 success = true;
@@ -141,14 +151,20 @@ public class ShowManager {
     /**
      * 更改创建的签到的签到方式
      *
-     * @param caii
+     * @param id
+     * @param type
      * @return
      */
-    public boolean changeCreateAttendType(CreateAttendIntroItem caii) {
+    public boolean changeCreateAttendType(Long id, Integer type) {
+        ContentValues values = new ContentValues();
+        values.put("type", type);
+        int res = LitePal.update(CreateAttendIntroItem.class, values, id);
+        if (res <= 0)
+            return false;
         boolean success = false;
         for (CreateAttendIntroItem caii_ : (List<CreateAttendIntroItem>) attC.getDatas()) {
-            if (caii_.getId().equals(caii.getId())) {
-                caii_.setType(caii.getType());
+            if (caii_.getId().equals(id)) {
+                caii_.setType(type);
                 attC.notifyAllObserver();
                 success = true;
                 break;
@@ -160,13 +176,18 @@ public class ShowManager {
     /**
      * 更改创建的签到的签到时间
      *
-     * @param attId
+     * @param id
      * @return
      */
-    public boolean changeCreateAttendTime(Long attId, String newTime) {
+    public boolean changeCreateAttendTime(Long id, String newTime) {
+        ContentValues values = new ContentValues();
+        values.put("time", newTime);
+        int res = LitePal.update(CreateAttendIntroItem.class, values, id);
+        if (res <= 0)
+            return false;
         boolean success = false;
         for (CreateAttendIntroItem caii : (List<CreateAttendIntroItem>) attC.getDatas()) {
-            if (caii.getId().equals(attId)) {
+            if (caii.getId().equals(id)) {
                 caii.setTime(newTime);
                 attC.notifyAllObserver();
                 success = true;
@@ -177,35 +198,23 @@ public class ShowManager {
     }
 
     /**
-     * 根据 id 获取创建的签到
-     *
-     * @param attId
-     * @return
-     */
-    public CreateAttendIntroItem getCreateAttendIntroById(Long attId) {
-        for (CreateAttendIntroItem caii : (List<CreateAttendIntroItem>) attC.getDatas()) {
-            if (caii.getId().equals(attId)) {
-                return caii;
-            }
-        }
-        return null;
-    }
-
-    /**
      * 开启创建的签到
      *
-     * @param attId
+     * @param id
      * @return
      */
-    public boolean startCreateAttend(Long attId) {
+    public boolean startCreateAttend(Long id) {
+        ContentValues values = new ContentValues();
+        values.put("status", 2);
+        int res = LitePal.update(CreateAttendIntroItem.class, values, id);
+        if (res <= 0)
+            return false;
         boolean success = false;
         for (CreateAttendIntroItem caii : (List<CreateAttendIntroItem>) attC.getDatas()) {
-            if (caii.getId().equals(attId)) {
-                if (caii.getStatus() == 1) {
-                    success = true;
-                    caii.setStatus(2);
-                    attC.notifyAllObserver();
-                }
+            if (caii.getId().equals(id)) {
+                success = true;
+                caii.setStatus(2);
+                attC.notifyAllObserver();
                 break;
             }
         }
@@ -215,13 +224,18 @@ public class ShowManager {
     /**
      * 结束创建的签到
      *
-     * @param attId
+     * @param id
      * @return
      */
-    public boolean stopCreateAttend(Long attId) {
+    public boolean stopCreateAttend(Long id) {
+        ContentValues values = new ContentValues();
+        values.put("status", 3);
+        int res = LitePal.update(CreateAttendIntroItem.class, values, id);
+        if (res <= 0)
+            return false;
         boolean success = false;
         for (CreateAttendIntroItem caii : (List<CreateAttendIntroItem>) attC.getDatas()) {
-            if (caii.getId().equals(attId)) {
+            if (caii.getId().equals(id)) {
                 if (caii.getStatus() == 2) {
                     success = true;
                     caii.setStatus(3);
@@ -235,13 +249,15 @@ public class ShowManager {
 
     /**
      * 创建一个活动
-     * TODO 还需要验证是否是本人的活动
+     *
      * @param newAii
      * @return
      */
     public boolean createAct(ActIntroItem newAii) {
+        boolean res = newAii.save();
+        if (!res)
+            return false;
         boolean success = false;
-        newAii.setId(getRandomLong());
         success = actC.getDatas().add(newAii);
         if (success)
             actC.notifyAllObserver();
@@ -250,24 +266,16 @@ public class ShowManager {
 
     /**
      * 创建一个签到
+     *
      * @param newCaii
      * @return
      */
     public boolean createAttend(CreateAttendIntroItem newCaii) {
         boolean success = false;
-        newCaii.setId(getRandomLong());
         success = attC.getDatas().add(newCaii);
         if (success)
             attC.notifyAllObserver();
         return success;
-    }
-
-    /**
-     * 获取一个随机 Long 类型数值
-     * @return
-     */
-    private Long getRandomLong() {
-        return CommonUtil.getRandomLong();
     }
 
 }

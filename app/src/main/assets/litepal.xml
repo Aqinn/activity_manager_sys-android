@@ -3,7 +3,7 @@
     <!--数据库名-->
     <dbname value="showdatacache" />
     <!--数据库版本号-->
-    <version value="3" />
+    <version value="4" />
     <!--表-->
     <list>
         <mapping class="com.aqinn.actmanagersysandroid.entity.show.UserDesc"/>

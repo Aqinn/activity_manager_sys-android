@@ -20,10 +20,10 @@ import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.CreateAttendIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.adapter.ParticipateAttendIntroItemAdapter;
-import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
 import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.entity.show.ParticipateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.presenter.ServiceManager;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendPartDataSource;
 import com.aqinn.actmanagersysandroid.service.ActService;
@@ -49,6 +49,7 @@ import com.qmuiteam.qmui.widget.tab.QMUITabBuilder;
 import com.qmuiteam.qmui.widget.tab.QMUITabSegment;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -74,23 +75,14 @@ public class AttendCenterFragment extends BaseFragment {
     ViewPager mContentViewPager;
 
     @Inject
-    public UserService userService;
-    @Inject
-    public ActService actService;
-    @Inject
-    public UserActService userActService;
-    @Inject
-    public AttendService attendService;
-    @Inject
-    public UserAttendService userAttendService;
-    @Inject
     @AttendCreateDataSource
     public DataSource dsc;
     @Inject
     @AttendPartDataSource
     public DataSource dsp;
     @Inject
-    public ShowManager showManager;
+    public ServiceManager serviceManager;
+
     private int mCurrentDialogStyle = com.qmuiteam.qmui.R.style.QMUI_Dialog;
     private Map<AttendCenterFragment.ContentPage, View> mPageMap = new HashMap<>();
     private Map<Integer, ListView> mListViewMap = new HashMap<>();
@@ -128,8 +120,7 @@ public class AttendCenterFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_attend_center, null);
-        DaggerFragmentComponent.builder().dataSourceComponent(((MyApplication) getActivity().getApplication()).getDataSourceComponent())
-                .retrofitServiceComponent(MyApplication.getRetrofitServiceComponent()).build().inject(this);
+        MyApplication.getFragmentComponent().inject(this);
         ButterKnife.bind(this, rootView);
 
         initTopBar();
@@ -296,11 +287,7 @@ public class AttendCenterFragment extends BaseFragment {
                                 @Override
                                 public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
                                     quickAction.dismiss();
-                                    boolean success = showManager.startCreateAttend(clickCaii.getId());
-                                    if (success)
-                                        Toast.makeText(getContext(), "开启签到成功", Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(getContext(), "开启签到失败", Toast.LENGTH_SHORT).show();
+                                    serviceManager.startAttend(clickCaii.getId());
                                 }
                             }
                     ));
@@ -310,11 +297,7 @@ public class AttendCenterFragment extends BaseFragment {
                                 @Override
                                 public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
                                     quickAction.dismiss();
-                                    boolean success = showManager.stopCreateAttend(clickCaii.getId());
-                                    if (success)
-                                        Toast.makeText(getContext(), "停止签到成功", Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(getContext(), "停止签到失败", Toast.LENGTH_SHORT).show();
+                                    serviceManager.stopAttend(clickCaii.getId());
                                 }
                             }
                     ));
@@ -377,7 +360,7 @@ public class AttendCenterFragment extends BaseFragment {
      *
      * @param v
      */
-    private void showEditAttendTimePopup(View v, final Long attId) {
+    private void showEditAttendTimePopup(View v, final Long id) {
         // 这里必须用 QMUI 的布局作为父布局，不然不能调节提示框的大小
         QMUISkinValueBuilder builder = QMUISkinValueBuilder.acquire();
         QMUIFrameLayout frameLayout = new QMUIFrameLayout(getContext());
@@ -397,7 +380,7 @@ public class AttendCenterFragment extends BaseFragment {
 
         final View editView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_create_attend_detail, null);
         editView.setBackground(QMUIResHelper.getAttrDrawable(getContext(), R.attr.qmui_skin_support_popup_bg));
-        CreateAttendIntroItem caii = showManager.getCreateAttendIntroById(attId);
+        CreateAttendIntroItem caii = getCreateAttendIntroById(id);
         EditText et_time = (EditText) editView.findViewById(R.id.et_time);
         et_time.setText(caii.getTime());
         frameLayout.addView(editView, lp);
@@ -422,11 +405,7 @@ public class AttendCenterFragment extends BaseFragment {
                 .onDismiss(new PopupWindow.OnDismissListener() {
                     @Override
                     public void onDismiss() {
-                        boolean success = showManager.changeCreateAttendTime(attId, ((EditText) editView.findViewById(R.id.et_time)).getText().toString());
-                        if (success)
-                            Toast.makeText(getContext(), "修改签到时间已完成", Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(getContext(), "修改签到时间失败", Toast.LENGTH_SHORT).show();
+                        serviceManager.editAttendTime(id, ((EditText) editView.findViewById(R.id.et_time)).getText().toString());
                     }
                 })
                 .show(v);
@@ -469,10 +448,7 @@ public class AttendCenterFragment extends BaseFragment {
                     caiiType[i] = builder.getCheckedItemIndexes()[i] + 1;
                 }
                 Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
-                CreateAttendIntroItem newCaii = new CreateAttendIntroItem(caii.getOwnerId(), caii.getId(), caii.getActId(),
-                        caii.getName(), caii.getTime(), CommonUtil.typeArr2dec(caiiType), caii.getStatus(),
-                        caii.getShouldAttendCount(), caii.getHaveAttendCount(), caii.getNotAttendCount());
-                showManager.changeCreateAttendType(newCaii);
+                serviceManager.editAttendType(caii.getId(), CommonUtil.typeArr2dec(caiiType));
                 dialog.dismiss();
             }
         });
@@ -495,6 +471,21 @@ public class AttendCenterFragment extends BaseFragment {
             else
                 mListViewMap.get(2).smoothScrollBy(-1, 1);
         }
+    }
+
+    /**
+     * 根据 id 获取创建的签到
+     *
+     * @param id
+     * @return
+     */
+    public CreateAttendIntroItem getCreateAttendIntroById(Long id) {
+        for (CreateAttendIntroItem caii : (List<CreateAttendIntroItem>) dsc.getDatas()) {
+            if (caii.getId().equals(id)) {
+                return caii;
+            }
+        }
+        return null;
     }
 
     public enum ContentPage {

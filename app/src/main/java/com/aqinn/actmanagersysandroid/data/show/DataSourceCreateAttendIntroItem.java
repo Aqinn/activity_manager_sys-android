@@ -1,14 +1,10 @@
 package com.aqinn.actmanagersysandroid.data.show;
 
 import com.aqinn.actmanagersysandroid.MyApplication;
-import com.aqinn.actmanagersysandroid.ShowManager;
 import com.aqinn.actmanagersysandroid.data.DataSource;
-import com.aqinn.actmanagersysandroid.data.Observer;
 import com.aqinn.actmanagersysandroid.data.Refreshable;
-import com.aqinn.actmanagersysandroid.entity.Act;
-import com.aqinn.actmanagersysandroid.entity.Attend;
-import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
 import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.utils.CommonUtil;
 
 import org.litepal.LitePal;
 
@@ -31,7 +27,7 @@ public class DataSourceCreateAttendIntroItem extends DataSource<CreateAttendIntr
 
     private void initData() {
         // 我创建的签到
-        List<CreateAttendIntroItem> createAttendIntroItemList = LitePal.where("ownerId = ?", String.valueOf(MyApplication.nowUserId)).find(CreateAttendIntroItem.class);
+        List<CreateAttendIntroItem> createAttendIntroItemList = LitePal.where("ownerId = ?", String.valueOf(CommonUtil.getNowUserIdFromSP(MyApplication.getContext()))).find(CreateAttendIntroItem.class);
         datas.addAll(createAttendIntroItemList);
     }
 
@@ -44,4 +40,5 @@ public class DataSourceCreateAttendIntroItem extends DataSource<CreateAttendIntr
         datas.addAll(createAttendIntroItemList);
         notifyAllObserver();
     }
+
 }

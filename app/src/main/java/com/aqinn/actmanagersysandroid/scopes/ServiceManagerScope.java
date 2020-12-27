@@ -11,5 +11,5 @@ import javax.inject.Scope;
  */
 @Scope
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ManagerScope {
+public @interface ServiceManagerScope {
 }

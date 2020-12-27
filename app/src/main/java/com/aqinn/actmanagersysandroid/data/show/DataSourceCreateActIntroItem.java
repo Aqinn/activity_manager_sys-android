@@ -8,6 +8,7 @@ import com.aqinn.actmanagersysandroid.data.Observer;
 import com.aqinn.actmanagersysandroid.data.Refreshable;
 import com.aqinn.actmanagersysandroid.entity.Act;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
+import com.aqinn.actmanagersysandroid.utils.CommonUtil;
 
 import org.litepal.LitePal;
 
@@ -30,9 +31,10 @@ public class DataSourceCreateActIntroItem extends DataSource<ActIntroItem> imple
     }
 
     private void initData() {
-        List<ActIntroItem> actIntroItemList = LitePal.where("ownerId = ?", String.valueOf(MyApplication.nowUserId)).find(ActIntroItem.class);
+        List<ActIntroItem> actIntroItemList = LitePal.where("ownerId = ?", String.valueOf(CommonUtil.getNowUserIdFromSP(MyApplication.getContext()))).find(ActIntroItem.class);
+        String nowUserAccount = CommonUtil.getNowUsernameFromSP(MyApplication.getContext());
         for (ActIntroItem aii:actIntroItemList) {
-            if (MyApplication.nowUserAccount.equals(aii.getCreator())) {
+            if (nowUserAccount.equals(aii.getCreator())) {
                 datas.add(aii);
             }
         }
@@ -43,8 +45,9 @@ public class DataSourceCreateActIntroItem extends DataSource<ActIntroItem> imple
         List<ActIntroItem> actIntroItemList = (List<ActIntroItem>) o;
         LitePal.deleteAll(ActIntroItem.class, "ownerId = ?", String.valueOf(actIntroItemList.get(0).getOwnerId()));
         List<ActIntroItem> temp = new ArrayList<>();
+        String nowUserAccount = CommonUtil.getNowUsernameFromSP(MyApplication.getContext());
         for (ActIntroItem aii:actIntroItemList) {
-            if (MyApplication.nowUserAccount.equals(aii.getCreator())) {
+            if (nowUserAccount.equals(aii.getCreator())) {
                 temp.add(aii);
             }
         }

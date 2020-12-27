@@ -28,5 +28,10 @@ public interface AttendService {
     @PUT("attend/{attendId}/type")
     Observable<ApiResult> editAttendType(@Path("attendId") Long attendId, @Field("type") Integer type);
 
+    @PUT("attend/{attendId}/start")
+    Observable<ApiResult> startAttend(@Path("attendId") Long attendId);
+
+    @PUT("attend/{attendId}/stop")
+    Observable<ApiResult> stopAttend(@Path("attendId") Long attendId);
 
 }
