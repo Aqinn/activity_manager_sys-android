@@ -2,9 +2,7 @@ package com.aqinn.actmanagersysandroid.modules;
 
 import com.aqinn.actmanagersysandroid.presenter.MyServiceManager;
 import com.aqinn.actmanagersysandroid.presenter.ServiceManager;
-import com.aqinn.actmanagersysandroid.scopes.ServiceManagerScope;
-
-import javax.inject.Singleton;
+import com.aqinn.actmanagersysandroid.scopes.ApplicationScope;
 
 import dagger.Module;
 import dagger.Provides;
@@ -16,7 +14,7 @@ import dagger.Provides;
 @Module
 public class ServiceManagerModule {
 
-    @ServiceManagerScope
+    @ApplicationScope
     @Provides
     ServiceManager providerServiceManager() {
         return new MyServiceManager();

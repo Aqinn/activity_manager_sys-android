@@ -84,7 +84,7 @@ public class ActDetailFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_act_detail, null);
-        MyApplication.getFragmentComponent().inject(this);
+        MyApplication.getApplicationComponent().inject(this);
         ButterKnife.bind(this, rootView);
         initTopBar();
         initData();

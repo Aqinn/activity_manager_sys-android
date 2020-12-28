@@ -5,20 +5,8 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
-import com.aqinn.actmanagersysandroid.components.DaggerDataSourceComponent;
-import com.aqinn.actmanagersysandroid.components.DaggerFragmentComponent;
-import com.aqinn.actmanagersysandroid.components.DaggerRetrofitServiceComponent;
-import com.aqinn.actmanagersysandroid.components.DaggerServiceManagerComponent;
-import com.aqinn.actmanagersysandroid.components.DaggerServiceManagerInjectComponent;
-import com.aqinn.actmanagersysandroid.components.DaggerShowManagerComponent;
-import com.aqinn.actmanagersysandroid.components.DaggerShowManagerInjectComponent;
-import com.aqinn.actmanagersysandroid.components.DataSourceComponent;
-import com.aqinn.actmanagersysandroid.components.FragmentComponent;
-import com.aqinn.actmanagersysandroid.components.RetrofitServiceComponent;
-import com.aqinn.actmanagersysandroid.components.ServiceManagerComponent;
-import com.aqinn.actmanagersysandroid.components.ServiceManagerInjectComponent;
-import com.aqinn.actmanagersysandroid.components.ShowManagerComponent;
-import com.aqinn.actmanagersysandroid.components.ShowManagerInjectComponent;
+import com.aqinn.actmanagersysandroid.components.ApplicationComponent;
+import com.aqinn.actmanagersysandroid.components.DaggerApplicationComponent;
 import com.aqinn.actmanagersysandroid.modules.DataSourceModule;
 import com.aqinn.actmanagersysandroid.modules.RetrofitServiceModule;
 import com.aqinn.actmanagersysandroid.modules.ServiceManagerModule;
@@ -37,13 +25,7 @@ public class MyApplication extends Application {
 
     private static final String TAG = "MyApplication";
 
-    private static DataSourceComponent dataSourceComponent;
-    private static RetrofitServiceComponent retrofitServiceComponent;
-    private static ShowManagerComponent showManagerComponent;
-    private static ServiceManagerComponent serviceManagerComponent;
-    private static FragmentComponent fragmentComponent;
-    private static ShowManagerInjectComponent showManagerInjectComponent;
-    private static ServiceManagerInjectComponent serviceManagerInjectComponent;
+    private static ApplicationComponent applicationComponent;
 
 //    @Inject
 //    public UserService userService;
@@ -112,47 +94,16 @@ public class MyApplication extends Application {
             }
         });
         QMUISwipeBackActivityManager.init(this);
-        dataSourceComponent = DaggerDataSourceComponent.builder().dataSourceModule(new DataSourceModule()).build();
-        retrofitServiceComponent = DaggerRetrofitServiceComponent.builder().retrofitServiceModule(new RetrofitServiceModule()).build();
-        showManagerComponent = DaggerShowManagerComponent.builder().showManagerModule(new ShowManagerModule()).build();
-        serviceManagerComponent = DaggerServiceManagerComponent.builder().serviceManagerModule(new ServiceManagerModule()).build();
-        showManagerInjectComponent = DaggerShowManagerInjectComponent.builder().dataSourceComponent(dataSourceComponent).build();
-        serviceManagerInjectComponent = DaggerServiceManagerInjectComponent.builder()
-                .dataSourceComponent(dataSourceComponent)
-                .retrofitServiceComponent(retrofitServiceComponent)
-                .showManagerComponent(showManagerComponent)
-                .build();
-        fragmentComponent = DaggerFragmentComponent.builder()
-                .dataSourceComponent(dataSourceComponent)
-                .serviceManagerComponent(serviceManagerComponent)
+        applicationComponent = DaggerApplicationComponent.builder()
+                .dataSourceModule(new DataSourceModule())
+                .retrofitServiceModule(new RetrofitServiceModule())
+                .showManagerModule(new ShowManagerModule())
+                .serviceManagerModule(new ServiceManagerModule())
                 .build();
     }
 
-    public static DataSourceComponent getDataSourceComponent() {
-        return dataSourceComponent;
+    public static ApplicationComponent getApplicationComponent() {
+        return applicationComponent;
     }
 
-    public static RetrofitServiceComponent getRetrofitServiceComponent() {
-        return retrofitServiceComponent;
-    }
-
-    public static ShowManagerComponent getShowManagerComponent() {
-        return showManagerComponent;
-    }
-
-    public static ServiceManagerComponent getServiceManagerComponent() {
-        return serviceManagerComponent;
-    }
-
-    public static FragmentComponent getFragmentComponent() {
-        return fragmentComponent;
-    }
-
-    public static ShowManagerInjectComponent getShowManagerInjectComponent() {
-        return showManagerInjectComponent;
-    }
-
-    public static ServiceManagerInjectComponent getServiceManagerInjectComponent() {
-        return serviceManagerInjectComponent;
-    }
 }

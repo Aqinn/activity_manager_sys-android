@@ -90,8 +90,8 @@ public class MainFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         FrameLayout layout = (FrameLayout) LayoutInflater.from(getActivity()).inflate(R.layout.fragment_main, null);
+        MyApplication.getApplicationComponent().inject(this);
         ButterKnife.bind(this, layout);
-        MyApplication.getFragmentComponent().inject(this);
         initPagers();
         if (!isCheck) {
             checkData();

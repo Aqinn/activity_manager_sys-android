@@ -7,6 +7,7 @@ import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
+import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.presenter.ServiceManager;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
@@ -51,6 +52,7 @@ public class RegisterFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_register, null);
+        MyApplication.getApplicationComponent().inject(this);
         ButterKnife.bind(this, rootView);
         initTopBar();
         return rootView;

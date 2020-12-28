@@ -122,7 +122,7 @@ public class ActCenterFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_act_center, null);
-        MyApplication.getFragmentComponent().inject(this);
+        MyApplication.getApplicationComponent().inject(this);
         ButterKnife.bind(this, rootView);
         initTopBar();
         initTabAndPager();
