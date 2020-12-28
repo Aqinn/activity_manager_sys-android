@@ -92,7 +92,7 @@ public class MyServiceManager implements ServiceManager {
     private Context mContext;
 
     public MyServiceManager() {
-        MyApplication.getServiceManagerInjectComponent().inject(this);
+        MyApplication.getApplicationComponent().inject(this);
         Log.d("singleTest", "MyServiceManager: dsAttC => " + dsAttC);
         this.mContext = MyApplication.getContext();
     }
@@ -340,7 +340,7 @@ public class MyServiceManager implements ServiceManager {
                     @Override
                     public void accept(ApiResult apiResult) throws Exception {
                         if (apiResult.success) {
-                            boolean success = showManager.startCreateAct(id);
+                            boolean success = showManager.startCreateAttend(id);
                             if (success)
                                 Toast.makeText(mContext, "开始签到成功", Toast.LENGTH_SHORT).show();
                             else
@@ -367,7 +367,7 @@ public class MyServiceManager implements ServiceManager {
                     @Override
                     public void accept(ApiResult apiResult) throws Exception {
                         if (apiResult.success) {
-                            boolean success = showManager.startCreateAct(id);
+                            boolean success = showManager.stopCreateAttend(id);
                             if (success)
                                 Toast.makeText(mContext, "关闭签到成功", Toast.LENGTH_SHORT).show();
                             else

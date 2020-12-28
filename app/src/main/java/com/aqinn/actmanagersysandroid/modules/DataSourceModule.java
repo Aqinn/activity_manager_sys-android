@@ -11,7 +11,7 @@ import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.UserDescDataSource;
-import com.aqinn.actmanagersysandroid.scopes.DataSourceScope;
+import com.aqinn.actmanagersysandroid.scopes.ApplicationScope;
 
 import dagger.Module;
 import dagger.Provides;
@@ -23,30 +23,35 @@ import dagger.Provides;
 @Module
 public class DataSourceModule {
 
+    @ApplicationScope
     @ActCreateDataSource
     @Provides
     DataSource provideActCreate() {
         return new DataSourceCreateActIntroItem();
     }
 
+    @ApplicationScope
     @ActPartDataSource
     @Provides
     DataSource provideActPart() {
         return new DataSourceParticipateActIntroItem();
     }
 
+    @ApplicationScope
     @AttendCreateDataSource
     @Provides
     DataSource provideAttendCreate() {
         return new DataSourceCreateAttendIntroItem();
     }
 
+    @ApplicationScope
     @AttendPartDataSource
     @Provides
     DataSource provideAttendPart() {
         return new DataSourceParticipateAttendIntroItem();
     }
 
+    @ApplicationScope
     @UserDescDataSource
     @Provides
     DataSource provideUserDesc() {

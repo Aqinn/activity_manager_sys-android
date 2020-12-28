@@ -59,7 +59,7 @@ public class PersonalCenterFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_personal, null);
-        MyApplication.getFragmentComponent().inject(this);
+        MyApplication.getApplicationComponent().inject(this);
         ButterKnife.bind(this, rootView);
         initTopBar();
         mPagerLayoutManager = new LinearLayoutManager(getContext());

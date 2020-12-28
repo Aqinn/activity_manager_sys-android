@@ -45,7 +45,7 @@ public class ShowManager {
     public DataSource users;
 
     public ShowManager() {
-        MyApplication.getShowManagerInjectComponent().inject(this);
+        MyApplication.getApplicationComponent().inject(this);
     }
 
     /**

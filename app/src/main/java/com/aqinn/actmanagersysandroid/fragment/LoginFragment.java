@@ -99,8 +99,8 @@ public class LoginFragment extends BaseFragment {
     @Override
     protected View onCreateView() {
         View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_login, null);
+        MyApplication.getApplicationComponent().inject(this);
         ButterKnife.bind(this, rootView);
-        MyApplication.getFragmentComponent().inject(this);
         return rootView;
     }
 

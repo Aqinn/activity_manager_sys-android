@@ -1,6 +1,7 @@
 package com.aqinn.actmanagersysandroid.modules;
 
 import com.aqinn.actmanagersysandroid.ShowManager;
+import com.aqinn.actmanagersysandroid.scopes.ApplicationScope;
 
 import javax.inject.Singleton;
 
@@ -14,7 +15,7 @@ import dagger.Provides;
 @Module
 public class ShowManagerModule {
 
-    @Singleton
+    @ApplicationScope
     @Provides
     ShowManager providerShowManager(){
         return new ShowManager();
