@@ -55,4 +55,7 @@
     <color name="thing_finish">#EF5362</color>
     <color name="thing_default">#000000</color>
 
+    <color name="edittext_wrong">#EF5362</color>
+    <color name="edittext_right">#858C96</color>
+
 </resources>

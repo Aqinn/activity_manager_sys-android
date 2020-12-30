@@ -10,11 +10,11 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.ShowManager;
-import com.aqinn.actmanagersysandroid.activity.LoginActivity;
 import com.aqinn.actmanagersysandroid.activity.MainActivity;
 import com.aqinn.actmanagersysandroid.data.ApiResult;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.data.Refreshable;
+import com.aqinn.actmanagersysandroid.entity.User;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
 import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
 import com.aqinn.actmanagersysandroid.entity.show.ParticipateAttendIntroItem;
@@ -120,6 +120,9 @@ public class MyServiceManager implements ServiceManager {
                     = showItemService.getActIntroItem(CommonUtil.getNowUserIdFromSP(mContext));
             Disposable d2 = observableActIntroItem.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(listApiResult -> {
+                        if (listApiResult.data.isEmpty()) {
+                            emitter.onNext("成功加载活动数据, 活动数据为空");
+                        }
                         ((Refreshable) dsActC).refresh(listApiResult.data);
                         ((Refreshable) dsActP).refresh(listApiResult.data);
                         emitter.onNext("成功加载活动数据");
@@ -131,20 +134,27 @@ public class MyServiceManager implements ServiceManager {
                     = showItemService.getCreateAttendIntroItem(CommonUtil.getNowUserIdFromSP(mContext));
             Disposable d3 = observableCreateAttendIntroItem.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(listApiResult -> {
+                        if (listApiResult.data.isEmpty()) {
+                            emitter.onNext("成功加载我创建的签到数据, 活动数据为空");
+                        }
                         ((Refreshable) dsAttC).refresh(listApiResult.data);
                         emitter.onNext("成功加载我创建的签到数据");
                     }, throwable -> {
-                        Log.d(TAG, "MyApplication.onCreate() 加载我创建的签到数据出错: " + throwable.getMessage());
+                        Log.d(TAG, "MyServiceManager.checkData() 加载我创建的签到数据出错: " + throwable.getMessage());
                         emitter.onNext("加载我创建的签到数据出错");
                     });
             Observable<ApiResult<List<ParticipateAttendIntroItem>>> observableParticipateAttendIntroItem
                     = showItemService.getParticipateAttendIntroItem(CommonUtil.getNowUserIdFromSP(mContext));
             Disposable d4 = observableParticipateAttendIntroItem.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(listApiResult -> {
+                        if (listApiResult.data.isEmpty()) {
+                            emitter.onNext("成功加载我参与的签到数据, 活动数据为空");
+                        }
                         ((Refreshable) dsAttP).refresh(listApiResult.data);
                         emitter.onNext("成功加载我参与的签到数据");
                     }, throwable -> {
-                        Log.d(TAG, "MyApplication.onCreate() 加载我参与的签到数据出错: " + throwable.getMessage());
+                        throwable.printStackTrace();
+                        Log.d(TAG, "MyServiceManager.checkData() 加载我参与的签到数据出错: " + throwable.getMessage());
                         emitter.onNext("加载我参与的签到数据出错");
                     });
         }).subscribeOn(Schedulers.io())
@@ -193,10 +203,35 @@ public class MyServiceManager implements ServiceManager {
     }
 
     @Override
+    public void register(User user, RegisterCallback callback) {
+        Observable<ApiResult> observable = userService.createUser(
+                user.getAccount(),user.getPwd(),user.getName(),user.getContact(),user.getSex(),user.getIntro()
+        );
+        Disposable disposable = observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(apiResult -> {
+                    if (!apiResult.success) {
+                        Log.d(TAG, "register: 注册失败, " + apiResult.errMsg);
+                        Toast.makeText(mContext, "登录失败, " + apiResult.errMsg, Toast.LENGTH_LONG).show();
+                    }
+                    Log.d(TAG, "register: 注册成功，正在跳转");
+                    Toast.makeText(mContext, "注册成功，正在跳转", Toast.LENGTH_LONG).show();
+                    callback.onFinish();
+                }, throwable -> {
+                    Log.d(TAG, "register: 注册失败 => " + throwable.getMessage());
+                    Toast.makeText(mContext, "注册失败, 网络出问题了", Toast.LENGTH_LONG).show();
+                });
+    }
+
+    @Override
     public void login(FragmentActivity fragmentActivity, String account, String pwd, boolean isRemember) {
         Observable<ApiResult> observable = userService.userLogin(account.toString(), pwd);
         Disposable disposable = observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(apiResult -> {
+                    if (!apiResult.success) {
+                        Log.d(TAG, "toMainActivity: 登录失败, " + apiResult.errMsg);
+                        Toast.makeText(mContext, "登录失败, " + apiResult.errMsg, Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     Log.d(TAG, "toMainActivity: 登录成功，正在跳转");
                     if (isRemember) {
                         CommonUtil.setUsernameToSP(mContext, account);
@@ -209,10 +244,84 @@ public class MyServiceManager implements ServiceManager {
                     CommonUtil.setNowUserIdToSP(mContext, userId);
                     CommonUtil.setNowUsernameToSP(mContext, account);
                     Intent intent = new Intent(mContext, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
                     mContext.startActivity(intent);
                     fragmentActivity.finish();
                 }, throwable -> {
                     Log.d(TAG, "toMainActivity: 登录失败 => " + throwable.getMessage());
+                    Toast.makeText(mContext, "登录失败, 网络出问题了", Toast.LENGTH_LONG).show();
+                });
+    }
+
+    @Override
+    public void createAct(ActIntroItem aii, CreateActCallback callback) {
+        if (!verifyAct(aii)) {
+            callback.onFail();
+            return;
+        }
+        Disposable disposable = actService.createAct(
+                aii.getOwnerId(), aii.getName(), aii.getIntro(), aii.getLocation(), aii.getTime()
+        )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ApiResult>() {
+                    @Override
+                    public void accept(ApiResult apiResult) throws Exception {
+                        if (apiResult.success) {
+                            LinkedTreeMap linkedTreeMap = (LinkedTreeMap) apiResult.data;
+                            Long actId = ((Double) (linkedTreeMap.get("id"))).longValue();
+                            Long code = ((Double) (linkedTreeMap.get("code"))).longValue();
+                            Long pwd = ((Double) (linkedTreeMap.get("pwd"))).longValue();
+                            aii.setActId(actId);
+                            aii.setCode(code);
+                            aii.setPwd(pwd);
+                            boolean success = showManager.createAct(aii);
+                            if (success) {
+                                Toast.makeText(mContext, "创建活动成功", Toast.LENGTH_SHORT).show();
+                                callback.onFinish();
+                            } else {
+                                Toast.makeText(mContext, "创建活动失败, 本地问题", Toast.LENGTH_SHORT).show();
+                                callback.onError();
+                            }
+                        } else {
+                            Toast.makeText(mContext, "创建活动失败, 后台问题: " + apiResult.errMsg, Toast.LENGTH_SHORT).show();
+                            callback.onError();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Toast.makeText(mContext, "创建活动失败, 网络问题", Toast.LENGTH_SHORT).show();
+                        callback.onError();
+                    }
+                });
+    }
+
+    @Override
+    public void joinAct(Long code, Long pwd) {
+        Disposable disposable = userActService.userJoinAct(CommonUtil.getNowUserIdFromSP(mContext), code, pwd)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ApiResult<ActIntroItem>>() {
+                    @Override
+                    public void accept(ApiResult<ActIntroItem> actIntroItemApiResult) throws Exception {
+                        if (actIntroItemApiResult.success) {
+                            ActIntroItem aii = (ActIntroItem) actIntroItemApiResult.data;
+                            boolean success = showManager.joinAct(aii);
+                            if (success) {
+                                Toast.makeText(mContext, "加入活动成功", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(mContext, "加入活动失败, 本地问题", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(mContext, "加入活动失败, 后台问题: " + actIntroItemApiResult.errMsg, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Toast.makeText(mContext, "加入活动失败, 网络问题", Toast.LENGTH_SHORT).show();
+                    }
                 });
     }
 
@@ -232,7 +341,7 @@ public class MyServiceManager implements ServiceManager {
                             else
                                 Toast.makeText(mContext, "开始活动失败, 本地问题", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(mContext, "开始活动失败, 后台问题", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "开始活动失败, 后台问题: " + apiResult.errMsg, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -259,7 +368,7 @@ public class MyServiceManager implements ServiceManager {
                             else
                                 Toast.makeText(mContext, "停止活动失败, 本地问题", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(mContext, "停止活动失败, 后台问题", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "停止活动失败, 后台问题: " + apiResult.errMsg, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -286,7 +395,7 @@ public class MyServiceManager implements ServiceManager {
                             else
                                 Toast.makeText(mContext, "退出活动失败, 本地问题", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(mContext, "退出活动失败, 后台问题", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "退出活动失败, 后台问题: " + apiResult.errMsg, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -299,6 +408,10 @@ public class MyServiceManager implements ServiceManager {
 
     @Override
     public void editAct(ActIntroItem aii, EditActCallback callback) {
+        if (!verifyAct(aii)) {
+            callback.onFail();
+            return;
+        }
         Map<String, Object> params = new HashMap<>();
         params.put("name", aii.getName());
         params.put("desc", aii.getIntro());
@@ -317,15 +430,19 @@ public class MyServiceManager implements ServiceManager {
                                 callback.onFinish();
                             } else {
                                 Toast.makeText(mContext, "活动修改保存失败", Toast.LENGTH_SHORT).show();
+                                callback.onError();
                             }
                         } else {
-                            Toast.makeText(mContext, "活动修改保存失败, 后台问题", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "活动修改保存失败, 后台问题: " + apiResult.errMsg, Toast.LENGTH_SHORT).show();
+                            callback.onError();
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
                         Toast.makeText(mContext, "活动修改保存失败, 网络问题", Toast.LENGTH_SHORT).show();
+                        callback.onError();
                     }
                 });
     }
@@ -346,7 +463,7 @@ public class MyServiceManager implements ServiceManager {
                             else
                                 Toast.makeText(mContext, "开始签到失败, 本地问题", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(mContext, "开始签到失败, 后台问题", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "开始签到失败, 后台问题: " + apiResult.errMsg, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -373,7 +490,7 @@ public class MyServiceManager implements ServiceManager {
                             else
                                 Toast.makeText(mContext, "关闭签到失败, 本地问题", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(mContext, "关闭签到失败, 后台问题", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "关闭签到失败, 后台问题: " + apiResult.errMsg, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -382,11 +499,6 @@ public class MyServiceManager implements ServiceManager {
                         Toast.makeText(mContext, "关闭签到失败, 网络问题", Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    @Override
-    public void editAttend(Long id) {
-
     }
 
     @Override
@@ -405,7 +517,7 @@ public class MyServiceManager implements ServiceManager {
                             else
                                 Toast.makeText(mContext, "编辑签到时间失败, 本地问题", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(mContext, "编辑签到时间失败, 后台问题", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "编辑签到时间失败, 后台问题: " + apiResult.errMsg, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -432,7 +544,7 @@ public class MyServiceManager implements ServiceManager {
                             else
                                 Toast.makeText(mContext, "编辑签到类型失败, 本地问题", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(mContext, "编辑签到类型失败, 后台问题", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "编辑签到类型失败, 后台问题: " + apiResult.errMsg, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -442,5 +554,18 @@ public class MyServiceManager implements ServiceManager {
                     }
                 });
     }
+
+    private boolean verifyAct(ActIntroItem aii) {
+        if (aii.getName().replace(" ", "").isEmpty()
+                || aii.getName().length() > 20
+                || aii.getTime().replace(" ", "").isEmpty())
+            return false;
+        return true;
+    }
+
+//    LinkedTreeMap linkedTreeMap = (LinkedTreeMap) apiResult.data;
+//    Object o = linkedTreeMap.get("id");
+//    Double d = (Double) o;
+//    Long userId = d.longValue();
 
 }

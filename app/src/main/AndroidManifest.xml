@@ -16,16 +16,16 @@
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|uiMode"
-            android:theme="@style/AppTheme"
             android:launchMode="singleInstance"
+            android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
 
         </activity>
         <activity
             android:name=".activity.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|uiMode"
-            android:theme="@style/AppTheme"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

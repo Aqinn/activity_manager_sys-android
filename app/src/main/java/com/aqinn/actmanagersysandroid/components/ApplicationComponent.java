@@ -5,6 +5,7 @@ import com.aqinn.actmanagersysandroid.ShowManager;
 import com.aqinn.actmanagersysandroid.fragment.ActCenterFragment;
 import com.aqinn.actmanagersysandroid.fragment.ActDetailFragment;
 import com.aqinn.actmanagersysandroid.fragment.AttendCenterFragment;
+import com.aqinn.actmanagersysandroid.fragment.CreateActFragment;
 import com.aqinn.actmanagersysandroid.fragment.LoginFragment;
 import com.aqinn.actmanagersysandroid.fragment.MainFragment;
 import com.aqinn.actmanagersysandroid.fragment.PersonalCenterFragment;
@@ -35,6 +36,7 @@ public interface ApplicationComponent {
     void inject(MainFragment mainFragment);
     void inject(ActCenterFragment actCenterFragment);
     void inject(ActDetailFragment actDetailFragment);
+    void inject(CreateActFragment createActFragment);
     void inject(AttendCenterFragment attendCenterFragment);
     void inject(PersonalCenterFragment personalCenterFragment);
     void inject(LoginFragment loginFragment);

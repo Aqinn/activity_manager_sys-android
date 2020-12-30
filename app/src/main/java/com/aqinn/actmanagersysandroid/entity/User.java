@@ -32,6 +32,15 @@ public class User {
         this.intro = intro;
     }
 
+    public User(String account, String pwd, String name, String contact, int sex, String intro) {
+        this.account = account;
+        this.pwd = pwd;
+        this.name = name;
+        this.contact = contact;
+        this.sex = sex;
+        this.intro = intro;
+    }
+
     public Long getId() {
         return id;
     }

@@ -406,7 +406,8 @@ public class AttendCenterFragment extends BaseFragment {
                 .onDismiss(new PopupWindow.OnDismissListener() {
                     @Override
                     public void onDismiss() {
-                        serviceManager.editAttendTime(id, ((EditText) editView.findViewById(R.id.et_time)).getText().toString());
+
+//                        serviceManager.editAttendTime(id, ((EditText) editView.findViewById(R.id.et_time)).getText().toString());
                     }
                 })
                 .show(v);

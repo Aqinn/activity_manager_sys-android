@@ -257,11 +257,10 @@ public class ShowManager {
         boolean res = newAii.save();
         if (!res)
             return false;
-        boolean success = false;
-        success = actC.getDatas().add(newAii);
-        if (success)
-            actC.notifyAllObserver();
-        return success;
+        ActIntroItem dbAii = LitePal.findLast(ActIntroItem.class);
+        actC.getDatas().add(0, dbAii);
+        actC.notifyAllObserver();
+        return true;
     }
 
     /**
@@ -276,6 +275,22 @@ public class ShowManager {
         if (success)
             attC.notifyAllObserver();
         return success;
+    }
+
+    /**
+     * 加入活动
+     *
+     * @param aii
+     * @return
+     */
+    public boolean joinAct(ActIntroItem aii) {
+        boolean res = aii.save();
+        if (!res)
+            return false;
+        ActIntroItem dbAii = LitePal.findLast(ActIntroItem.class);
+        actC.getDatas().add(0, dbAii);
+        actC.notifyAllObserver();
+        return true;
     }
 
 }

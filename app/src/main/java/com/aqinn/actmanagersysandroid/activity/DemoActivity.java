@@ -87,8 +87,8 @@ public class DemoActivity extends QMUIFragmentActivity implements CameraBridgeVi
         // 对一帧图像进行处理
         Bitmap temp = Bitmap.createBitmap(rgba.cols(), rgba.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(rgba, temp);
-        if (frameCount % 2 == 0)
-            objects = mobilenetssdncnn.Detect(temp, false);
+        if (frameCount % 1 == 0)
+            objects = mobilenetssdncnn.Detect(temp, true);
         // 得到一帧灰度图
 //        rgba = inputFrame.gray();
 //        if (!isSave) {

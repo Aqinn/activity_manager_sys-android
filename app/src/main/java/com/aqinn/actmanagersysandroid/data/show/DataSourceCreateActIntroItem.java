@@ -4,9 +4,7 @@ import android.util.Log;
 
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.data.DataSource;
-import com.aqinn.actmanagersysandroid.data.Observer;
 import com.aqinn.actmanagersysandroid.data.Refreshable;
-import com.aqinn.actmanagersysandroid.entity.Act;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
 import com.aqinn.actmanagersysandroid.utils.CommonUtil;
 
@@ -43,7 +41,8 @@ public class DataSourceCreateActIntroItem extends DataSource<ActIntroItem> imple
     @Override
     public void refresh(Object o) {
         List<ActIntroItem> actIntroItemList = (List<ActIntroItem>) o;
-        LitePal.deleteAll(ActIntroItem.class, "ownerId = ?", String.valueOf(actIntroItemList.get(0).getOwnerId()));
+        Log.d(TAG, "refresh: actIntroItemList" + actIntroItemList);
+        LitePal.deleteAll(ActIntroItem.class, "ownerId = ?", String.valueOf(CommonUtil.getNowUserIdFromSP(MyApplication.getContext())));
         List<ActIntroItem> temp = new ArrayList<>();
         String nowUserAccount = CommonUtil.getNowUsernameFromSP(MyApplication.getContext());
         for (ActIntroItem aii:actIntroItemList) {

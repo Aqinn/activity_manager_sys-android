@@ -4,7 +4,7 @@ import android.content.Context;
 
 import androidx.fragment.app.FragmentActivity;
 
-import com.aqinn.actmanagersysandroid.activity.LoginActivity;
+import com.aqinn.actmanagersysandroid.entity.User;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
 
 /**
@@ -17,7 +17,13 @@ public interface ServiceManager {
 
     void checkData(Context context);
 
+    void register(User user, RegisterCallback callback);
+
     void login(FragmentActivity fragmentActivity, String account, String pwd, boolean isRemember);
+
+    void createAct(ActIntroItem aii, CreateActCallback callback);
+
+    void joinAct(Long code, Long pwd);
 
     void startAct(Long id);
 
@@ -31,14 +37,24 @@ public interface ServiceManager {
 
     void stopAttend(Long id);
 
-    void editAttend(Long id);
-
     void editAttendTime(Long id, String time);
 
     void editAttendType(Long id, Integer type);
 
+    interface RegisterCallback{
+        void onFinish();
+    }
+
     interface EditActCallback{
         void onFinish();
+        void onFail();
+        void onError();
+    }
+
+    interface CreateActCallback{
+        void onFinish();
+        void onFail();
+        void onError();
     }
 
 }

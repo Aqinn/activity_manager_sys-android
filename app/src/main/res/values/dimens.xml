@@ -27,7 +27,8 @@
     <dimen name="attend_detail_margin_inter">0dp</dimen>
     <dimen name="attend_detail_name_text_size">28dp</dimen>
     <dimen name="tobbar_height">93dp</dimen>
-    <dimen name="register_input_left_margin">10dp</dimen>
+    <dimen name="register_input_start_margin">10dp</dimen>
+    <dimen name="register_input_end_margin">90dp</dimen>
 
 
 

@@ -1,30 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/login_bg">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="5dp">
 
-        <ImageView
+
+        <com.qmuiteam.qmui.widget.QMUIRadiusImageView2
             android:id="@+id/iv_head"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="200dp"
-            android:scaleType="fitCenter"
+            android:clickable="true"
+            android:scaleType="centerCrop"
             android:src="@drawable/boy"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:qmui_is_circle="true"
+            app:qmui_border_color="?attr/qmui_config_color_gray_6"
+            app:qmui_border_width="1px"
+            app:qmui_selected_border_color="?attr/qmui_config_color_gray_4"
+            app:qmui_selected_border_width="1px"
+            app:qmui_selected_mask_color="?attr/qmui_config_color_gray_8" />
 
         <ImageView
             android:layout_width="25dp"
@@ -41,10 +49,10 @@
             android:layout_marginStart="30dp"
             android:layout_marginTop="23dp"
             android:hint="请输入用户名"
-            android:textSize="16dp"
             android:lines="1"
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white"
+            android:textSize="16dp"
             android:theme="@style/MyEditText"
             app:layout_constraintTop_toBottomOf="@id/iv_head" />
 

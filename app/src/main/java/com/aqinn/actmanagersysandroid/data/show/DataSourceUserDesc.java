@@ -4,7 +4,6 @@ import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.data.Observer;
 import com.aqinn.actmanagersysandroid.data.Refreshable;
-import com.aqinn.actmanagersysandroid.entity.User;
 import com.aqinn.actmanagersysandroid.entity.show.UserDesc;
 import com.aqinn.actmanagersysandroid.utils.CommonUtil;
 

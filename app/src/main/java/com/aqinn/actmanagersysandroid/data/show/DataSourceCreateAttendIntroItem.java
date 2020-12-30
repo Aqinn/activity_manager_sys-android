@@ -34,7 +34,7 @@ public class DataSourceCreateAttendIntroItem extends DataSource<CreateAttendIntr
     @Override
     public void refresh(Object o) {
         List<CreateAttendIntroItem> createAttendIntroItemList = (List<CreateAttendIntroItem>) o;
-        LitePal.deleteAll(CreateAttendIntroItem.class, "ownerId = ?", String.valueOf(createAttendIntroItemList.get(0).getOwnerId()));
+        LitePal.deleteAll(CreateAttendIntroItem.class, "ownerId = ?", String.valueOf(CommonUtil.getNowUserIdFromSP(MyApplication.getContext())));
         LitePal.saveAll(createAttendIntroItemList);
         datas.clear();
         datas.addAll(createAttendIntroItemList);

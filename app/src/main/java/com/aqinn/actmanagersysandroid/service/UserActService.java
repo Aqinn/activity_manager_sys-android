@@ -1,9 +1,12 @@
 package com.aqinn.actmanagersysandroid.service;
 
 import com.aqinn.actmanagersysandroid.data.ApiResult;
+import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
 
 import io.reactivex.Observable;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -13,8 +16,10 @@ import retrofit2.http.Path;
  */
 public interface UserActService {
 
-    @POST("useract/{userId}/{actId}")
-    Observable<ApiResult> userJoinAct(@Path("userId") Long userId, @Path("actId") Long actId);
+    @FormUrlEncoded
+    @POST("useract/{userId}")
+    Observable<ApiResult<ActIntroItem>> userJoinAct(@Path("userId") Long userId, @Field("code") Long code,
+                                                    @Field("pwd") Long pwd);
 
     @DELETE("useract/{userId}/{actId}")
     Observable<ApiResult> userQuitAct(@Path("userId") Long userId, @Path("actId") Long actId);

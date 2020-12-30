@@ -16,6 +16,10 @@ public class ActIntroItem extends LitePalSupport {
 
     private Long actId;
 
+    private Long code;
+
+    private Long pwd;
+
     private String creator;
 
     private String name;
@@ -29,10 +33,15 @@ public class ActIntroItem extends LitePalSupport {
     // 活动状态 1: "未开始" 2: "进行中" 3: "已结束"
     private Integer status;
 
-    public ActIntroItem(Long id, Long ownerId, Long actId, String creator, String name, String time, String location, String intro, Integer status) {
+    public ActIntroItem() {
+    }
+
+    public ActIntroItem(Long id, Long ownerId, Long actId, Long code, Long pwd, String creator, String name, String time, String location, String intro, Integer status) {
         this.id = id;
         this.ownerId = ownerId;
         this.actId = actId;
+        this.code = code;
+        this.pwd = pwd;
         this.creator = creator;
         this.name = name;
         this.time = time;
@@ -63,6 +72,22 @@ public class ActIntroItem extends LitePalSupport {
 
     public void setActId(Long actId) {
         this.actId = actId;
+    }
+
+    public Long getCode() {
+        return code;
+    }
+
+    public void setCode(Long code) {
+        this.code = code;
+    }
+
+    public Long getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(Long pwd) {
+        this.pwd = pwd;
     }
 
     public String getCreator() {
@@ -119,6 +144,8 @@ public class ActIntroItem extends LitePalSupport {
                 "id=" + id +
                 ", ownerId=" + ownerId +
                 ", actId=" + actId +
+                ", code=" + code +
+                ", pwd=" + pwd +
                 ", creator='" + creator + '\'' +
                 ", name='" + name + '\'' +
                 ", time='" + time + '\'' +

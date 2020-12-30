@@ -1,11 +1,15 @@
 package com.aqinn.actmanagersysandroid.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -22,6 +26,7 @@ import com.aqinn.actmanagersysandroid.adapter.ActIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.data.ApiResult;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
+import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
 import com.aqinn.actmanagersysandroid.presenter.MyServiceManager;
 import com.aqinn.actmanagersysandroid.presenter.ServiceManager;
 import com.aqinn.actmanagersysandroid.qualifiers.ActCreateDataSource;
@@ -31,6 +36,7 @@ import com.aqinn.actmanagersysandroid.service.AttendService;
 import com.aqinn.actmanagersysandroid.service.UserActService;
 import com.aqinn.actmanagersysandroid.service.UserAttendService;
 import com.aqinn.actmanagersysandroid.service.UserService;
+import com.aqinn.actmanagersysandroid.utils.CommonUtil;
 import com.aqinn.actmanagersysandroid.utils.RetrofitUtils;
 import com.qmuiteam.qmui.layout.QMUIFrameLayout;
 import com.qmuiteam.qmui.skin.QMUISkinHelper;
@@ -40,7 +46,10 @@ import com.qmuiteam.qmui.util.QMUIDisplayHelper;
 import com.qmuiteam.qmui.util.QMUIResHelper;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
 import com.qmuiteam.qmui.widget.dialog.QMUIBottomSheet;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.qmuiteam.qmui.widget.popup.QMUIFullScreenPopup;
+import com.qmuiteam.qmui.widget.popup.QMUIPopup;
 import com.qmuiteam.qmui.widget.popup.QMUIPopups;
 import com.qmuiteam.qmui.widget.popup.QMUIQuickAction;
 import com.qmuiteam.qmui.widget.tab.QMUITabBuilder;
@@ -53,6 +62,9 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -157,11 +169,18 @@ public class ActCenterFragment extends BaseFragment {
                         switch (position) {
                             case 0:
                                 // 创建活动
-
+                                CreateActFragment fragment = new CreateActFragment();
+                                startFragment(fragment);
                                 break;
                             case 1:
                                 // 加入活动
-
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        showJoinAct();
+                                    }
+                                }, 300);
                                 break;
                             default:
                                 break;
@@ -216,8 +235,11 @@ public class ActCenterFragment extends BaseFragment {
         return listView;
     }
 
-    // TODO 小弹窗展示活动详情
-    private void showActDetail(View v) {
+    /**
+     * 弹窗加入活动
+     */
+    private void showJoinAct() {
+        // 这里必须用 QMUI 的布局作为父布局，不然不能调节提示框的大小
         QMUISkinValueBuilder builder = QMUISkinValueBuilder.acquire();
         QMUIFrameLayout frameLayout = new QMUIFrameLayout(getContext());
         frameLayout.setBackground(
@@ -225,44 +247,46 @@ public class ActCenterFragment extends BaseFragment {
         builder.background(R.attr.qmui_skin_support_popup_bg);
         QMUISkinHelper.setSkinValue(frameLayout, builder);
         frameLayout.setRadius(QMUIDisplayHelper.dp2px(getContext(), 12));
-        int padding = QMUIDisplayHelper.dp2px(getContext(), 20);
-        frameLayout.setPadding(padding, padding, padding, padding);
-
-        TextView textView = new TextView(getContext());
-        textView.setLineSpacing(QMUIDisplayHelper.dp2px(getContext(), 4), 1.0f);
-        textView.setPadding(padding, padding, padding, padding);
-        textView.setText("这是自定义显示的内容");
-        textView.setTextColor(
-                QMUIResHelper.getAttrColor(getContext(), R.attr.app_skin_common_title_text_color));
-
+        final int padding = QMUIDisplayHelper.dp2px(getContext(), 20);
+        frameLayout.setPadding(padding, padding / 2, padding, padding);
         builder.clear();
         builder.textColor(R.attr.app_skin_common_title_text_color);
-        QMUISkinHelper.setSkinValue(textView, builder);
-        textView.setGravity(Gravity.CENTER);
-
         builder.release();
-
-        int size = QMUIDisplayHelper.dp2px(getContext(), 200);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(size, size);
-        frameLayout.addView(textView, lp);
-
+        int height = QMUIDisplayHelper.dp2px(getContext(), 240);
+        int width = QMUIDisplayHelper.dp2px(getContext(), 165);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(height, width);
+        final View editView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_join_act, null);
+        editView.setBackground(QMUIResHelper.getAttrDrawable(getContext(), R.attr.qmui_skin_support_popup_bg));
+        TextView tv_name = (TextView) editView.findViewById(R.id.tv_name);
+        EditText et_code = (EditText) editView.findViewById(R.id.et_code);
+        EditText et_pwd = (EditText) editView.findViewById(R.id.et_pwd);
+        tv_name.setText("加入活动");
+        frameLayout.addView(editView, lp);
+        // 这个弹框的 closeBtn 用来当做确认按钮 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // closeIcon 已更换成 一个勾的图案
         QMUIPopups.fullScreenPopup(getContext())
                 .addView(frameLayout)
                 .closeBtn(true)
-                .skinManager(QMUISkinManager.defaultInstance(getContext()))
+                .closeIcon(getContext().getDrawable(R.drawable.icon_popup_yes))
                 .onBlankClick(new QMUIFullScreenPopup.OnBlankClickListener() {
                     @Override
                     public void onBlankClick(QMUIFullScreenPopup popup) {
-                        Toast.makeText(getContext(), "点击到空白区域", Toast.LENGTH_SHORT).show();
+                        popup.onDismiss(new PopupWindow.OnDismissListener() {
+                            @Override
+                            public void onDismiss() {
+                                Toast.makeText(getContext(), "取消弹框", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        popup.dismiss();
                     }
                 })
                 .onDismiss(new PopupWindow.OnDismissListener() {
                     @Override
                     public void onDismiss() {
-                        Toast.makeText(getContext(), "onDismiss", Toast.LENGTH_SHORT).show();
+                        serviceManager.joinAct(Long.valueOf(et_code.getText().toString()), Long.valueOf(et_pwd.getText().toString()));
                     }
                 })
-                .show(v);
+                .show(mContentViewPager);
     }
 
     @Override
@@ -294,6 +318,16 @@ public class ActCenterFragment extends BaseFragment {
                             ActDetailFragment adf = new ActDetailFragment(mFlag, clickAii, mAdapterMap.get(mFlag));
                             startFragment(adf);
                             Toast.makeText(getContext(), "查看详情成功", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+            ));
+            qqa.addAction(new QMUIQuickAction.Action().text("活动代码").onClick(
+                    new QMUIQuickAction.OnClickListener() {
+                        @Override
+                        public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
+                            quickAction.dismiss();
+                            showCodeAndPwd(view, clickAii.getCode(), clickAii.getPwd());
+                            Toast.makeText(getContext(), "查看活动代码成功", Toast.LENGTH_SHORT).show();
                         }
                     }
             ));
@@ -353,6 +387,37 @@ public class ActCenterFragment extends BaseFragment {
             ));
             qqa.show(view);
         }
+    }
+
+    private void showCodeAndPwd(View v, Long code, Long pwd) {
+        TextView textView = new TextView(getContext());
+        textView.setLineSpacing(QMUIDisplayHelper.dp2px(getContext(), 4), 1.0f);
+        int padding = QMUIDisplayHelper.dp2px(getContext(), 10);
+        textView.setPadding(padding, padding, padding, padding);
+        textView.setText("活动代码: " + code + "\n活动密码: " + pwd);
+        textView.setTextColor(
+                QMUIResHelper.getAttrColor(getContext(), R.attr.app_skin_common_title_text_color));
+        QMUISkinValueBuilder builder = QMUISkinValueBuilder.acquire();
+        builder.textColor(R.attr.app_skin_common_title_text_color);
+        QMUISkinHelper.setSkinValue(textView, builder);
+        builder.release();
+        QMUIPopups.popup(getContext(), QMUIDisplayHelper.dp2px(getContext(), 140))
+                .preferredDirection(QMUIPopup.DIRECTION_BOTTOM)
+                .view(textView)
+                .skinManager(QMUISkinManager.defaultInstance(getContext()))
+                .edgeProtection(QMUIDisplayHelper.dp2px(getContext(), 20))
+                .offsetX(QMUIDisplayHelper.dp2px(getContext(), 20))
+                .offsetYIfBottom(QMUIDisplayHelper.dp2px(getContext(), 5))
+                .shadow(true)
+                .arrow(true)
+                .animStyle(QMUIPopup.ANIM_GROW_FROM_CENTER)
+                .onDismiss(new PopupWindow.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+//                        Toast.makeText(getContext(), "onDismiss", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show(v);
     }
 
     public enum ContentPage {

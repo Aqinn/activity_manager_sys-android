@@ -30,10 +30,24 @@ public class CommonUtil {
     private static final String REMEMBER_USERNAME = "RememberUsername";
     private static final String REMEMBER_PWD = "RememberPwd";
     public static final Long ERR_USER_ID = -1L;
+    private static final String accountRegExp = "^[a-zA-Z_][0-9a-zA-Z_]{2,19}$";
+    private static final String pwdRegExp = "^[0-9a-zA-Z_]{6,20}$";
 
     static {
         sdf_long = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         sdf_short = new SimpleDateFormat("yyyy-MM-dd");
+    }
+
+    public static boolean verifyAccount(String account) {
+        if (account == null || account.isEmpty() || account.contains(" "))
+            return false;
+        return account.matches(accountRegExp);
+    }
+
+    public static boolean verifyPwd(String pwd) {
+        if (pwd == null || pwd.isEmpty() || pwd.contains(" "))
+            return false;
+        return pwd.matches(pwdRegExp);
     }
 
     /**

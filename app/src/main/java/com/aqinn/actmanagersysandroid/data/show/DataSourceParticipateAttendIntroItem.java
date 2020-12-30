@@ -33,7 +33,7 @@ public class DataSourceParticipateAttendIntroItem extends DataSource<Participate
     @Override
     public void refresh(Object o) {
         List<ParticipateAttendIntroItem> participateAttendIntroItemList = (List<ParticipateAttendIntroItem>) o;
-        LitePal.deleteAll(ParticipateAttendIntroItem.class, "ownerId = ?", String.valueOf(participateAttendIntroItemList.get(0).getOwnerId()));
+        LitePal.deleteAll(ParticipateAttendIntroItem.class, "ownerId = ?", String.valueOf(CommonUtil.getNowUserIdFromSP(MyApplication.getContext())));
         LitePal.saveAll(participateAttendIntroItemList);
         datas.clear();
         datas.addAll(participateAttendIntroItemList);

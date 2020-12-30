@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="加入活动"
+        android:textSize="@dimen/attend_detail_name_text_size"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/attend_detail_margin"/>
+
+    <EditText
+        android:id="@+id/et_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="活动代码(6位纯数字)"
+        android:maxLength="6"
+        android:digits="1234567890"
+        app:layout_constraintTop_toBottomOf="@id/tv_name"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/attend_detail_margin"
+        android:layout_marginTop="@dimen/attend_detail_margin"
+        />
+
+    <EditText
+        android:id="@+id/et_pwd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="活动密码(6位纯数字)"
+        android:maxLength="6"
+        android:digits="1234567890"
+        app:layout_constraintTop_toBottomOf="@id/et_code"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/attend_detail_margin"
+        android:layout_marginTop="@dimen/attend_detail_margin_inter"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

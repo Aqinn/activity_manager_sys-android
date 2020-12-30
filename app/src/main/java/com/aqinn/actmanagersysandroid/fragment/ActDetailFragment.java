@@ -20,6 +20,7 @@ import com.aqinn.actmanagersysandroid.service.AttendService;
 import com.aqinn.actmanagersysandroid.service.UserActService;
 import com.aqinn.actmanagersysandroid.service.UserAttendService;
 import com.aqinn.actmanagersysandroid.service.UserService;
+import com.aqinn.actmanagersysandroid.utils.CommonUtil;
 import com.qmuiteam.qmui.alpha.QMUIAlphaImageButton;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
@@ -42,6 +43,8 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class ActDetailFragment extends BaseFragment {
 
+    private static final String TAG = "ActDetailFragment";
+
     @BindView(R.id.topbar)
     QMUITopBarLayout mTopBar;
     @BindView(R.id.tv_creator)
@@ -58,26 +61,20 @@ public class ActDetailFragment extends BaseFragment {
     @Inject
     public ServiceManager serviceManager;
 
-    private Context mContext = getContext();
     private Integer mFlag = -1;
     private boolean editEnable = false;
     private ActIntroItem mAii = null;
-    private ActIntroItemAdapter mAiia = null;
     private QMUIAlphaImageButton qaib;
     private final int mCurrentDialogStyle = com.qmuiteam.qmui.R.style.QMUI_Dialog;
 
-    // TODO 仅测试用
     public ActDetailFragment(int flag, ActIntroItem aii, ActIntroItemAdapter aiia) {
         mFlag = flag;
         this.mAii = aii;
-        this.mAiia = aiia;
     }
 
-    // TODO 仅测试用
     public ActDetailFragment(int flag, ActIntroItem aii, ActIntroItemAdapter aiia, boolean editEnable) {
         mFlag = flag;
         this.mAii = aii;
-        this.mAiia = aiia;
         this.editEnable = editEnable;
     }
 
@@ -138,7 +135,7 @@ public class ActDetailFragment extends BaseFragment {
         qaib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActIntroItem newAii = new ActIntroItem(mAii.getId(), mAii.getOwnerId(), mAii.getActId(), mAii.getCreator(),
+                ActIntroItem newAii = new ActIntroItem(mAii.getId(), mAii.getOwnerId(), mAii.getActId(), mAii.getCode(), mAii.getPwd(), mAii.getCreator(),
                         etName.getText().toString(), etTime.getText().toString(),
                         etLoc.getText().toString(), etIntro.getText().toString(),
                         mAii.getStatus());
@@ -146,6 +143,16 @@ public class ActDetailFragment extends BaseFragment {
                     @Override
                     public void onFinish() {
                         editModeOff();
+                    }
+
+                    @Override
+                    public void onFail() {
+                        Toast.makeText(getContext(), "活动信息填写不符合规范", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError() {
+                        Toast.makeText(getContext(), "修改出错, 原因未知", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
