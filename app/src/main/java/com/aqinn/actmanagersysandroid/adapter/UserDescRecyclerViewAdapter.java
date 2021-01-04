@@ -4,6 +4,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -16,10 +18,13 @@ import android.widget.TextView;
 
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
+import com.aqinn.actmanagersysandroid.StreamBlazeFaceDetector.StreamBlazeFaceDetectActivity;
+import com.aqinn.actmanagersysandroid.StreamBlazeFaceDetector.StreamBlazeFaceDetectFragment;
 import com.aqinn.actmanagersysandroid.activity.LoginActivity;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.data.Observer;
 import com.aqinn.actmanagersysandroid.entity.show.UserDesc;
+import com.aqinn.actmanagersysandroid.fragment.BaseFragment;
 import com.aqinn.actmanagersysandroid.utils.CommonUtil;
 
 import butterknife.BindView;
@@ -162,6 +167,10 @@ public class UserDescRecyclerViewAdapter extends RecyclerView.Adapter<UserDescRe
         @OnClick(R.id.bt_gather_face)
         public void gatherFace() {
             Log.d(TAG, "gatherFace: 点击了人脸采集按钮");
+            Intent intent = new Intent();
+            Activity activity = (FragmentActivity) mContext;
+            intent.setClass(activity, StreamBlazeFaceDetectActivity.class);
+            activity.startActivity(intent);
         }
 
         @OnClick(R.id.bt_settings)

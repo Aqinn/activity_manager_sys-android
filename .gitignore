@@ -3,6 +3,5 @@
 app/.cxx
 app/build
 build
-openCVLibrary3412/build
 app/src/main/jni/ncnn-android-vulkan-lib
 app/src/main/jniLibs

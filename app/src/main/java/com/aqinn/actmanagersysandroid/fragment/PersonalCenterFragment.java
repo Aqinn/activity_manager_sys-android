@@ -64,7 +64,7 @@ public class PersonalCenterFragment extends BaseFragment {
         initTopBar();
         mPagerLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mPagerLayoutManager);
-        userDescRecyclerViewAdapter = new UserDescRecyclerViewAdapter(getActivity(), dsu);
+        userDescRecyclerViewAdapter = new UserDescRecyclerViewAdapter(getActivity(),  dsu);
         mRecyclerView.setAdapter(userDescRecyclerViewAdapter);
         return rootView;
     }

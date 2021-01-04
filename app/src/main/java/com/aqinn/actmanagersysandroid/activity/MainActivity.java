@@ -54,6 +54,7 @@ public class MainActivity extends BaseFragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        askForPermission();
         init();
     }
 
