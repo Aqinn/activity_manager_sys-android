@@ -136,7 +136,7 @@ TNN_BLAZEFACE_DETECTOR(detectFromImage)(JNIEnv *env, jobject thiz, jobject image
     }
 
     TNN_NS::BenchOption bench_option;
-    bench_option.forward_count = 20;
+    bench_option.forward_count = 1;  // 这里原来是 20 次，不知道为什么要设置这么多次
     gDetector->SetBenchOption(bench_option);
 
     //orgin dims

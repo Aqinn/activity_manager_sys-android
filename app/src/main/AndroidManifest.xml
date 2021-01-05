@@ -26,15 +26,22 @@
             android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|uiMode"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme">
+
+        </activity>
+        <activity android:name=".activity.MobileNetMainActivity"></activity>
+        <activity android:name=".StreamBlazeFaceDetector.StreamBlazeFaceDetectActivity">
+
+        </activity>
+        <activity android:name=".StreamBlazeFaceDetector.FaceCollectActivity">
+
+        </activity>
+
+        <activity android:name=".ImageBlazeFaceDetector.ImageBlazeFaceDetectActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".activity.MobileNetMainActivity"></activity>
-        <activity android:name=".StreamBlazeFaceDetector.StreamBlazeFaceDetectActivity">
-
         </activity>
     </application>
 
