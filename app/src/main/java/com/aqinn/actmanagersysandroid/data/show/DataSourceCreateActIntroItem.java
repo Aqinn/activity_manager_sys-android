@@ -6,7 +6,7 @@ import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.data.Refreshable;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
-import com.aqinn.actmanagersysandroid.utils.CommonUtil;
+import com.aqinn.actmanagersysandroid.utils.CommonUtils;
 
 import org.litepal.LitePal;
 
@@ -29,8 +29,8 @@ public class DataSourceCreateActIntroItem extends DataSource<ActIntroItem> imple
     }
 
     private void initData() {
-        List<ActIntroItem> actIntroItemList = LitePal.where("ownerId = ?", String.valueOf(CommonUtil.getNowUserIdFromSP(MyApplication.getContext()))).find(ActIntroItem.class);
-        String nowUserAccount = CommonUtil.getNowUsernameFromSP(MyApplication.getContext());
+        List<ActIntroItem> actIntroItemList = LitePal.where("ownerId = ?", String.valueOf(CommonUtils.getNowUserIdFromSP(MyApplication.getContext()))).find(ActIntroItem.class);
+        String nowUserAccount = CommonUtils.getNowUsernameFromSP(MyApplication.getContext());
         for (ActIntroItem aii:actIntroItemList) {
             if (nowUserAccount.equals(aii.getCreator())) {
                 datas.add(aii);
@@ -42,9 +42,9 @@ public class DataSourceCreateActIntroItem extends DataSource<ActIntroItem> imple
     public void refresh(Object o) {
         List<ActIntroItem> actIntroItemList = (List<ActIntroItem>) o;
         Log.d(TAG, "refresh: actIntroItemList" + actIntroItemList);
-        LitePal.deleteAll(ActIntroItem.class, "ownerId = ?", String.valueOf(CommonUtil.getNowUserIdFromSP(MyApplication.getContext())));
+        LitePal.deleteAll(ActIntroItem.class, "ownerId = ?", String.valueOf(CommonUtils.getNowUserIdFromSP(MyApplication.getContext())));
         List<ActIntroItem> temp = new ArrayList<>();
-        String nowUserAccount = CommonUtil.getNowUsernameFromSP(MyApplication.getContext());
+        String nowUserAccount = CommonUtils.getNowUsernameFromSP(MyApplication.getContext());
         for (ActIntroItem aii:actIntroItemList) {
             if (nowUserAccount.equals(aii.getCreator())) {
                 temp.add(aii);

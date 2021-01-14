@@ -28,18 +28,8 @@
             android:theme="@style/AppTheme">
 
         </activity>
-        <activity android:name=".activity.MobileNetMainActivity">
 
-
-        </activity>
-        <activity android:name=".StreamBlazeFaceDetector.StreamBlazeFaceDetectActivity">
-
-        </activity>
-        <activity android:name=".StreamBlazeFaceDetector.FaceCollectActivity">
-
-        </activity>
-
-        <activity android:name=".ImageBlazeFaceDetector.ImageBlazeFaceDetectActivity">
+        <activity android:name=".activity.FaceActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

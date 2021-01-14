@@ -1,4 +1,6 @@
-apply plugin: 'com.android.library'
+plugins {
+    id 'com.android.library'
+}
 
 android {
     compileSdkVersion 29
@@ -13,27 +15,26 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
 
-        ndk {
-            abiFilters 'armeabi-v7a', 'arm64-v8a' //,'x86', 'x86_64', 'armeabi', 'arm64-v8a'
-//            arguments "-DANDROID_STL=c++_shared"
-//            stl "c++_shared"
-            stl "gnustl_static"
-        }
         externalNativeBuild {
             cmake {
-                arguments "-DANDROID_TOOLCHAIN=clang"
-                cFlags "-fopenmp -static-openmp -O2 -fvisibility=hidden -fomit-frame-pointer -fstrict-aliasing -ffunction-sections -fdata-sections -ffast-math "
-                cppFlags "-fopenmp -static-openmp -O2 -fvisibility=hidden -fvisibility-inlines-hidden -fomit-frame-pointer -fstrict-aliasing -ffunction-sections -fdata-sections -ffast-math "
-                cppFlags ""
                 cppFlags "-std=c++11"
-                cppFlags "-frtti"
-                cppFlags "-fexceptions"
             }
+        }
+        ndk {
+            abiFilters "armeabi-v7a"// , "arm64-v8a"
         }
     }
     externalNativeBuild {
         cmake {
-            path "CMakeLists.txt"
+            path file('CMakeLists.txt')
+            version "3.10.2"
+        }
+    }
+    sourceSets {
+        main {
+//            jniLibs.srcDirs = ['src/main/jniLibs']
+            jni.srcDirs = ['src/main/cpp']
+            assets.srcDirs = ['src/main/assets']
         }
     }
     buildTypes {

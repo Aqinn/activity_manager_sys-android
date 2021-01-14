@@ -15,7 +15,6 @@ import android.widget.Toast;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.aqinn.actmanagersysandroid.ShowManager;
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.CreateAttendIntroItemAdapter;
@@ -26,12 +25,7 @@ import com.aqinn.actmanagersysandroid.entity.show.ParticipateAttendIntroItem;
 import com.aqinn.actmanagersysandroid.presenter.ServiceManager;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendPartDataSource;
-import com.aqinn.actmanagersysandroid.service.ActService;
-import com.aqinn.actmanagersysandroid.service.AttendService;
-import com.aqinn.actmanagersysandroid.service.UserActService;
-import com.aqinn.actmanagersysandroid.service.UserAttendService;
-import com.aqinn.actmanagersysandroid.service.UserService;
-import com.aqinn.actmanagersysandroid.utils.CommonUtil;
+import com.aqinn.actmanagersysandroid.utils.CommonUtils;
 import com.qmuiteam.qmui.layout.QMUIFrameLayout;
 import com.qmuiteam.qmui.skin.QMUISkinHelper;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
@@ -304,7 +298,7 @@ public class AttendCenterFragment extends BaseFragment {
                     ));
                 if (clickCaii.getStatus() == 1) {
                     boolean flag = false;
-                    Integer type[] = CommonUtil.dec2typeArr(clickCaii.getType());
+                    Integer type[] = CommonUtils.dec2typeArr(clickCaii.getType());
                     for (int i = 0; i < type.length; i++) {
                         if (type[i] == 1) {
                             flag = true;
@@ -326,7 +320,7 @@ public class AttendCenterFragment extends BaseFragment {
             if (mFlag == 2) {
                 if (clickPaii.getuStatus() == 2) {
                     boolean flag = false;
-                    Integer type[] = CommonUtil.dec2typeArr(clickPaii.getType());
+                    Integer type[] = CommonUtils.dec2typeArr(clickPaii.getType());
                     for (int i = 0; i < type.length; i++) {
                         if (type[i] == 2) {
                             flag = true;
@@ -417,7 +411,7 @@ public class AttendCenterFragment extends BaseFragment {
      * 弹窗编辑签到方式
      */
     private void showEditAttendTimePopup(final CreateAttendIntroItem caii) {
-        Integer type[] = CommonUtil.dec2typeArr(caii.getType());
+        Integer type[] = CommonUtils.dec2typeArr(caii.getType());
         int[] caiiType = new int[type.length];
         for (int i = 0; i < type.length; i++) {
             caiiType[i] = type[i] - 1;
@@ -450,7 +444,7 @@ public class AttendCenterFragment extends BaseFragment {
                     caiiType[i] = builder.getCheckedItemIndexes()[i] + 1;
                 }
                 Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
-                serviceManager.editAttendType(caii.getId(), CommonUtil.typeArr2dec(caiiType));
+                serviceManager.editAttendType(caii.getId(), CommonUtils.typeArr2dec(caiiType));
                 dialog.dismiss();
             }
         });

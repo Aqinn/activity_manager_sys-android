@@ -2,10 +2,9 @@ package com.aqinn.actmanagersysandroid.data.show;
 
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.data.DataSource;
-import com.aqinn.actmanagersysandroid.data.Observer;
 import com.aqinn.actmanagersysandroid.data.Refreshable;
 import com.aqinn.actmanagersysandroid.entity.show.UserDesc;
-import com.aqinn.actmanagersysandroid.utils.CommonUtil;
+import com.aqinn.actmanagersysandroid.utils.CommonUtils;
 
 import org.litepal.LitePal;
 
@@ -26,9 +25,9 @@ public class DataSourceUserDesc extends DataSource<UserDesc> implements Refresha
     }
 
     private void initData() {
-        if (CommonUtil.getNowUsernameFromSP(MyApplication.getContext()) == null)
+        if (CommonUtils.getNowUsernameFromSP(MyApplication.getContext()) == null)
             return;
-        List<UserDesc> userDescList = LitePal.where("account = ?", CommonUtil.getNowUsernameFromSP(MyApplication.getContext())).find(UserDesc.class);
+        List<UserDesc> userDescList = LitePal.where("account = ?", CommonUtils.getNowUsernameFromSP(MyApplication.getContext())).find(UserDesc.class);
         datas.add(0, userDescList.get(0));
     }
 

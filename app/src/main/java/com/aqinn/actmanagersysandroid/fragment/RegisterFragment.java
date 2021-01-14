@@ -14,7 +14,7 @@ import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.entity.User;
 import com.aqinn.actmanagersysandroid.presenter.ServiceManager;
-import com.aqinn.actmanagersysandroid.utils.CommonUtil;
+import com.aqinn.actmanagersysandroid.utils.CommonUtils;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
 import com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton;
 
@@ -87,8 +87,8 @@ public class RegisterFragment extends BaseFragment {
 
     @OnClick(R.id.bt_register)
     public void register() {
-        if (!CommonUtil.verifyAccount(etAccount.getText().toString())
-                || !CommonUtil.verifyPwd(etPassword.getText().toString())
+        if (!CommonUtils.verifyAccount(etAccount.getText().toString())
+                || !CommonUtils.verifyPwd(etPassword.getText().toString())
                 || !etPasswordRepeat.getText().toString().equals(etPassword.getText().toString())) {
             Toast.makeText(getContext(), "请正确填写用户名和密码", Toast.LENGTH_SHORT).show();
             return;
@@ -111,7 +111,7 @@ public class RegisterFragment extends BaseFragment {
             etAccount.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
             return;
         }
-        if (!CommonUtil.verifyAccount(etAccount.getText().toString())) {
+        if (!CommonUtils.verifyAccount(etAccount.getText().toString())) {
             etAccount.setTextColor(getResources().getColor(R.color.edittext_wrong, MyApplication.getContext().getTheme()));
             etAccount.setCompoundDrawablesWithIntrinsicBounds(null, null, wrongDrawable, null);
         } else {
@@ -127,7 +127,7 @@ public class RegisterFragment extends BaseFragment {
             etPassword.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
             return;
         }
-        if (!CommonUtil.verifyPwd(etPassword.getText().toString())) {
+        if (!CommonUtils.verifyPwd(etPassword.getText().toString())) {
             etPassword.setTextColor(getResources().getColor(R.color.edittext_wrong, MyApplication.getContext().getTheme()));
             etPassword.setCompoundDrawablesWithIntrinsicBounds(null, null, wrongDrawable, null);
         } else {
@@ -142,7 +142,7 @@ public class RegisterFragment extends BaseFragment {
             etPasswordRepeat.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
             return;
         }
-        if (etPasswordRepeat.getText().toString().equals(etPassword.getText().toString()) && CommonUtil.verifyPwd(etPassword.getText().toString())) {
+        if (etPasswordRepeat.getText().toString().equals(etPassword.getText().toString()) && CommonUtils.verifyPwd(etPassword.getText().toString())) {
             etPasswordRepeat.setTextColor(getResources().getColor(R.color.edittext_right, MyApplication.getContext().getTheme()));
             etPasswordRepeat.setCompoundDrawablesWithIntrinsicBounds(null, null, rightDrawable, null);
         } else {

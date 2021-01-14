@@ -4,7 +4,7 @@ import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.data.Refreshable;
 import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
-import com.aqinn.actmanagersysandroid.utils.CommonUtil;
+import com.aqinn.actmanagersysandroid.utils.CommonUtils;
 
 import org.litepal.LitePal;
 
@@ -27,14 +27,14 @@ public class DataSourceCreateAttendIntroItem extends DataSource<CreateAttendIntr
 
     private void initData() {
         // 我创建的签到
-        List<CreateAttendIntroItem> createAttendIntroItemList = LitePal.where("ownerId = ?", String.valueOf(CommonUtil.getNowUserIdFromSP(MyApplication.getContext()))).find(CreateAttendIntroItem.class);
+        List<CreateAttendIntroItem> createAttendIntroItemList = LitePal.where("ownerId = ?", String.valueOf(CommonUtils.getNowUserIdFromSP(MyApplication.getContext()))).find(CreateAttendIntroItem.class);
         datas.addAll(createAttendIntroItemList);
     }
 
     @Override
     public void refresh(Object o) {
         List<CreateAttendIntroItem> createAttendIntroItemList = (List<CreateAttendIntroItem>) o;
-        LitePal.deleteAll(CreateAttendIntroItem.class, "ownerId = ?", String.valueOf(CommonUtil.getNowUserIdFromSP(MyApplication.getContext())));
+        LitePal.deleteAll(CreateAttendIntroItem.class, "ownerId = ?", String.valueOf(CommonUtils.getNowUserIdFromSP(MyApplication.getContext())));
         LitePal.saveAll(createAttendIntroItemList);
         datas.clear();
         datas.addAll(createAttendIntroItemList);

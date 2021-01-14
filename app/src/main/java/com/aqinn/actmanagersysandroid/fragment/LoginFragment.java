@@ -18,7 +18,7 @@ import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.UserDescDataSource;
-import com.aqinn.actmanagersysandroid.utils.CommonUtil;
+import com.aqinn.actmanagersysandroid.utils.CommonUtils;
 import com.qmuiteam.qmui.widget.QMUIRadiusImageView2;
 
 
@@ -79,10 +79,10 @@ public class LoginFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (CommonUtil.getUsernameFromSP(getContext()) != null) {
+        if (CommonUtils.getUsernameFromSP(getContext()) != null) {
             cbRm.setChecked(true);
-            etUsername.setText(CommonUtil.getUsernameFromSP(getContext()));
-            etPassword.setText(CommonUtil.getPwdFromSP(getContext()));
+            etUsername.setText(CommonUtils.getUsernameFromSP(getContext()));
+            etPassword.setText(CommonUtils.getPwdFromSP(getContext()));
         }
     }
 
@@ -93,7 +93,7 @@ public class LoginFragment extends BaseFragment {
 
     @OnClick(R.id.bt_confirm)
     public void toMainActivity() {
-        if (!CommonUtil.verifyAccount(etUsername.getText().toString()) || !CommonUtil.verifyPwd(etPassword.getText().toString())) {
+        if (!CommonUtils.verifyAccount(etUsername.getText().toString()) || !CommonUtils.verifyPwd(etPassword.getText().toString())) {
             Toast.makeText(getContext(), "请正确填写用户名和密码", Toast.LENGTH_SHORT).show();
             return;
         }
