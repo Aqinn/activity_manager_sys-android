@@ -1,6 +1,5 @@
 package com.aqinn.actmanagersysandroid.fragment;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -9,14 +8,12 @@ import android.widget.Toast;
 
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
-import com.aqinn.actmanagersysandroid.adapter.ActIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
 import com.aqinn.actmanagersysandroid.presenter.ServiceManager;
-import com.aqinn.actmanagersysandroid.utils.CommonUtil;
+import com.aqinn.actmanagersysandroid.utils.CommonUtils;
 import com.qmuiteam.qmui.alpha.QMUIAlphaImageButton;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
-import com.qmuiteam.qmui.widget.dialog.QMUIBottomSheet;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 
@@ -68,7 +65,7 @@ public class CreateActFragment extends BaseFragment {
     }
 
     private void initData() {
-        tvCreator.setText(CommonUtil.getNowUsernameFromSP(getContext()));
+        tvCreator.setText(CommonUtils.getNowUsernameFromSP(getContext()));
         editModeOn();
     }
 
@@ -98,7 +95,7 @@ public class CreateActFragment extends BaseFragment {
         qaib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActIntroItem newAii = new ActIntroItem(-1L, CommonUtil.getNowUserIdFromSP(getContext()),
+                ActIntroItem newAii = new ActIntroItem(-1L, CommonUtils.getNowUserIdFromSP(getContext()),
                         -1L, -1L, -1L, tvCreator.getText().toString(),
                         etName.getText().toString(), etTime.getText().toString(),
                         etLoc.getText().toString(), etIntro.getText().toString(), 1);

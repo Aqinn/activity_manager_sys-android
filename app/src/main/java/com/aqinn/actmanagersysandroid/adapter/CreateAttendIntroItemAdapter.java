@@ -1,7 +1,6 @@
 package com.aqinn.actmanagersysandroid.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.data.Observer;
-import com.aqinn.actmanagersysandroid.utils.CommonUtil;
+import com.aqinn.actmanagersysandroid.utils.CommonUtils;
 
 import java.util.List;
 
@@ -82,7 +81,7 @@ public class CreateAttendIntroItemAdapter extends BaseAdapter implements Observe
         viewHolder.tv_name.setText(item.getName());
         viewHolder.tv_time.setText(item.getTime());
         StringBuilder sb = new StringBuilder();
-        Integer type[] = CommonUtil.dec2typeArr(item.getType());
+        Integer type[] = CommonUtils.dec2typeArr(item.getType());
         for (int i = 0; i < type.length; i++) {
             if (type[i] == 1)
                 sb.append(mContext.getString(R.string.attend_type_1) + " ");

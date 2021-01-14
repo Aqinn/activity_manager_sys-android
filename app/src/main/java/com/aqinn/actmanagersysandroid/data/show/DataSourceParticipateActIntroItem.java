@@ -6,7 +6,7 @@ import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.data.Refreshable;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
-import com.aqinn.actmanagersysandroid.utils.CommonUtil;
+import com.aqinn.actmanagersysandroid.utils.CommonUtils;
 
 import org.litepal.LitePal;
 
@@ -29,8 +29,8 @@ public class DataSourceParticipateActIntroItem extends DataSource<ActIntroItem> 
     }
 
     private void initData() {
-        List<ActIntroItem> actIntroItemList = LitePal.where("ownerId = ?", String.valueOf(CommonUtil.getNowUserIdFromSP(MyApplication.getContext()))).find(ActIntroItem.class);
-        String nowUserAccount = CommonUtil.getNowUsernameFromSP(MyApplication.getContext());
+        List<ActIntroItem> actIntroItemList = LitePal.where("ownerId = ?", String.valueOf(CommonUtils.getNowUserIdFromSP(MyApplication.getContext()))).find(ActIntroItem.class);
+        String nowUserAccount = CommonUtils.getNowUsernameFromSP(MyApplication.getContext());
         for (ActIntroItem aii:actIntroItemList) {
             if (!nowUserAccount.equals(aii.getCreator())) {
                 datas.add(aii);
@@ -42,7 +42,7 @@ public class DataSourceParticipateActIntroItem extends DataSource<ActIntroItem> 
     public void refresh(Object o) {
         List<ActIntroItem> actIntroItemList = (List<ActIntroItem>) o;
         List<ActIntroItem> temp = new ArrayList<>();
-        String nowUserAccount = CommonUtil.getNowUsernameFromSP(MyApplication.getContext());
+        String nowUserAccount = CommonUtils.getNowUsernameFromSP(MyApplication.getContext());
         for (ActIntroItem aii:actIntroItemList) {
             if (!nowUserAccount.equals(aii.getCreator())) {
                 temp.add(aii);

@@ -30,7 +30,7 @@ import com.aqinn.actmanagersysandroid.service.ShowItemService;
 import com.aqinn.actmanagersysandroid.service.UserActService;
 import com.aqinn.actmanagersysandroid.service.UserAttendService;
 import com.aqinn.actmanagersysandroid.service.UserService;
-import com.aqinn.actmanagersysandroid.utils.CommonUtil;
+import com.aqinn.actmanagersysandroid.utils.CommonUtils;
 import com.aqinn.actmanagersysandroid.utils.LoadDialogUtil;
 import com.google.gson.internal.LinkedTreeMap;
 
@@ -101,15 +101,15 @@ public class MyServiceManager implements ServiceManager {
     public void checkData(Context context) {
         Observable.create((ObservableOnSubscribe<String>) emitter -> {
             // 检查有没有登录信息
-            if (CommonUtil.getNowUserIdFromSP(mContext).equals(CommonUtil.ERR_USER_ID)) {
+            if (CommonUtils.getNowUserIdFromSP(mContext).equals(CommonUtils.ERR_USER_ID)) {
                 emitter.onError(new Throwable("没有任何已登录记录"));
                 return;
             }
             // 初始化数据 请求网络数据
-            Observable<ApiResult<UserDesc>> observableUserDesc = showItemService.getUserDesc(CommonUtil.getNowUserIdFromSP(mContext));
+            Observable<ApiResult<UserDesc>> observableUserDesc = showItemService.getUserDesc(CommonUtils.getNowUserIdFromSP(mContext));
             Disposable d1 = observableUserDesc.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(userDescApiResult -> {
-                        CommonUtil.setNowUsernameToSP(mContext, userDescApiResult.data.getAccount());
+                        CommonUtils.setNowUsernameToSP(mContext, userDescApiResult.data.getAccount());
                         ((Refreshable) dsUserDesc).refresh(userDescApiResult.data);
                         emitter.onNext("成功加载用户数据");
                     }, throwable -> {
@@ -117,7 +117,7 @@ public class MyServiceManager implements ServiceManager {
                         emitter.onNext("加载用户数据出错");
                     });
             Observable<ApiResult<List<ActIntroItem>>> observableActIntroItem
-                    = showItemService.getActIntroItem(CommonUtil.getNowUserIdFromSP(mContext));
+                    = showItemService.getActIntroItem(CommonUtils.getNowUserIdFromSP(mContext));
             Disposable d2 = observableActIntroItem.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(listApiResult -> {
                         if (listApiResult.data.isEmpty()) {
@@ -131,7 +131,7 @@ public class MyServiceManager implements ServiceManager {
                         emitter.onNext("加载活动数据出错");
                     });
             Observable<ApiResult<List<CreateAttendIntroItem>>> observableCreateAttendIntroItem
-                    = showItemService.getCreateAttendIntroItem(CommonUtil.getNowUserIdFromSP(mContext));
+                    = showItemService.getCreateAttendIntroItem(CommonUtils.getNowUserIdFromSP(mContext));
             Disposable d3 = observableCreateAttendIntroItem.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(listApiResult -> {
                         if (listApiResult.data.isEmpty()) {
@@ -144,7 +144,7 @@ public class MyServiceManager implements ServiceManager {
                         emitter.onNext("加载我创建的签到数据出错");
                     });
             Observable<ApiResult<List<ParticipateAttendIntroItem>>> observableParticipateAttendIntroItem
-                    = showItemService.getParticipateAttendIntroItem(CommonUtil.getNowUserIdFromSP(mContext));
+                    = showItemService.getParticipateAttendIntroItem(CommonUtils.getNowUserIdFromSP(mContext));
             Disposable d4 = observableParticipateAttendIntroItem.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(listApiResult -> {
                         if (listApiResult.data.isEmpty()) {
@@ -234,15 +234,15 @@ public class MyServiceManager implements ServiceManager {
                     }
                     Log.d(TAG, "toMainActivity: 登录成功，正在跳转");
                     if (isRemember) {
-                        CommonUtil.setUsernameToSP(mContext, account);
-                        CommonUtil.setPwdToSP(mContext, pwd);
+                        CommonUtils.setUsernameToSP(mContext, account);
+                        CommonUtils.setPwdToSP(mContext, pwd);
                     }
                     LinkedTreeMap linkedTreeMap = (LinkedTreeMap) apiResult.data;
                     Object o = linkedTreeMap.get("id");
                     Double d = (Double) o;
                     Long userId = d.longValue();
-                    CommonUtil.setNowUserIdToSP(mContext, userId);
-                    CommonUtil.setNowUsernameToSP(mContext, account);
+                    CommonUtils.setNowUserIdToSP(mContext, userId);
+                    CommonUtils.setNowUsernameToSP(mContext, account);
                     Intent intent = new Intent(mContext, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
                     mContext.startActivity(intent);
@@ -299,7 +299,7 @@ public class MyServiceManager implements ServiceManager {
 
     @Override
     public void joinAct(Long code, Long pwd) {
-        Disposable disposable = userActService.userJoinAct(CommonUtil.getNowUserIdFromSP(mContext), code, pwd)
+        Disposable disposable = userActService.userJoinAct(CommonUtils.getNowUserIdFromSP(mContext), code, pwd)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ApiResult<ActIntroItem>>() {
@@ -382,7 +382,7 @@ public class MyServiceManager implements ServiceManager {
     @Override
     public void quitAct(Long id) {
         ActIntroItem aii = LitePal.find(ActIntroItem.class, id);
-        Disposable disposable = userActService.userQuitAct(CommonUtil.getNowUserIdFromSP(mContext), aii.getActId())
+        Disposable disposable = userActService.userQuitAct(CommonUtils.getNowUserIdFromSP(mContext), aii.getActId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ApiResult>() {
