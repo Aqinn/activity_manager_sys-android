@@ -24,9 +24,9 @@ import com.aqinn.actmanagersysandroid.StreamBlazeFaceDetector.StreamBaseFragment
 import java.util.ArrayList;
 
 
-public class ImageFaceRecognizeFragment extends StreamBaseFragment {
+public class ImageFaceRecognizeFragment_ extends StreamBaseFragment {
 
-    private final static String TAG = "ImageFaceRecognizeFragment";
+    private final static String TAG = "ImageFaceRecognizeFragment_";
     private FaceRecognize mFaceRecognize = new FaceRecognize();
 
     private static final String IMAGE = "test_blazeface.jpg";

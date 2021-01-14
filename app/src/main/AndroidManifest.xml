@@ -28,7 +28,10 @@
             android:theme="@style/AppTheme">
 
         </activity>
-        <activity android:name=".activity.MobileNetMainActivity"></activity>
+        <activity android:name=".activity.MobileNetMainActivity">
+
+
+        </activity>
         <activity android:name=".StreamBlazeFaceDetector.StreamBlazeFaceDetectActivity">
 
         </activity>

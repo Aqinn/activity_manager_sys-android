@@ -412,7 +412,7 @@ public class StreamBlazeFaceDetectFragment extends StreamBaseFragment {
                 mOpenedCamera = null;
             }
         }
-        mFaceDetector.deinit();
+        mFaceDetector.deInit();
     }
 
 }

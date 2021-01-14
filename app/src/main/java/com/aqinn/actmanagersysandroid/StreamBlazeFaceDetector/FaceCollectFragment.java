@@ -1,7 +1,13 @@
 package com.aqinn.actmanagersysandroid.StreamBlazeFaceDetector;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -23,10 +29,19 @@ import com.aqinn.actmanagersysandroid.FpsCounter;
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.fragment.BaseFragment;
+import com.aqinn.actmanagersysandroid.utils.Utils;
+import com.aqinn.facerecognize.MobileFaceNetRecognize;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 import butterknife.ButterKnife;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * @author Aqinn
@@ -56,6 +71,8 @@ public class FaceCollectFragment extends BaseFragment {
     SurfaceHolder mSurfaceHolder;
 
     private BlazeFaceDetector mFaceDetector = new BlazeFaceDetector();
+    private MobileFaceNetRecognize mFaceRecognize = new MobileFaceNetRecognize();
+    private double threshold = 0.5;
     private boolean mIsDetectingFace = false;
     private FpsCounter mFpsCounter = new FpsCounter();
     private boolean mIsCountFps = false;
@@ -69,12 +86,27 @@ public class FaceCollectFragment extends BaseFragment {
 
     private boolean mDeviceSwiched = false;
 
+    private float[] previousFeature = null;
+
+    private boolean flag = true;
+
     /**********************************     Get Preview Advised    **********************************/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
+
+        if (!flag) {
+            //拷贝模型到sd卡
+            String sdPath = getActivity().getCacheDir().getAbsolutePath() + "/facem/";
+            Utils.copyFileFromAsset(getActivity(), "mobilefacenet.bin", sdPath + File.separator + "mobilefacenet.bin");
+            Utils.copyFileFromAsset(getActivity(), "mobilefacenet.param", sdPath + File.separator + "mobilefacenet.param");
+            //模型初始化
+            mFaceRecognize.init(sdPath);
+            flag = false;
+        }
+
         System.loadLibrary("tnn_wrapper");
         //start SurfaceHolder
         mDemoSurfaceHolder = new MySurfaceHolder(this);
@@ -90,21 +122,19 @@ public class FaceCollectFragment extends BaseFragment {
     }
 
     private String initModel() {
-
+        Log.d(TAG, "initModel: 开始拷贝人脸检测模型和参数");
         String targetDir = getActivity().getFilesDir().getAbsolutePath();
-
-        //copy detect model to sdcard
         String[] modelPathsDetector = {
                 "blazeface.tnnmodel",
                 "blazeface.tnnproto",
         };
-
         for (int i = 0; i < modelPathsDetector.length; i++) {
             String modelFilePath = modelPathsDetector[i];
             String interModelFilePath = targetDir + "/" + modelFilePath;
             FileUtils.copyAsset(getActivity().getAssets(), "blazeface/" + modelFilePath, interModelFilePath);
         }
         FileUtils.copyAsset(getActivity().getAssets(), "blazeface/blazeface_anchors.txt", targetDir + "/blazeface_anchors.txt");
+        Log.d(TAG, "initModel: 人脸检测模型和参数拷贝完成");
         return targetDir;
     }
 
@@ -226,7 +256,7 @@ public class FaceCollectFragment extends BaseFragment {
                     public void onPreviewFrame(byte[] data, Camera camera) {
                         if (mIsDetectingFace) {
                             Camera.Parameters mCameraParameters = camera.getParameters();
-                            FaceInfo[] faceInfoList;
+                            FaceInfo[] faceInfoList = null;
                             // reinit
                             if (mDeviceSwiched) {
                                 String modelPath = getActivity().getFilesDir().getAbsolutePath();
@@ -250,6 +280,10 @@ public class FaceCollectFragment extends BaseFragment {
                                 mFpsCounter.begin("BlazeFaceDetect");
                             }
                             faceInfoList = mFaceDetector.detectFromStream(data, mCameraWidth, mCameraHeight, mDrawView.getWidth(), mDrawView.getHeight(), mRotate);
+//                            if (faceInfoList != null && faceInfoList.length != 0) {
+//                                Log.d(TAG, "onPreviewFrame: mRotate => " + mRotate);
+//                                byteArr2BitmapAndLogRecognizeResult(data, camera, mDrawView.getWidth(), mDrawView.getHeight(), floatArr2IntArr(faceInfoList[0].landmarks));
+//                            }
                             if (mIsCountFps) {
                                 mFpsCounter.end("BlazeFaceDetect");
                                 double fps = mFpsCounter.getFps("BlazeFaceDetect");
@@ -271,6 +305,7 @@ public class FaceCollectFragment extends BaseFragment {
                                 faceCount = faceInfoList.length;
                             }
                             mDrawView.addFaceRect(faceInfoList);
+//                            Log.d("justtest", faceInfoList[0].toString());
                         } else {
                             Log.i(TAG, "No face");
                         }
@@ -309,8 +344,71 @@ public class FaceCollectFragment extends BaseFragment {
                 mOpenedCamera = null;
             }
         }
-        mFaceDetector.deinit();
+        mFaceDetector.deInit();
     }
 
+    private void byteArr2BitmapAndLogRecognizeResult(byte[] data, Camera camera, int w, int h, int[] landmarks) {
+        Log.d(TAG, "byteArr2BitmapAndLogRecognizeResult: 1");
+        Bitmap bitmap = byteArr2Bitmap(data, camera);
+        Log.d(TAG, "byteArr2BitmapAndLogRecognizeResult: 2");
+        float features[] = mFaceRecognize.recognize(getPixelsRGBA(bitmap), w, h, landmarks);
+        Log.d(TAG, "byteArr2BitmapAndLogRecognizeResult: 3");
+        if (previousFeature == null) {
+            previousFeature = features;
+            return;
+        }
+        Log.d(TAG, "byteArr2BitmapAndLogRecognizeResult: " + features);
+        Log.d(TAG, "byteArr2BitmapAndLogRecognizeResult: 是同一个人吗？: " + (mFaceRecognize.compare(features, previousFeature) >= threshold ? "是" : "不是"));
+        previousFeature = features;
+    }
 
+    private Bitmap byteArr2Bitmap(byte[] data, Camera camera) {
+        byte[] rawImage;
+        Bitmap bitmap;
+        camera.setOneShotPreviewCallback(null);
+        //处理data
+        Camera.Size previewSize = camera.getParameters().getPreviewSize();//获取尺寸,格式转换的时候要用到
+        BitmapFactory.Options newOpts = new BitmapFactory.Options();
+        newOpts.inJustDecodeBounds = true;
+        YuvImage yuvimage = new YuvImage(
+                data,
+                ImageFormat.NV21,
+                previewSize.width,
+                previewSize.height,
+                null);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        yuvimage.compressToJpeg(new Rect(0, 0, previewSize.width, previewSize.height), 100, baos);// 80--JPG图片的质量[0-100],100最高
+        rawImage = baos.toByteArray();
+        //将rawImage转换成bitmap
+        BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        bitmap = BitmapFactory.decodeByteArray(rawImage, 0, rawImage.length, options);
+        return bitmap;
+    }
+
+    //提取像素点
+    private byte[] getPixelsRGBA(Bitmap image) {
+        // calculate how many bytes our image consists of
+        int bytes = image.getByteCount();
+        ByteBuffer buffer = ByteBuffer.allocate(bytes); // Create a new buffer
+        image.copyPixelsToBuffer(buffer); // Move the byte data to the buffer
+        byte[] temp = buffer.array(); // Get the underlying array containing the
+        return temp;
+    }
+
+    private int[] floatArr2IntArr(float f[]) {
+        int arr[] = new int[f.length];
+        for (int i = 0; i < f.length; i++) {
+            arr[i] = (int) f[i];
+        }
+        return arr;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mFaceDetector.deInit();
+        mFaceRecognize.deInit();
+    }
 }

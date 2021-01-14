@@ -9,11 +9,13 @@ import android.widget.FrameLayout;
 
 import androidx.fragment.app.FragmentContainerView;
 
+import com.aqinn.actmanagersysandroid.BlazeFaceDetector;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.activity.BaseFragmentActivity;
 import com.aqinn.actmanagersysandroid.activity.MainActivity;
 import com.aqinn.actmanagersysandroid.fragment.ErrorFragment;
 import com.aqinn.actmanagersysandroid.utils.CommonUtil;
+import com.aqinn.facerecognize.MobileFaceNetRecognize;
 import com.qmuiteam.qmui.arch.QMUIFragmentActivity;
 
 /**
@@ -38,6 +40,13 @@ public class FaceCollectActivity extends BaseFragmentActivity {
             startFragment(fragment);
             return;
         }
+//        MobileFaceNetRecognize faceNetRecognize = new MobileFaceNetRecognize();
+//        String sdPath = getCacheDir().getAbsolutePath() + "/facem/";
+//        System.loadLibrary("tnn_wrapper");
+//        faceNetRecognize.init(sdPath);
+//        BlazeFaceDetector mFaceDetector = new BlazeFaceDetector();
+//        mFaceDetector.init(sdPath, 122, 122, 0.975f, 0.23f, 1, 0);
+
         FaceCollectFragment faceCollectFragment = new FaceCollectFragment();
         startFragment(faceCollectFragment);
     }

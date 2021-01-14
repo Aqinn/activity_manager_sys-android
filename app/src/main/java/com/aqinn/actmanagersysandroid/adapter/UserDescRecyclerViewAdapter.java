@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
+import com.aqinn.actmanagersysandroid.StreamBlazeFaceDetector.FaceCollectActivity;
 import com.aqinn.actmanagersysandroid.StreamBlazeFaceDetector.StreamBlazeFaceDetectActivity;
 import com.aqinn.actmanagersysandroid.StreamBlazeFaceDetector.StreamBlazeFaceDetectFragment;
 import com.aqinn.actmanagersysandroid.activity.LoginActivity;
@@ -169,7 +170,7 @@ public class UserDescRecyclerViewAdapter extends RecyclerView.Adapter<UserDescRe
             Log.d(TAG, "gatherFace: 点击了人脸采集按钮");
             Intent intent = new Intent();
             Activity activity = (FragmentActivity) mContext;
-            intent.setClass(activity, StreamBlazeFaceDetectActivity.class);
+            intent.setClass(activity, FaceCollectActivity.class);
             activity.startActivity(intent);
         }
 

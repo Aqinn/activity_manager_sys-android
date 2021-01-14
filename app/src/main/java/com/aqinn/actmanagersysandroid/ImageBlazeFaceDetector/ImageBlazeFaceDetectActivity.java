@@ -31,7 +31,8 @@ public class ImageBlazeFaceDetectActivity extends BaseFragmentActivity {
     }
 
     public void updateUI() {
-        Fragment fragment = new ImageFaceRecognizeFragment();
+        Fragment fragment = new ImageBlazeFaceDetectFragment();
+//        Fragment fragment = new ImageFaceRecognizeFragment_();
         getFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
     }
 

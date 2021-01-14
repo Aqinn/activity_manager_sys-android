@@ -85,7 +85,6 @@ void makeBlazefaceDetectOption(std::shared_ptr<TNN_NS::BlazeFaceDetectorOption> 
 //    option->min_score_threshold = 0.75;
     option->min_suppression_threshold = 0.3;
     option->anchor_path = modelPathStr + "/blazeface_anchors.txt";
-    LOGI("Run Pointe 2 %s", option->anchor_path.c_str());
 }
 
 JNIEXPORT JNICALL jboolean
@@ -110,7 +109,7 @@ TNN_BLAZEFACE_DETECTOR(checkNpu)(JNIEnv *env, jobject thiz, jstring modelPath) {
     return ret == TNN_NS::TNN_OK;
 }
 
-JNIEXPORT JNICALL jint TNN_BLAZEFACE_DETECTOR(deinit)(JNIEnv *env, jobject thiz) {
+JNIEXPORT JNICALL jint TNN_BLAZEFACE_DETECTOR(deInit)(JNIEnv *env, jobject thiz) {
     gDetector = nullptr;
     return 0;
 }
@@ -149,8 +148,12 @@ TNN_BLAZEFACE_DETECTOR(detectFromImage)(JNIEnv *env, jobject thiz, jobject image
     //here add the resize
     auto resize_mat = std::make_shared<TNN_NS::Mat>(dt, TNN_NS::N8UC4, resize_dims);
 
+    LOGI("Image Detect Run Point %d", 1);
+
     TNN_NS::ResizeParam param;
     TNN_NS::MatUtils::Resize(*input_mat, *resize_mat, param, NULL);
+
+    LOGI("Image Detect Run Point %d", 2);
 
     std::shared_ptr<TNN_NS::TNNSDKOutput> output = gDetector->CreateSDKOutput();
     auto status = gDetector->Predict(std::make_shared<TNN_NS::BlazeFaceDetectorInput>(resize_mat),
@@ -204,8 +207,8 @@ TNN_BLAZEFACE_DETECTOR(detectFromImage)(JNIEnv *env, jobject thiz, jobject image
             for (int j = 0; j < keypointsNum; j++) {
                 jfloatArray inner = env->NewFloatArray(2);
                 float temp[] = {face_orig.key_points[j].first, face_orig.key_points[j].second};
-                env->SetFloatArrayRegion(inner, 0, 2, temp);
-                env->SetObjectArrayElement(outer, j, inner);
+                env->SetFloatArrayRegion(inner, 0, 2, temp);  // 一维float数组，xy 坐标
+                env->SetObjectArrayElement(outer, j, inner);  // 一维数组
                 env->DeleteLocalRef(inner);
             }
             env->SetObjectField(objFaceInfo, fidkeypoints, outer);
@@ -232,18 +235,29 @@ TNN_BLAZEFACE_DETECTOR(detectFromStream)(JNIEnv *env, jobject thiz, jbyteArray y
     yuv420sp_to_rgba_fast_asm((const unsigned char*)yuvData, height, width, (unsigned char*)rgbaData);
     TNN_NS::DeviceType dt = TNN_NS::DEVICE_ARM;
 
+    LOGI("Run point check: %d", 1);
+
     TNN_NS::DimsVector input_dims = {1, 4, width, height};
     TNN_NS::DimsVector resize_dims = {1, 4, target_height, target_width};
 
     auto input_mat = std::make_shared<TNN_NS::Mat>(dt, TNN_NS::N8UC4, input_dims, rgbaData);
     auto resize_mat = std::make_shared<TNN_NS::Mat>(dt, TNN_NS::N8UC4, resize_dims);
 
+    LOGI("Run point check: %d", 2);
+
     TNN_NS::ResizeParam param;
     TNN_NS::MatUtils::Resize(*input_mat, *resize_mat, param, NULL);
 
+    LOGI("Run point check: %d", 3);
+
     std::shared_ptr<TNN_NS::TNNSDKInput> input = std::make_shared<TNN_NS::TNNSDKInput>(resize_mat);
     std::shared_ptr<TNN_NS::TNNSDKOutput> output = std::make_shared<TNN_NS::TNNSDKOutput>();
+
+    LOGI("Run point check: %d", 4);
+
     TNN_NS::Status status = asyncRefDetector->Predict(input, output);
+
+    LOGI("Run point check: %d", 5);
 
     std::vector<TNN_NS::BlazeFaceInfo> face_info = dynamic_cast<TNN_NS::BlazeFaceDetectorOutput *>(output.get())->face_list;
     LOGI("theithilehtisize %d \n", face_info.size());

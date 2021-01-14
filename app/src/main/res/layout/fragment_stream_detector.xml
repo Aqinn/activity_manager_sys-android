@@ -24,8 +24,8 @@
         </com.aqinn.actmanagersysandroid.StreamBlazeFaceDetector.PreviewFrameLayout>
         <FrameLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            >
+            android:layout_height="fill_parent">
+
             <com.aqinn.actmanagersysandroid.StreamBlazeFaceDetector.DrawView
                 android:layout_alignParentTop="true"
                 android:id="@+id/drawView"
