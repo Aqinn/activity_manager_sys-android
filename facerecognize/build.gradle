@@ -34,7 +34,7 @@ android {
         main {
 //            jniLibs.srcDirs = ['src/main/jniLibs']
             jni.srcDirs = ['src/main/cpp']
-            assets.srcDirs = ['src/main/assets']
+//            assets.srcDirs = ['src/main/assets']
         }
     }
     buildTypes {

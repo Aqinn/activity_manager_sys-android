@@ -26,6 +26,7 @@ android {
     sourceSets {
         main {
             jniLibs.srcDirs = ['../libs']
+            assets.srcDirs = ['src/main/assets']
         }
     }
     compileOptions {
@@ -51,6 +52,7 @@ dependencies {
     implementation 'com.qmuiteam:qmui:2.0.0-alpha10'
     def qmui_arch_version = '2.0.0-alpha10'
     implementation "com.qmuiteam:arch:$qmui_arch_version"
+
     implementation 'com.permissionx.guolindev:permissionx:1.4.0'
 
     implementation 'com.jakewharton:butterknife:10.1.0'
