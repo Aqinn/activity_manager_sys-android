@@ -44,6 +44,29 @@ public class CommonUtils {
         sdf_short = new SimpleDateFormat("yyyy-MM-dd");
     }
 
+    public static float[] string2Arr(String str) {
+        String fArr[] = str.split(",");
+        if (fArr == null || fArr.length != 128) {
+            return null;
+        }
+        float ff[] = new float[128];
+        for (int i = 0; i < fArr.length; i++) {
+            ff[i] = Float.parseFloat(fArr[i]);
+        }
+        return ff;
+    }
+
+    public static String arr2String(float arr[]) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < arr.length; i++) {
+            if (i == arr.length - 1) {
+                sb.append(arr[i]);
+                break;
+            }
+            sb.append(arr[i]).append(",");
+        }
+        return sb.toString();
+    }
 
     public static String showArr(float arr[]) {
         StringBuilder sb = new StringBuilder();
@@ -63,18 +86,18 @@ public class CommonUtils {
         return temp;
     }
 
-    public static int[] getUsefulLandmarksFromFaceInfo(FaceInfo faceInfo){
+    public static int[] getUsefulLandmarksFromFaceInfo(FaceInfo faceInfo) {
         int arr[] = new int[10];
-        arr[0] = (int)faceInfo.keypoints[0][0];
-        arr[1] = (int)faceInfo.keypoints[1][0];
-        arr[2] = (int)faceInfo.keypoints[2][0];
-        arr[3] = (int)faceInfo.keypoints[3][0];
-        arr[4] = (int)faceInfo.keypoints[4][0];
-        arr[5] = (int)faceInfo.keypoints[0][1];
-        arr[6] = (int)faceInfo.keypoints[1][1];
-        arr[7] = (int)faceInfo.keypoints[2][1];
-        arr[8] = (int)faceInfo.keypoints[3][1];
-        arr[9] = (int)faceInfo.keypoints[4][1];
+        arr[0] = (int) faceInfo.keypoints[0][0];
+        arr[1] = (int) faceInfo.keypoints[1][0];
+        arr[2] = (int) faceInfo.keypoints[2][0];
+        arr[3] = (int) faceInfo.keypoints[3][0];
+        arr[4] = (int) faceInfo.keypoints[4][0];
+        arr[5] = (int) faceInfo.keypoints[0][1];
+        arr[6] = (int) faceInfo.keypoints[1][1];
+        arr[7] = (int) faceInfo.keypoints[2][1];
+        arr[8] = (int) faceInfo.keypoints[3][1];
+        arr[9] = (int) faceInfo.keypoints[4][1];
         return arr;
     }
 
@@ -112,7 +135,9 @@ public class CommonUtils {
         return faceInfo;
     }
 
-    /**把byte字节流转成bitmap
+    /**
+     * 把byte字节流转成bitmap
+     *
      * @param bytes
      */
     public static Bitmap byteToBitmap(byte[] bytes) {
@@ -123,7 +148,9 @@ public class CommonUtils {
         return bitmap;
     }
 
-    /**把bitmap转成byte字节流
+    /**
+     * 把bitmap转成byte字节流
+     *
      * @param bm
      */
     public static byte[] bitmapToByte(Bitmap bm) {
@@ -131,7 +158,6 @@ public class CommonUtils {
         bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
         return baos.toByteArray();
     }
-
 
 
     public static boolean verifyAccount(String account) {

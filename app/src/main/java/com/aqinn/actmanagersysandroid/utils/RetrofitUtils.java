@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.WebSocket;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -20,9 +21,9 @@ public class RetrofitUtils {
 
     private static final String TAG = "RetrofitUtils";
 
-    private static final String BASE_URL = "http://10.16.97.117:8080/";
-//    private static final String BASE_URL = "http://192.168.43.78:8080/";
+    private static final String BASE_URL = "http://192.168.3.6:8080/";
     private static OkHttpClient.Builder builder = new OkHttpClient.Builder();
+//    private static WebSocket webSocket = new OkHttpClient().newWebSocket();
     private static Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())

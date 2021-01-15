@@ -30,35 +30,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
-
-            <ImageView
-                android:id="@+id/iv_outter"
-                android:scaleType="centerInside"
-                android:layout_width="380dp"
-                android:layout_height="380dp"
-                android:layout_gravity="center"
-                android:src="@drawable/face_circle_outter"
-                android:layout_marginTop="4dp"/>
-
-            <ImageView
-                android:id="@+id/iv_inner"
-                android:scaleType="centerInside"
-                android:layout_width="330dp"
-                android:layout_height="330dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-
-                />
-<!--            android:src="@drawable/face_circle_inner"-->
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="6dp"
-                android:src="@drawable/face_solid_line"/>
-
             <com.qmuiteam.qmui.widget.QMUIProgressBar
                 android:id="@+id/circleProgressBar"
                 android:layout_width="365dp"
@@ -68,12 +39,20 @@
                 android:textColor="?attr/qmui_config_color_gray_4"
                 android:textSize="22sp"
                 app:qmui_background_color="?attr/qmui_config_color_gray_8"
-                app:qmui_progress_color="@color/app_color_theme_4"
+                app:qmui_progress_color="#71d97a"
                 app:qmui_skin_background="?attr/app_skin_progress_bar_bg_color"
                 app:qmui_skin_progress_color="?attr/app_skin_progress_bar_progress_color"
                 app:qmui_skin_text_color="?attr/app_skin_progress_bar_text_color"
                 app:qmui_stroke_width="18dp"
                 app:qmui_type="type_circle" />
+
+            <ImageView
+                android:scaleType="centerInside"
+                android:layout_width="900dp"
+                android:layout_height="900dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="17dp"
+                android:src="@drawable/black_face" />
 
         </FrameLayout>
 
@@ -82,16 +61,17 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="576dp">
+        android:layout_marginTop="576dp"
+        android:background="@android:color/black">
 
         <TextView
             android:id="@+id/tv_res"
             android:layout_width="match_parent"
-            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:gravity="center"
             android:text="正在进行人脸采集"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="20dp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="请保持面部在屏幕中心圆框区域内 3 秒"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="20dp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"

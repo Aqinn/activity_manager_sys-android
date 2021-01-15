@@ -6,6 +6,7 @@ import com.aqinn.actmanagersysandroid.service.AttendService;
 import com.aqinn.actmanagersysandroid.service.ShowItemService;
 import com.aqinn.actmanagersysandroid.service.UserActService;
 import com.aqinn.actmanagersysandroid.service.UserAttendService;
+import com.aqinn.actmanagersysandroid.service.UserFeatureService;
 import com.aqinn.actmanagersysandroid.service.UserService;
 import com.aqinn.actmanagersysandroid.utils.RetrofitUtils;
 
@@ -53,6 +54,12 @@ public class RetrofitServiceModule {
     @Provides
     ShowItemService providerShowItemService() {
         return RetrofitUtils.getRetrofit().create(ShowItemService.class);
+    }
+
+    @ApplicationScope
+    @Provides
+    UserFeatureService providerUserFeatureService() {
+        return RetrofitUtils.getRetrofit().create(UserFeatureService.class);
     }
 
 }

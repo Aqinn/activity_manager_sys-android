@@ -1,6 +1,8 @@
 package com.aqinn.actmanagersysandroid.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -29,18 +31,20 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
+import com.aqinn.actmanagersysandroid.adapter.CheckedAdapter;
 import com.aqinn.actmanagersysandroid.data.ApiResult;
 import com.aqinn.actmanagersysandroid.service.UserFeatureService;
 import com.aqinn.actmanagersysandroid.utils.CameraUtils;
@@ -53,12 +57,14 @@ import com.qmuiteam.qmui.widget.QMUIProgressBar;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -67,35 +73,42 @@ import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author Aqinn
- * @date 2021/1/14 7:55 PM
+ * @date 2021/1/15 10:55 PM
  */
-public class FaceCollectActivity extends BaseFragmentActivity {
+public class VideoCheckInActivity extends BaseFragmentActivity {
 
-    private boolean isTesting = false;
+    private static final String TAG = "VideoCheckInActivity";
 
-    private static final String TAG = "FaceCollectActivity";
-
-    @BindView(R.id.circleProgressBar)
-    QMUIProgressBar mCircleProgressBar;
     @BindView(R.id.texture_view)
     AutoFitTextureView mTextureView;
     @BindView(R.id.surfaceview)
     SurfaceView mSurfaceView;
-    @BindView(R.id.tv_res)
-    TextView tv_res;
-//    @BindView(R.id.iv_outter)
-//    ImageView iv_outter;
-//    @BindView(R.id.iv_inner)
-//    ImageView iv_inner;
+    @BindView(R.id.bt_switch_camera)
+    Button bt_switch_camera;
+    @BindView(R.id.rv_checked)
+    RecyclerView rv_checked;
 
     @Inject
     public UserFeatureService userFeatureService;
 
+    private Long actId;
+
     protected static final int STOP = 0x10000;
     protected static final int NEXT = 0x10001;
 
-    private ProgressHandler progressHandler = new ProgressHandler();
     private SurfaceHolder mSurfaceHolder;
+    private CheckedAdapter mCheckedAdapter;
+
+    // 主线程 handler
+    private Handler mHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            String userInfo = String.valueOf(msg.obj);
+            // 把这个用户信息刷新到 RecycleView 中
+            mCheckedAdapter.addChecked(userInfo);
+            return true;
+        }
+    });
 
     // 预览捕获线程相关
     private HandlerThread mCaptureThread;
@@ -107,6 +120,10 @@ public class FaceCollectActivity extends BaseFragmentActivity {
     private final Object lock = new Object();  // 开关推理线程 - 同步变量
     private boolean isInfering = false;
 
+    // 网络请求线程
+    private HandlerThread mNetworkThread;
+    private Handler mNetworkHandler;
+
     // 相机相关
     private CameraCaptureSession mCaptureSession;
     private CameraDevice mCameraDevice;
@@ -117,15 +134,14 @@ public class FaceCollectActivity extends BaseFragmentActivity {
 
     // 人脸识别模型
     private FaceRecognize mFaceRecognize;
-    private Integer recognizeCount = 0;
-    private float faceFeatures[][] = new float[4][128];
-    private float nowFaceFeature[];
+    private volatile float preFinishRecognizeFeature[] = null;  // 每一帧人脸特征向量与上一条成功识别的人脸特征向量对比，不是同一个人的才发送使用，降低网络压力
+    private double threshold = 0.5;
 
     // 画笔相关 - 绘制人脸检测框
-    private static Paint rectPaint = new Paint();
-    private static Paint pointPaint = new Paint();
-    private static Paint minRecPaint = new Paint();
-    private static Paint maxRecPaint = new Paint();
+    private static final Paint rectPaint = new Paint();
+    private static final Paint pointPaint = new Paint();
+    private static final Paint minRecPaint = new Paint();
+    private static final Paint maxRecPaint = new Paint();
 
     // 画笔相关 - 绘制人脸检测框
     static {
@@ -144,57 +160,22 @@ public class FaceCollectActivity extends BaseFragmentActivity {
         maxRecPaint.setStyle(Paint.Style.STROKE);
     }
 
-    // 人脸位置校验相关
-    private boolean isProgressFinish = false;
-    private static int progressCount = 0;
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_video_check_in);
         askForPermission();
         MyApplication.getApplicationComponent().inject(this);
-        setContentView(R.layout.activity_face_collect);
         ButterKnife.bind(this);
+        Intent intent = getIntent();
+        actId = intent.getLongExtra("actId", 1L);
+//        if (actId == -1)
+//            finish();
         initAllView();
         initModel();
     }
 
     private void initAllView() {
-        // 绑定圆形进度条的 Handler
-        progressHandler.setProgressBar(mCircleProgressBar);
-        mCircleProgressBar.setOnProgressChangeListener(new QMUIProgressBar.OnProgressChangeListener() {
-            @Override
-            public void onProgressChange(QMUIProgressBar progressBar, int currentValue, int maxValue) {
-                if (progressCount == 0) {
-                    tv_res.setText("正在进行人脸采集");
-                    synchronized (recognizeCount) {
-                        recognizeCount = 0;
-                        faceFeatures = new float[4][128];
-                    }
-                    return;
-                }
-                if (currentValue < 40) {
-                    tv_res.setText("就是这样！保持！");
-                } else if (currentValue < 75) {
-                    tv_res.setText("快完成了！");
-                } else if (currentValue >= 100) {
-                    tv_res.setText("人脸采集已完成！");
-                    onFaceCollectFinish();
-                }
-
-                if (currentValue >= 100 || recognizeCount >= 4)
-                    return;
-                synchronized (recognizeCount) {
-                    if (currentValue == 20 || currentValue == 40 || currentValue == 60 || currentValue == 80) {
-                        // 人脸特征向量存起来
-                        faceFeatures[recognizeCount] = nowFaceFeature;
-                        ++recognizeCount;
-                    }
-                }
-            }
-        });
-
         // 设置预览画面的长宽比为 4:3
         mTextureView.setAspectRatio(4, 3);
 
@@ -205,60 +186,12 @@ public class FaceCollectActivity extends BaseFragmentActivity {
         // 获取 SurfaceView 的 Handler
         mSurfaceHolder = mSurfaceView.getHolder();
 
-        // 让 ImageView 旋转起来
-//        Animation outAnimation = AnimationUtils.loadAnimation(this, R.anim.rotaterepeat_clockwise);
-//        iv_inner.startAnimation(outAnimation);
-//        Animation inAnimation = AnimationUtils.loadAnimation(this, R.anim.rotaterepeat_unclockwise);
-//        iv_outter.startAnimation(inAnimation);
-    }
-
-    private void onFaceCollectFinish() {
-        Observable<ApiResult> observable = userFeatureService.collectFace(CommonUtils.getNowUserIdFromSP(this),
-                CommonUtils.arr2String(faceFeatures[0]),
-                CommonUtils.arr2String(faceFeatures[1]),
-                CommonUtils.arr2String(faceFeatures[2]),
-                CommonUtils.arr2String(faceFeatures[3]));
-        observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ApiResult>() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                        Log.d("facesend", "onSubscribe: ");
-                    }
-
-                    @Override
-                    public void onNext(@io.reactivex.annotations.NonNull ApiResult apiResult) {
-                        Log.d("facesend", "onNext: ");
-                        if (apiResult.success) {
-                            Log.d("facesend", "onNext: 人脸采集完成，后端已接受数据");
-                            Toast.makeText(FaceCollectActivity.this, "将在两秒后返回主界面", Toast.LENGTH_SHORT).show();
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        Thread.sleep(2000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                    finish();
-                                }
-                            }).start();
-                        } else {
-                            Log.d("facesend", "onNext: 人脸采集失败，后端返回 false");
-                        }
-                    }
-
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        Log.d("facesend", "onError: ");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d("facesend", "onComplete: ");
-                    }
-                });
+        // 初始化已签到人员列表
+        mCheckedAdapter = new CheckedAdapter(this, new ArrayList<>());
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        rv_checked.setAdapter(mCheckedAdapter);
+        rv_checked.setLayoutManager(llm);
     }
 
     private void initModel() {
@@ -305,12 +238,14 @@ public class FaceCollectActivity extends BaseFragmentActivity {
     private void prepareAllThread() {
         startCaptureThread();
         startInferThread();
+        startNetworkThread();
     }
 
     // 关闭所有工作线程
     private void stopAllThread() {
         stopCaptureThread();
         stopInferThread();
+        stopNetworkThread();
     }
 
     // 处理相机捕获的图像
@@ -322,10 +257,6 @@ public class FaceCollectActivity extends BaseFragmentActivity {
             float[][] result = mFaceRecognize.detectTest(bitmap, bitmap.getWidth(), bitmap.getHeight(), 3);
             if (result == null) {
                 drawRectBySurface(null);
-                if (progressCount < 100) {
-                    mCircleProgressBar.setProgress(0);
-                    progressCount = 0;
-                }
                 return;
             }
             Log.d(TAG, "predict: 检测到几张人脸？result.length => " + result.length);
@@ -334,21 +265,15 @@ public class FaceCollectActivity extends BaseFragmentActivity {
                 for (int i = 0; i < faceInfos.length; i++) {
                     FaceInfo faceInfo = CommonUtils.floatArr2FaceInfo(result[i]);
                     faceInfos[i] = faceInfo;
-                }
-                nowFaceFeature = mFaceRecognize.recognize(CommonUtils.getPixelsRGBA(bitmap), mTextureView.getWidth(), mTextureView.getHeight(), CommonUtils.getUsefulLandmarksFromFaceInfo(faceInfos[0]));
-                if (!isTesting)
-                    drawRectBySurface(faceInfos);
-                if (progressCount < 100) {
-                    boolean isRightLocation = verifyFaceLocation(faceInfos[0]);
-                    if (isRightLocation) {
-                        mCircleProgressBar.setProgress(++progressCount);
-                    } else {
-                        mCircleProgressBar.setProgress(0);
-                        progressCount = 0;
+                    float faceFeature[] = mFaceRecognize.recognize(CommonUtils.getPixelsRGBA(bitmap), mTextureView.getWidth(), mTextureView.getHeight(), CommonUtils.getUsefulLandmarksFromFaceInfo(faceInfos[i]));
+                    // 多次发起请求，验证检测到的人脸身份。制造条件判断以减缓网络压力
+                    if (preFinishRecognizeFeature == null || threshold > mFaceRecognize.compare(faceFeature, preFinishRecognizeFeature)) {
+                        Message msg = Message.obtain();
+                        msg.obj = CommonUtils.arr2String(faceFeature);
+                        mNetworkHandler.sendMessage(msg);
                     }
                 }
-                // 测试提取人脸特征
-//                test(bitmap, mTextureView.getWidth(), mTextureView.getHeight(), CommonUtils.getUsefulLandmarksFromFaceInfo(faceInfos[0]));
+                drawRectBySurface(faceInfos);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -580,7 +505,6 @@ public class FaceCollectActivity extends BaseFragmentActivity {
         mCapturing = false;
     }
 
-
     /**
      * 启动预测线程
      * 勿私自调用，应在 prepareAllThread() 中调用
@@ -596,7 +520,7 @@ public class FaceCollectActivity extends BaseFragmentActivity {
     }
 
     // 推理线程需要做的事情
-    private Runnable periodicInfer =
+    private final Runnable periodicInfer =
             new Runnable() {
                 @Override
                 public void run() {
@@ -634,6 +558,72 @@ public class FaceCollectActivity extends BaseFragmentActivity {
         }
     }
 
+    /**
+     * 开启网络请求线程
+     * 勿私自调用，应该调用 prepareAllThread()
+     */
+    private void startNetworkThread() {
+        mNetworkThread = new HandlerThread("network");
+        mNetworkThread.start();
+        mNetworkHandler = new Handler(mNetworkThread.getLooper()) {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+                String tempFeature = String.valueOf(msg.obj);
+                Observable<ApiResult> observable = userFeatureService.videoFaceRecognize(actId, tempFeature);
+                observable.subscribeOn(Schedulers.io())
+                        .observeOn(Schedulers.io())
+                        .subscribe(new Observer<ApiResult>() {
+                            @Override
+                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                                Log.d("facerecognize", "onSubscribe: ");
+                            }
+
+                            @Override
+                            public void onNext(@io.reactivex.annotations.NonNull ApiResult apiResult) {
+                                if (apiResult.success) {
+                                    Log.d("facerecognize", "onNext: 人脸识别成功，你的身份信息是: " + (String) apiResult.data);
+                                    Message msg = Message.obtain();
+                                    msg.obj = apiResult.data;
+                                    mHandler.sendMessage(msg);
+                                    preFinishRecognizeFeature = CommonUtils.string2Arr(tempFeature);
+                                } else {
+                                    Log.d("facerecognize", "onNext: 人脸识别失败，错误信息是: " + apiResult.errMsg);
+                                }
+                            }
+
+                            @Override
+                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                                Log.d("facerecognize", "onError: ");
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                Log.d("facerecognize", "onComplete: ");
+                            }
+                        });
+            }
+        };
+    }
+
+    /**
+     * 关闭网络请求线程
+     * 勿私自调用，应该调用 stopAllThread()
+     */
+    private void stopNetworkThread() {
+        try {
+            if (mNetworkThread != null) {
+                mNetworkThread.quitSafely();
+                mNetworkThread.join();
+            }
+            mNetworkThread = null;
+            mNetworkHandler = null;
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     // 绘制人脸检测框
     private void drawRectBySurface(FaceInfo[] faceInfos) {
         if (faceInfos == null) {
@@ -643,119 +633,24 @@ public class FaceCollectActivity extends BaseFragmentActivity {
             mSurfaceHolder.unlockCanvasAndPost(canvas);
             return;
         }
-        Canvas canvas = new Canvas();
-        canvas = mSurfaceHolder.lockCanvas();
+        Canvas canvas = mSurfaceHolder.lockCanvas();
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); //清楚掉上一次的画框。
-        for (int i = 0; i < faceInfos.length; i++) {
-            canvas.drawRect(faceInfos[i].x1, faceInfos[i].y1, faceInfos[i].x2, faceInfos[i].y2, rectPaint);
-            if (!isTesting)
-                test(canvas);
+        for (FaceInfo faceInfo : faceInfos) {
+            canvas.drawRect(faceInfo.x1, faceInfo.y1, faceInfo.x2, faceInfo.y2, rectPaint);
             for (int j = 0; j < 5; j++) {
-                canvas.drawCircle(faceInfos[i].keypoints[j][0], faceInfos[i].keypoints[j][1], 6f, pointPaint);
+                canvas.drawCircle(faceInfo.keypoints[j][0], faceInfo.keypoints[j][1], 6f, pointPaint);
             }
         }
         mSurfaceHolder.unlockCanvasAndPost(canvas);
-        return;
     }
 
-    private void test(Canvas canvas) {
-        float sqrt2 = 1.4142135f;
-        int stroke = 18;
-        int radius = mCircleProgressBar.getRight() - mCircleProgressBar.getLeft() - 2 * stroke;
-        int squareSide = (int) (radius * sqrt2);
-        int errorValue = (mCircleProgressBar.getRight() - mCircleProgressBar.getLeft() - squareSide) / 2;
-
-        int diagonalLeft = mCircleProgressBar.getLeft() - errorValue;
-        int diagonalRight = mCircleProgressBar.getRight() + errorValue;
-        int diagonalTop = mCircleProgressBar.getTop() - errorValue;
-        int diagonalBottom = mCircleProgressBar.getBottom() + errorValue;
-
-        int hopeMinBottom = (diagonalBottom + mCircleProgressBar.getBottom()) / 2 - 120;
-        int hopeMaxBottom = mCircleProgressBar.getBottom() + 5;
-
-        int hopeMinTop = diagonalTop + 80;
-        int hopeMaxTop = (int) ((mCircleProgressBar.getTop() + diagonalTop) / 2 - (diagonalTop - mCircleProgressBar.getTop()) / 6);
-
-        int hopeMinLeft = diagonalLeft + (diagonalLeft - mCircleProgressBar.getLeft()) / 6 + 80;
-        int hopeMaxLeft = diagonalLeft - 30;
-
-        int hopeMinRight = diagonalRight - (mCircleProgressBar.getRight() - diagonalRight) / 6 - 80;
-        int hopeMaxRight = diagonalRight + 30;
-
-        canvas.drawRect(hopeMinLeft, hopeMinTop, hopeMinRight, hopeMinBottom, minRecPaint);
-        canvas.drawRect(hopeMaxLeft, hopeMaxTop, hopeMaxRight, hopeMaxBottom, maxRecPaint);
-        Log.d("verifyFaceLocation", "hopeMinLeft=" + hopeMinLeft + ", hopeMinTop=" + hopeMinTop + ", hopeMinRight=" + hopeMinRight + ", hopeMinBottom=" + hopeMinBottom);
-        Log.d("verifyFaceLocation", "hopeMaxLeft=" + hopeMaxLeft + ", hopeMaxTop=" + hopeMaxTop + ", hopeMaxRight=" + hopeMaxRight + ", hopeMaxBottom=" + hopeMaxBottom);
-    }
-
-    /**
-     * 验证检测出的人脸是否在我们想要的区域内
-     *
-     * @param faceInfo
-     * @return
-     */
-    private boolean verifyFaceLocation(FaceInfo faceInfo) {
-        int left = (int) faceInfo.x1, top = (int) faceInfo.y1, right = (int) faceInfo.x2, bottom = (int) faceInfo.y2;
-        float sqrt2 = 1.4142135f;
-        int stroke = 18;
-        int radius = mCircleProgressBar.getRight() - mCircleProgressBar.getLeft() - 2 * stroke;
-        int squareSide = (int) (radius * sqrt2);
-        int errorValue = (mCircleProgressBar.getRight() - mCircleProgressBar.getLeft() - squareSide) / 2;
-
-        int diagonalLeft = mCircleProgressBar.getLeft() - errorValue;
-        int diagonalRight = mCircleProgressBar.getRight() + errorValue;
-        int diagonalTop = mCircleProgressBar.getTop() - errorValue;
-        int diagonalBottom = mCircleProgressBar.getBottom() + errorValue;
-
-        int hopeMinBottom = (diagonalBottom + mCircleProgressBar.getBottom()) / 2 - 120;
-        int hopeMaxBottom = mCircleProgressBar.getBottom() + 5;
-
-        int hopeMinTop = diagonalTop + 80;
-        int hopeMaxTop = (int) ((mCircleProgressBar.getTop() + diagonalTop) / 2 - (diagonalTop - mCircleProgressBar.getTop()) / 6);
-
-        int hopeMinLeft = diagonalLeft + (diagonalLeft - mCircleProgressBar.getLeft()) / 6 + 80;
-        int hopeMaxLeft = diagonalLeft - 30;
-
-        int hopeMinRight = diagonalRight - (mCircleProgressBar.getRight() - diagonalRight) / 6 - 80;
-        int hopeMaxRight = diagonalRight + 30;
-
-        boolean isVerify = true;
-
-        if (!(hopeMaxLeft <= left && left <= hopeMinLeft))
-            isVerify = false;
-        if (!(hopeMaxTop <= top && top <= hopeMinTop))
-            isVerify = false;
-        if (!(hopeMinRight <= right && right <= hopeMaxRight))
-            isVerify = false;
-        if (!(hopeMinBottom <= bottom && bottom <= hopeMaxBottom))
-            isVerify = false;
-
-        return isVerify;
-    }
-
-    // 处理圆形进度条
-    private static class ProgressHandler extends Handler {
-        private WeakReference<QMUIProgressBar> weakCircleProgressBar;
-
-        void setProgressBar(QMUIProgressBar circleProgressBar) {
-            weakCircleProgressBar = new WeakReference<>(circleProgressBar);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case STOP:
-                    break;
-                case NEXT:
-                    if (!Thread.currentThread().isInterrupted()) {
-                        if (weakCircleProgressBar.get() != null) {
-                            weakCircleProgressBar.get().setProgress(msg.arg1);
-                        }
-                    }
-            }
-
-        }
+    @OnClick(value = R.id.bt_switch_camera)
+    public void setBt_switch_camera(View view) {
+        stopAllThread();
+        closeCamera();
+        isFont = !isFont;
+        prepareCamera();
+        prepareAllThread();
     }
 
 }

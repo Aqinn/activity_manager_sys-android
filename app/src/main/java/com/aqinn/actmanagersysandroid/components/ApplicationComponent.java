@@ -2,6 +2,9 @@ package com.aqinn.actmanagersysandroid.components;
 
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.ShowManager;
+import com.aqinn.actmanagersysandroid.activity.DARBitmapActivity;
+import com.aqinn.actmanagersysandroid.activity.FaceCollectActivity;
+import com.aqinn.actmanagersysandroid.activity.VideoCheckInActivity;
 import com.aqinn.actmanagersysandroid.fragment.ActCenterFragment;
 import com.aqinn.actmanagersysandroid.fragment.ActDetailFragment;
 import com.aqinn.actmanagersysandroid.fragment.AttendCenterFragment;
@@ -17,6 +20,7 @@ import com.aqinn.actmanagersysandroid.modules.ShowManagerModule;
 import com.aqinn.actmanagersysandroid.presenter.MyServiceManager;
 import com.aqinn.actmanagersysandroid.scopes.ApplicationScope;
 
+
 import dagger.Component;
 
 /**
@@ -31,6 +35,11 @@ import dagger.Component;
         ShowManagerModule.class
 })
 public interface ApplicationComponent {
+
+    // Activity
+    void inject(DARBitmapActivity darBitmapActivity);
+    void inject(FaceCollectActivity faceCollectActivity);
+    void inject(VideoCheckInActivity VideoCheckInActivity);
 
     // Fragment
     void inject(MainFragment mainFragment);
