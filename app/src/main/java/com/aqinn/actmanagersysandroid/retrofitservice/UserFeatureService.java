@@ -1,10 +1,8 @@
-package com.aqinn.actmanagersysandroid.service;
+package com.aqinn.actmanagersysandroid.retrofitservice;
 
 import com.aqinn.actmanagersysandroid.data.ApiResult;
-import com.aqinn.actmanagersysandroid.entity.UserFeature;
 
 import io.reactivex.Observable;
-import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
@@ -26,13 +24,13 @@ public interface UserFeatureService {
             , @Field("f4") String f4);
 
     @FormUrlEncoded
-    @POST("/userfeature/check/{actId}/{userId}")
-    Observable<ApiResult> selfFaceRecognize(@Path("actId") Long actId, @Path("userId") Long userId,
+    @POST("/userfeature/check/{attendId}/{userId}")
+    Observable<ApiResult> selfFaceRecognize(@Path("attendId") Long attendId, @Path("userId") Long userId,
                                             @Field("feature") String feature);
 
     @FormUrlEncoded
     @POST("/userfeature/videocheck")
-    Observable<ApiResult> videoFaceRecognize(@Field("actId") Long actId,
+    Observable<ApiResult> videoFaceRecognize(@Field("attendId") Long attendId,
                                              @Field("feature") String feature);
 
 }

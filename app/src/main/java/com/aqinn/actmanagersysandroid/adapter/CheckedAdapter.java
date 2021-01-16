@@ -45,7 +45,7 @@ public class CheckedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void addChecked(String info) {
-        mDatas.add(info);
+        mDatas.add(0, info);
         notifyDataSetChanged();
     }
 

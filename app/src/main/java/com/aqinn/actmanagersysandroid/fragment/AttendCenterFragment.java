@@ -1,6 +1,8 @@
 package com.aqinn.actmanagersysandroid.fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +12,20 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
+import com.aqinn.actmanagersysandroid.activity.MainActivity;
+import com.aqinn.actmanagersysandroid.activity.VideoCheckInActivity;
 import com.aqinn.actmanagersysandroid.adapter.CreateAttendIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.adapter.ParticipateAttendIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
@@ -25,7 +34,10 @@ import com.aqinn.actmanagersysandroid.entity.show.ParticipateAttendIntroItem;
 import com.aqinn.actmanagersysandroid.presenter.ServiceManager;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendPartDataSource;
+import com.aqinn.actmanagersysandroid.service.CheckinCountRefreshService;
 import com.aqinn.actmanagersysandroid.utils.CommonUtils;
+import com.aqinn.actmanagersysandroid.utils.DateFormatUtils;
+import com.aqinn.actmanagersysandroid.view.CustomDatePicker;
 import com.qmuiteam.qmui.layout.QMUIFrameLayout;
 import com.qmuiteam.qmui.skin.QMUISkinHelper;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
@@ -77,6 +89,8 @@ public class AttendCenterFragment extends BaseFragment {
     @Inject
     public ServiceManager serviceManager;
 
+    private CustomDatePicker timePicker;
+
     private int mCurrentDialogStyle = com.qmuiteam.qmui.R.style.QMUI_Dialog;
     private Map<AttendCenterFragment.ContentPage, View> mPageMap = new HashMap<>();
     private Map<Integer, ListView> mListViewMap = new HashMap<>();
@@ -121,6 +135,10 @@ public class AttendCenterFragment extends BaseFragment {
         initTopBar();
         initTabAndPager();
 
+        Intent intent = new Intent(getActivity(), CheckinCountRefreshService.class);
+        getActivity().startService(intent);
+        Log.d("CheckinCountRefreshServ", "onCreateView: 服务已经启动");
+
         return rootView;
     }
 
@@ -143,17 +161,19 @@ public class AttendCenterFragment extends BaseFragment {
      */
     private void showBottomSheetList() {
         new QMUIBottomSheet.BottomListSheetBuilder(getActivity())
-                .addItem("xixi")
-                .addItem("xixi")
-                .addItem("xixi")
-                .addItem("xixi")
-                .addItem("xixi")
-                .addItem("xixi")
-                .addItem("xixi")
+                .addItem("创建签到")
                 .setOnSheetItemClickListener(new QMUIBottomSheet.BottomListSheetBuilder.OnSheetItemClickListener() {
                     @Override
                     public void onClick(QMUIBottomSheet dialog, View itemView, int position, String tag) {
                         dialog.dismiss();
+                        switch (position) {
+                            case 0:
+                                // 创建签到
+                                Toast.makeText(getActivity(), "请在\"活动中心 - 我创建的活动\"点击您想创建签到的活动", Toast.LENGTH_SHORT).show();
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 })
                 .build()
@@ -296,7 +316,7 @@ public class AttendCenterFragment extends BaseFragment {
                                 }
                             }
                     ));
-                if (clickCaii.getStatus() == 1) {
+                if (clickCaii.getStatus() == 2) {
                     boolean flag = false;
                     Integer type[] = CommonUtils.dec2typeArr(clickCaii.getType());
                     for (int i = 0; i < type.length; i++) {
@@ -312,6 +332,38 @@ public class AttendCenterFragment extends BaseFragment {
                                     public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
                                         quickAction.dismiss();
                                         Toast.makeText(getContext(), "点击了视频签到按钮", Toast.LENGTH_SHORT).show();
+                                        registerForActivityResult(new ActivityResultContract<Long, Void>() {
+                                            @NonNull
+                                            @Override
+                                            public Intent createIntent(@NonNull Context context, Long input) {
+                                                Intent intent = new Intent(getActivity(), VideoCheckInActivity.class);
+                                                Log.d("CheckSelfCheckinService", "clickCaii => " + clickCaii.toString());
+                                                intent.putExtra("attendId", clickCaii.getAttendId());
+                                                Integer[] types = CommonUtils.dec2typeArr(clickCaii.getType());
+                                                for (int i = 0; i < types.length; i++) {
+                                                    Log.d("CheckSelfCheckinService", "types[i] => " + types[i]);
+                                                    if (types[i] == 2) {
+                                                        intent.putExtra("isSelfCheck", true);
+                                                        break;
+                                                    }
+                                                }
+                                                return intent;
+                                            }
+
+                                            @Override
+                                            public Void parseResult(int resultCode, @Nullable Intent intent) {
+                                                if (resultCode == -1) {
+                                                    // TODO 开启视频签到失败，从 VideoCheckInActivity 返回此处
+                                                    Toast.makeText(getActivity(), "开启视频签到失败", Toast.LENGTH_SHORT).show();
+                                                }
+                                                return null;
+                                            }
+                                        }, new ActivityResultCallback<Void>() {
+                                            @Override
+                                            public void onActivityResult(Void result) {
+
+                                            }
+                                        }).launch(null);
                                     }
                                 }
                         ));
@@ -364,20 +416,29 @@ public class AttendCenterFragment extends BaseFragment {
         builder.background(R.attr.qmui_skin_support_popup_bg);
         QMUISkinHelper.setSkinValue(frameLayout, builder);
         frameLayout.setRadius(QMUIDisplayHelper.dp2px(getContext(), 12));
-        final int padding = QMUIDisplayHelper.dp2px(getContext(), 20);
+        final int padding = QMUIDisplayHelper.dp2px(getContext(), 10);
         frameLayout.setPadding(padding, padding, padding, padding);
         builder.clear();
         builder.textColor(R.attr.app_skin_common_title_text_color);
         builder.release();
-        int height = QMUIDisplayHelper.dp2px(getContext(), 200);
-        int width = QMUIDisplayHelper.dp2px(getContext(), 135);
+        int height = QMUIDisplayHelper.dp2px(getContext(), 250);
+        int width = QMUIDisplayHelper.dp2px(getContext(), 115);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(height, width);
 
         final View editView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_create_attend_detail, null);
         editView.setBackground(QMUIResHelper.getAttrDrawable(getContext(), R.attr.qmui_skin_support_popup_bg));
         CreateAttendIntroItem caii = getCreateAttendIntroById(id);
-        EditText et_time = (EditText) editView.findViewById(R.id.et_time);
-        et_time.setText(caii.getTime());
+        TextView tv_name = (TextView) editView.findViewById(R.id.tv_name);
+        tv_name.setText(caii.getName());
+        TextView tv_time = (TextView) editView.findViewById(R.id.tv_time);
+        initTimerPicker(tv_time);
+        tv_time.setClickable(true);
+        tv_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                timePicker.show(tv_time.getText().toString());
+            }
+        });
         frameLayout.addView(editView, lp);
         // 这个弹框的 closeBtn 用来当做确认按钮 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // closeIcon 已更换成 一个勾的图案
@@ -400,8 +461,7 @@ public class AttendCenterFragment extends BaseFragment {
                 .onDismiss(new PopupWindow.OnDismissListener() {
                     @Override
                     public void onDismiss() {
-
-//                        serviceManager.editAttendTime(id, ((EditText) editView.findViewById(R.id.et_time)).getText().toString());
+//                        serviceManager.editAttendTime(id, ((TextView) editView.findViewById(R.id.tv_time)).getText().toString());
                     }
                 })
                 .show(v);
@@ -482,6 +542,38 @@ public class AttendCenterFragment extends BaseFragment {
             }
         }
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Intent intent = new Intent(getActivity(), CheckinCountRefreshService.class);
+        getActivity().stopService(intent);
+        Log.d("CheckinCountRefreshServ", "onDestroy: 服务已经销毁");
+    }
+
+    private void initTimerPicker(TextView tv_time) {
+        String beginTime = "1999-12-09 03:00";
+        String endTime = DateFormatUtils.long2Str(1893427199000L, true);
+        String currentTime = DateFormatUtils.long2Str(System.currentTimeMillis(), true);
+
+        tv_time.setText(currentTime);
+
+        // 通过日期字符串初始化日期，格式请用：yyyy-MM-dd HH:mm
+        timePicker = new CustomDatePicker(getContext(), new CustomDatePicker.Callback() {
+            @Override
+            public void onTimeSelected(long timestamp) {
+                tv_time.setText(DateFormatUtils.long2Str(timestamp, true));
+            }
+        }, beginTime, endTime);
+        // 允许点击屏幕或物理返回键关闭
+        timePicker.setCancelable(true);
+        // 显示时和分
+        timePicker.setCanShowPreciseTime(true);
+        // 允许循环滚动
+        timePicker.setScrollLoop(true);
+        // 允许滚动动画
+        timePicker.setCanShowAnim(true);
     }
 
     public enum ContentPage {

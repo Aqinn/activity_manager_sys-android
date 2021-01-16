@@ -271,6 +271,9 @@ public class ShowManager {
      */
     public boolean createAttend(CreateAttendIntroItem newCaii) {
         boolean success = false;
+        success = newCaii.save();
+        if (!success)
+            return success;
         success = attC.getDatas().add(newCaii);
         if (success)
             attC.notifyAllObserver();
@@ -291,6 +294,29 @@ public class ShowManager {
         actC.getDatas().add(0, dbAii);
         actC.notifyAllObserver();
         return true;
+    }
+
+    public boolean refreshAttendCount(CreateAttendIntroItem newCaii) {
+        boolean success = false;
+        for (int i = 0; i < attC.getDatas().size(); i++) {
+            if (((CreateAttendIntroItem) attC.getDatas().get(i)).getAttendId().equals(newCaii.getAttendId())) {
+                ContentValues values = new ContentValues();
+                if (((CreateAttendIntroItem) attC.getDatas().get(i)).getShouldAttendCount().equals(newCaii.getShouldAttendCount()) &&
+                        ((CreateAttendIntroItem) attC.getDatas().get(i)).getHaveAttendCount().equals(newCaii.getHaveAttendCount()))
+                    return true;
+                values.put("shouldAttendCount", newCaii.getShouldAttendCount());
+                values.put("haveAttendCount", newCaii.getHaveAttendCount());
+                values.put("notAttendCount", newCaii.getNotAttendCount());
+                String attendId = String.valueOf(newCaii.getAttendId());
+                int res = LitePal.updateAll(CreateAttendIntroItem.class, values, "attendId = ?", attendId);
+                if (res > 0)
+                    success = true;
+                break;
+            }
+        }
+        if (success)
+            attC.notifyAllObserver();
+        return success;
     }
 
 }

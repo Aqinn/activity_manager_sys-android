@@ -11,6 +11,8 @@ import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.ActIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
 import com.aqinn.actmanagersysandroid.presenter.ServiceManager;
+import com.aqinn.actmanagersysandroid.utils.DateFormatUtils;
+import com.aqinn.actmanagersysandroid.view.CustomDatePicker;
 import com.qmuiteam.qmui.alpha.QMUIAlphaImageButton;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
@@ -22,6 +24,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * @author Aqinn
@@ -37,8 +40,8 @@ public class ActDetailFragment extends BaseFragment {
     TextView tvCreator;
     @BindView(R.id.et_name)
     EditText etName;
-    @BindView(R.id.et_time)
-    EditText etTime;
+    @BindView(R.id.tv_time)
+    TextView tv_time;
     @BindView(R.id.et_loc)
     EditText etLoc;
     @BindView(R.id.et_intro)
@@ -52,6 +55,7 @@ public class ActDetailFragment extends BaseFragment {
     private ActIntroItem mAii = null;
     private QMUIAlphaImageButton qaib;
     private final int mCurrentDialogStyle = com.qmuiteam.qmui.R.style.QMUI_Dialog;
+    private CustomDatePicker timePicker;
 
     public ActDetailFragment(int flag, ActIntroItem aii, ActIntroItemAdapter aiia) {
         mFlag = flag;
@@ -71,6 +75,7 @@ public class ActDetailFragment extends BaseFragment {
         ButterKnife.bind(this, rootView);
         initTopBar();
         initData();
+        initTimerPicker();
         return rootView;
     }
 
@@ -80,7 +85,7 @@ public class ActDetailFragment extends BaseFragment {
     private void initData() {
         tvCreator.setText(mAii.getCreator());
         etName.setText(mAii.getName());
-        etTime.setText(mAii.getTime());
+        tv_time.setText(mAii.getTime());
         etLoc.setText(mAii.getLocation());
         etIntro.setText(mAii.getIntro());
         editModeOff();
@@ -122,7 +127,7 @@ public class ActDetailFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 ActIntroItem newAii = new ActIntroItem(mAii.getId(), mAii.getOwnerId(), mAii.getActId(), mAii.getCode(), mAii.getPwd(), mAii.getCreator(),
-                        etName.getText().toString(), etTime.getText().toString(),
+                        etName.getText().toString(), tv_time.getText().toString(),
                         etLoc.getText().toString(), etIntro.getText().toString(),
                         mAii.getStatus());
                 serviceManager.editAct(newAii, new ServiceManager.EditActCallback() {
@@ -220,19 +225,19 @@ public class ActDetailFragment extends BaseFragment {
         switch (status) {
             case 0:
                 etName.setEnabled(false);
-                etTime.setEnabled(false);
+                tv_time.setEnabled(false);
                 etLoc.setEnabled(false);
                 etIntro.setEnabled(false);
                 break;
             case 1:
                 etName.setEnabled(true);
-                etTime.setEnabled(true);
+                tv_time.setEnabled(true);
                 etLoc.setEnabled(true);
                 etIntro.setEnabled(true);
                 break;
             case 2:
                 etName.setEnabled(!etName.isEnabled());
-                etTime.setEnabled(!etTime.isEnabled());
+                tv_time.setEnabled(!tv_time.isEnabled());
                 etLoc.setEnabled(!etLoc.isEnabled());
                 etIntro.setEnabled(!etIntro.isEnabled());
                 break;
@@ -313,6 +318,35 @@ public class ActDetailFragment extends BaseFragment {
         qaib.setVisibility(View.INVISIBLE);
         etEnabledChanged(0);
         mTopBar.findViewById(R.id.topbar_right_change_button).setClickable(true);
+    }
+
+    @OnClick(R.id.tv_time)
+    public void setTv_time(View view) {
+        timePicker.show(tv_time.getText().toString());
+    }
+
+    private void initTimerPicker() {
+        String beginTime = "1999-12-09 03:00";
+        String endTime = DateFormatUtils.long2Str(1893427199000L, true);
+        String currentTime = DateFormatUtils.long2Str(System.currentTimeMillis(), true);
+
+        tv_time.setText(currentTime);
+
+        // 通过日期字符串初始化日期，格式请用：yyyy-MM-dd HH:mm
+        timePicker = new CustomDatePicker(getContext(), new CustomDatePicker.Callback() {
+            @Override
+            public void onTimeSelected(long timestamp) {
+                tv_time.setText(DateFormatUtils.long2Str(timestamp, true));
+            }
+        }, beginTime, endTime);
+        // 允许点击屏幕或物理返回键关闭
+        timePicker.setCancelable(true);
+        // 显示时和分
+        timePicker.setCanShowPreciseTime(true);
+        // 允许循环滚动
+        timePicker.setScrollLoop(true);
+        // 允许滚动动画
+        timePicker.setCanShowAnim(true);
     }
 
     /**

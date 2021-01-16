@@ -1,5 +1,6 @@
 package com.aqinn.actmanagersysandroid.fragment;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -13,6 +14,7 @@ import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.UserDescDataSource;
+import com.aqinn.actmanagersysandroid.service.CheckinCountRefreshService;
 import com.qmuiteam.qmui.arch.QMUIFragment;
 import com.qmuiteam.qmui.arch.QMUIFragmentPagerAdapter;
 import com.qmuiteam.qmui.widget.QMUIViewPager;

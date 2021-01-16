@@ -20,10 +20,9 @@ import androidx.core.content.ContextCompat;
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.data.ApiResult;
-import com.aqinn.actmanagersysandroid.service.UserFeatureService;
+import com.aqinn.actmanagersysandroid.retrofitservice.UserFeatureService;
 import com.aqinn.actmanagersysandroid.utils.CameraUtils;
 import com.aqinn.actmanagersysandroid.utils.CommonUtils;
-import com.aqinn.actmanagersysandroid.utils.RetrofitUtils;
 import com.aqinn.actmanagersysandroid.utils.Utils;
 import com.aqinn.facerecognizencnn.FaceInfo;
 import com.aqinn.facerecognizencnn.FaceRecognize;
@@ -148,7 +147,7 @@ public class DARBitmapActivity extends Activity {
     }
 
     private void selfFaceRecognize(float features1[]) {
-        Observable<ApiResult> observable = userFeatureService.selfFaceRecognize(1L, 23L, CommonUtils.arr2String(features1));
+        Observable<ApiResult> observable = userFeatureService.selfFaceRecognize(9L, 23L, CommonUtils.arr2String(features1));
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ApiResult>() {
@@ -183,7 +182,7 @@ public class DARBitmapActivity extends Activity {
     }
 
     private void videoFaceRecognize(float features1[]) {
-        Observable<ApiResult> observable = userFeatureService.videoFaceRecognize(1L, CommonUtils.arr2String(features1));
+        Observable<ApiResult> observable = userFeatureService.videoFaceRecognize(9L, CommonUtils.arr2String(features1));
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ApiResult>() {

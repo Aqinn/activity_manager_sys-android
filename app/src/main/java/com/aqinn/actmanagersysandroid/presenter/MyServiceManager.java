@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.ShowManager;
 import com.aqinn.actmanagersysandroid.activity.MainActivity;
@@ -24,12 +25,12 @@ import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.UserDescDataSource;
-import com.aqinn.actmanagersysandroid.service.ActService;
-import com.aqinn.actmanagersysandroid.service.AttendService;
-import com.aqinn.actmanagersysandroid.service.ShowItemService;
-import com.aqinn.actmanagersysandroid.service.UserActService;
-import com.aqinn.actmanagersysandroid.service.UserAttendService;
-import com.aqinn.actmanagersysandroid.service.UserService;
+import com.aqinn.actmanagersysandroid.retrofitservice.ActService;
+import com.aqinn.actmanagersysandroid.retrofitservice.AttendService;
+import com.aqinn.actmanagersysandroid.retrofitservice.ShowItemService;
+import com.aqinn.actmanagersysandroid.retrofitservice.UserActService;
+import com.aqinn.actmanagersysandroid.retrofitservice.UserAttendService;
+import com.aqinn.actmanagersysandroid.retrofitservice.UserService;
 import com.aqinn.actmanagersysandroid.utils.CommonUtils;
 import com.aqinn.actmanagersysandroid.utils.LoadDialogUtil;
 import com.google.gson.internal.LinkedTreeMap;
@@ -205,7 +206,7 @@ public class MyServiceManager implements ServiceManager {
     @Override
     public void register(User user, RegisterCallback callback) {
         Observable<ApiResult> observable = userService.createUser(
-                user.getAccount(),user.getPwd(),user.getName(),user.getContact(),user.getSex(),user.getIntro()
+                user.getAccount(), user.getPwd(), user.getName(), user.getContact(), user.getSex(), user.getIntro()
         );
         Disposable disposable = observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(apiResult -> {
@@ -244,7 +245,7 @@ public class MyServiceManager implements ServiceManager {
                     CommonUtils.setNowUserIdToSP(mContext, userId);
                     CommonUtils.setNowUsernameToSP(mContext, account);
                     Intent intent = new Intent(mContext, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
                     fragmentActivity.finish();
                 }, throwable -> {
@@ -448,6 +449,35 @@ public class MyServiceManager implements ServiceManager {
     }
 
     @Override
+    public void createAttend(Long actId, String time, Integer type, CreateAttendCallback callback) {
+        Observable<ApiResult> observable = attendService.createAttend(CommonUtils.getNowUserIdFromSP(MyApplication.getContext()), actId, time, type);
+        Disposable d = observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(apiResult -> {
+                    if (apiResult.success) {
+                        JSONObject jo = JSONObject.parseObject(String.valueOf(apiResult.data));
+                        Long ownerId = jo.getLong("ownerId");
+                        Long attendId = jo.getLong("attendId");
+                        String name = jo.getString("actName");
+                        int shouldAttendCount = jo.getInteger("shouldAttendCount");
+                        CreateAttendIntroItem caii = new CreateAttendIntroItem(
+                            ownerId,attendId,actId,name,time,type,1,shouldAttendCount,0,shouldAttendCount
+                        );
+                        if (showManager.createAttend(caii)) {
+                            callback.onFinish();
+                        }
+                    } else {
+                        Log.d(TAG, "createAttend: 网络请求成功，但是返回的数据是 false，错误信息如下: " + apiResult.errMsg);
+                        callback.onFail();
+                    }
+                }, throwable -> {
+                    throwable.printStackTrace();
+                    Log.d(TAG, "createAttend: 网络请求出错， 报错信息如下: " + throwable.getMessage());
+                    callback.onFail();
+                });
+    }
+
+    @Override
     public void startAttend(Long id) {
         CreateAttendIntroItem caii = LitePal.find(CreateAttendIntroItem.class, id);
         Disposable disposable = attendService.startAttend(caii.getAttendId())
@@ -563,7 +593,13 @@ public class MyServiceManager implements ServiceManager {
         return true;
     }
 
-//    LinkedTreeMap linkedTreeMap = (LinkedTreeMap) apiResult.data;
+    @Override
+    public void refreshCreateAttend(Long attendId, Integer shouldAttendCount, Integer haveAttendCount, Integer notAttendCount) {
+        CreateAttendIntroItem caii = LitePal.where("attendId = ?", String.valueOf(attendId)).find(CreateAttendIntroItem.class).get(0);
+        showManager.refreshAttendCount(caii);
+    }
+
+    //    LinkedTreeMap linkedTreeMap = (LinkedTreeMap) apiResult.data;
 //    Object o = linkedTreeMap.get("id");
 //    Double d = (Double) o;
 //    Long userId = d.longValue();

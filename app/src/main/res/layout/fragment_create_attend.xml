@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/al_find"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_fragment_bg_radius">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="0dp"
+        android:text="创建签到"
+        android:textSize="25sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="签到时间"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/tv_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:ems="10"
+        android:hint="点击选择时间"
+        android:background="@drawable/gray_bg_radius"
+        android:padding="4dp"
+        android:gravity="center"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="@id/tv_time_text"
+        app:layout_constraintStart_toEndOf="@id/tv_time_text"
+        app:layout_constraintTop_toTopOf="@id/tv_time_text" />
+
+    <TextView
+        android:id="@+id/tv_type_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:maxLength="10"
+        android:text="签到类型"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/tv_time_text"
+        app:layout_constraintTop_toBottomOf="@id/tv_time_text" />
+
+    <LinearLayout
+        android:id="@+id/ll_type"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/tv_type_text"
+        app:layout_constraintStart_toEndOf="@id/tv_type_text"
+        app:layout_constraintTop_toTopOf="@id/tv_type_text">
+
+        <CheckBox
+            android:id="@+id/cb_self"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_weight="2"
+            android:text="自助签到"
+            android:textColor="@android:color/black"
+            android:theme="@style/MyCheckBox"
+            app:layout_constraintTop_toBottomOf="@id/et_password" />
+
+        <CheckBox
+            android:id="@+id/cb_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_weight="2"
+            android:text="视频签到"
+            android:textColor="@android:color/black"
+            android:theme="@style/MyCheckBox"
+            app:layout_constraintTop_toBottomOf="@id/et_password" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bt_confirm"
+        style="@style/my_button"
+        android:layout_width="310dp"
+        android:layout_height="30dp"
+        android:background="@drawable/button_bg_selector"
+        app:layout_constraintTop_toBottomOf="@id/ll_type"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="确认" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

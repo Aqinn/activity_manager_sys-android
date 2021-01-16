@@ -1,41 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="27dp"
+        android:gravity="center"
         android:text="活动名称"
         android:textSize="@dimen/attend_detail_name_text_size"
-        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/attend_detail_margin"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@id/tv_time"
+        android:id="@id/tv_time_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="15dp"
         android:text="签到时间"
-        app:layout_constraintTop_toBottomOf="@id/tv_name"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="@dimen/attend_detail_margin"
-        android:layout_marginTop="@dimen/attend_detail_margin"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
-    <EditText
-        android:id="@+id/et_time"
+    <TextView
+        android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/gray_bg_radius"
+        android:padding="4dp"
         android:text="00:00 - 23:00"
-        app:layout_constraintTop_toBottomOf="@id/tv_time"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="@dimen/attend_detail_margin"
-        android:layout_marginTop="@dimen/attend_detail_margin_inter"/>
+        app:layout_constraintStart_toEndOf="@+id/tv_time_text"
+        app:layout_constraintTop_toTopOf="@+id/tv_time_text"
+        app:layout_constraintBottom_toBottomOf="@id/tv_time_text"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

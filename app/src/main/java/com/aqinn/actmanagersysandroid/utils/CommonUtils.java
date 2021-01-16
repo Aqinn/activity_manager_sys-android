@@ -191,13 +191,15 @@ public class CommonUtils {
     }
 
     /**
-     * 上面方法 Integer[] dec2typeArr(Integer dec) 的反向过程
-     *
+     * 上面方法 Integer[] dec2typeArr(Integer dec) 的"反向过程"
+     * 例子： typeArr2dec(new Integer[]{1,2}) 会输出 3(30) => 11(2) => 第一位和第二位上都是1代表着第一种方式和第二种方式都选上了
      * @return
      */
     public static Integer typeArr2dec(Integer[] typeArr) {
         char[] temp = new char[]{'0', '0', '0', '0', '0', '0'};
         for (Integer integer : typeArr) {
+            if (integer == 0)
+                continue;
             temp[temp.length - integer] = '1';
         }
         return Integer.parseInt(String.valueOf(temp), 2);

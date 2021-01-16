@@ -29,20 +29,16 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.data.ApiResult;
-import com.aqinn.actmanagersysandroid.service.UserFeatureService;
+import com.aqinn.actmanagersysandroid.retrofitservice.UserFeatureService;
 import com.aqinn.actmanagersysandroid.utils.CameraUtils;
 import com.aqinn.actmanagersysandroid.utils.CommonUtils;
 import com.aqinn.actmanagersysandroid.utils.Utils;

@@ -1,4 +1,4 @@
-package com.aqinn.actmanagersysandroid.service;
+package com.aqinn.actmanagersysandroid.retrofitservice;
 
 
 import com.aqinn.actmanagersysandroid.data.ApiResult;

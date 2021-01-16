@@ -19,6 +19,8 @@ import com.aqinn.actmanagersysandroid.modules.ServiceManagerModule;
 import com.aqinn.actmanagersysandroid.modules.ShowManagerModule;
 import com.aqinn.actmanagersysandroid.presenter.MyServiceManager;
 import com.aqinn.actmanagersysandroid.scopes.ApplicationScope;
+import com.aqinn.actmanagersysandroid.service.CheckSelfCheckinService;
+import com.aqinn.actmanagersysandroid.service.CheckinCountRefreshService;
 
 
 import dagger.Component;
@@ -56,5 +58,9 @@ public interface ApplicationComponent {
 
     // MyServiceManager
     void inject(MyServiceManager myServiceManager);
+
+    // Service
+    void inject(CheckinCountRefreshService checkinCountRefreshService);
+    void inject(CheckSelfCheckinService checkSelfCheckinService);
 
 }

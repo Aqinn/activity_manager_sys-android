@@ -83,5 +83,7 @@ dependencies {
 
     implementation project(':facerecognize')
 
+    implementation 'com.alibaba:fastjson:1.1.71.android'
+
 
 }

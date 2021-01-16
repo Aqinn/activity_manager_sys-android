@@ -1,6 +1,5 @@
 package com.aqinn.actmanagersysandroid.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -33,30 +32,28 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.adapter.CheckedAdapter;
 import com.aqinn.actmanagersysandroid.data.ApiResult;
-import com.aqinn.actmanagersysandroid.service.UserFeatureService;
+import com.aqinn.actmanagersysandroid.retrofitservice.UserAttendService;
+import com.aqinn.actmanagersysandroid.retrofitservice.UserFeatureService;
+import com.aqinn.actmanagersysandroid.service.CheckSelfCheckinService;
 import com.aqinn.actmanagersysandroid.utils.CameraUtils;
 import com.aqinn.actmanagersysandroid.utils.CommonUtils;
 import com.aqinn.actmanagersysandroid.utils.Utils;
 import com.aqinn.actmanagersysandroid.view.AutoFitTextureView;
 import com.aqinn.facerecognizencnn.FaceInfo;
 import com.aqinn.facerecognizencnn.FaceRecognize;
-import com.qmuiteam.qmui.widget.QMUIProgressBar;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -67,8 +64,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -90,17 +87,17 @@ public class VideoCheckInActivity extends BaseFragmentActivity {
 
     @Inject
     public UserFeatureService userFeatureService;
+    @Inject
+    public UserAttendService userAttendService;
 
-    private Long actId;
-
-    protected static final int STOP = 0x10000;
-    protected static final int NEXT = 0x10001;
+    // 当前正在签到的签到 id
+    private Long attendId;
 
     private SurfaceHolder mSurfaceHolder;
-    private CheckedAdapter mCheckedAdapter;
+    private static CheckedAdapter mCheckedAdapter;
 
     // 主线程 handler
-    private Handler mHandler = new Handler(new Handler.Callback() {
+    public static Handler mHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
             String userInfo = String.valueOf(msg.obj);
@@ -168,11 +165,24 @@ public class VideoCheckInActivity extends BaseFragmentActivity {
         MyApplication.getApplicationComponent().inject(this);
         ButterKnife.bind(this);
         Intent intent = getIntent();
-        actId = intent.getLongExtra("actId", 1L);
-//        if (actId == -1)
-//            finish();
+        Log.d(TAG, "onCreate: attendId => " + intent.getLongExtra("attendId", -1L));
+        Log.d(TAG, "onCreate: isSelfCheck => " + intent.getBooleanExtra("isSelfCheck", false));
+        attendId = intent.getLongExtra("attendId", -1L);
+        if (attendId.equals(-1L)) {
+            setResult(-1);
+            finish();
+        }
+        boolean isSelfCheck = intent.getBooleanExtra("isSelfCheck", false);
+        if (isSelfCheck) {
+            // 开启增量获得自助签到成功信息的网络请求服务
+            Log.d(TAG, "准备启动 增量获得自助签到成功信息的网络请求服务");
+            Intent serviceIntent = new Intent(this, CheckSelfCheckinService.class);
+            serviceIntent.putExtra("attendId", attendId);
+            startService(serviceIntent);
+        }
         initAllView();
         initModel();
+        initData();
     }
 
     private void initAllView() {
@@ -206,6 +216,29 @@ public class VideoCheckInActivity extends BaseFragmentActivity {
         mFaceRecognize.initMobileFacenet(sdPath);
     }
 
+    private void initData() {
+        Observable<ApiResult> observable = userAttendService.getVideoUserAttendAfterTime(attendId, 1L);
+        Disposable d = observable.subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(apiResult -> {
+                    if (apiResult.success) {
+                        Log.d(TAG, "获取新增的视频签到信息成功，正在准备推送至 RecycleView 中显示");
+                        Log.d(TAG, "initData: " + String.valueOf(apiResult.data));
+                        JSONArray ja = JSONArray.parseArray(String.valueOf(apiResult.data));
+                        for (int i = ja.size() - 1; i >= 0; i--) {
+                            Message msg = Message.obtain();
+                            msg.obj = ja.getJSONObject(i).get("msg");
+                            mHandler.sendMessage(msg);
+                        }
+                    } else {
+                        Log.d(TAG, "获取新增的自助签到信息成功，但后台返回了false");
+                    }
+                }, throwable -> {
+                    throwable.printStackTrace();
+                    Log.d(TAG, "initData: 初始化已视频签到的网络请求失败，错误信息如下: " + throwable.getMessage());
+                });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -232,6 +265,8 @@ public class VideoCheckInActivity extends BaseFragmentActivity {
         super.onDestroy();
         stopAllThread();
         closeCamera();
+        Intent serviceIntent = new Intent(this, CheckSelfCheckinService.class);
+        stopService(serviceIntent);
     }
 
     // 开启所有工作线程
@@ -253,13 +288,13 @@ public class VideoCheckInActivity extends BaseFragmentActivity {
         // 获取相机捕获的图像
         Bitmap bitmap = mTextureView.getBitmap();
         try {
-            Log.d(TAG, "predict: 用以预测的 Bitmap 尺寸（未Resize） w:" + bitmap.getWidth() + ", h:" + bitmap.getHeight());
+//            Log.d(TAG, "predict: 用以预测的 Bitmap 尺寸（未Resize） w:" + bitmap.getWidth() + ", h:" + bitmap.getHeight());
             float[][] result = mFaceRecognize.detectTest(bitmap, bitmap.getWidth(), bitmap.getHeight(), 3);
             if (result == null) {
                 drawRectBySurface(null);
                 return;
             }
-            Log.d(TAG, "predict: 检测到几张人脸？result.length => " + result.length);
+//            Log.d(TAG, "predict: 检测到几张人脸？result.length => " + result.length);
             if (result.length != 0) {
                 FaceInfo faceInfos[] = new FaceInfo[result.length];
                 for (int i = 0; i < faceInfos.length; i++) {
@@ -570,7 +605,7 @@ public class VideoCheckInActivity extends BaseFragmentActivity {
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
                 String tempFeature = String.valueOf(msg.obj);
-                Observable<ApiResult> observable = userFeatureService.videoFaceRecognize(actId, tempFeature);
+                Observable<ApiResult> observable = userFeatureService.videoFaceRecognize(attendId, tempFeature);
                 observable.subscribeOn(Schedulers.io())
                         .observeOn(Schedulers.io())
                         .subscribe(new Observer<ApiResult>() {
