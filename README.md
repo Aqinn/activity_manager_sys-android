@@ -51,8 +51,14 @@ Android Studio 如果报编译不过，大概率是 gradle 很久都下载不下
 ## 3. 功能展示（Show Features）
 ### 3.1 人脸采集
 人脸采集功能预览，带指示框版本。为了更好地指引用户进行人脸采集，我模仿 iPhone 的人脸采集界面，设置了一个黑屏+中间镂空的圆框，同时添加了人脸位置检测规则，只有当人脸检测框位置位于两个框之间时，才能成功采集。
+
+
 ![image](https://github.com/Aqinn/activity_manager_sys-android/blob/master/previewimages/face_collect_with_box.gif)
+
+
 人脸采集功能预览，无框版本。
+
+
 ![image](https://github.com/Aqinn/activity_manager_sys-android/blob/master/previewimages/face_collect.gif)
 ### 3.2 自助签到
 ![image](https://github.com/Aqinn/activity_manager_sys-android/blob/master/previewimages/self_check_in.gif)
