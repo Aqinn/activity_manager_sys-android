@@ -67,6 +67,8 @@ PS: 请忽视个人中心旁边的数字，那是我之前为了方便测试显�
 ![image](https://github.com/Aqinn/activity_manager_sys-android/blob/master/previewimages/self_check_in.gif)
 ### 3.3 视频签到
 这里要说一下 gif 最后出现的那个自助签到的信息，那是因为图示活动是允许自助签到+视频签到的，所以当有参与者通过自助签到成功签到后，也会显示在这个视图中。
+
+
 ![image](https://github.com/Aqinn/activity_manager_sys-android/blob/master/previewimages/video_check_in.gif)
 
 ## 4. 特别鸣谢（Special Thanks!）
