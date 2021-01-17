@@ -332,7 +332,7 @@ public class FaceCollectActivity extends BaseFragmentActivity {
                     faceInfos[i] = faceInfo;
                 }
                 nowFaceFeature = mFaceRecognize.recognize(CommonUtils.getPixelsRGBA(bitmap), mTextureView.getWidth(), mTextureView.getHeight(), CommonUtils.getUsefulLandmarksFromFaceInfo(faceInfos[0]));
-                if (!isTesting)
+                if (isTesting)
                     drawRectBySurface(faceInfos);
                 if (progressCount < 100) {
                     boolean isRightLocation = verifyFaceLocation(faceInfos[0]);
@@ -644,7 +644,7 @@ public class FaceCollectActivity extends BaseFragmentActivity {
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); //清楚掉上一次的画框。
         for (int i = 0; i < faceInfos.length; i++) {
             canvas.drawRect(faceInfos[i].x1, faceInfos[i].y1, faceInfos[i].x2, faceInfos[i].y2, rectPaint);
-            if (!isTesting)
+            if (isTesting)
                 test(canvas);
             for (int j = 0; j < 5; j++) {
                 canvas.drawCircle(faceInfos[i].keypoints[j][0], faceInfos[i].keypoints[j][1], 6f, pointPaint);
