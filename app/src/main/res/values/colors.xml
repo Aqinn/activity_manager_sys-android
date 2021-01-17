@@ -77,5 +77,8 @@
     <color name="sdk_verify_bg">#222629</color>
     <color name="button_color_press">#88527ddd</color>
 
+    <!--  时间选择器的颜色  -->
+    <color name="date_picker_text_light">@color/app_color_blue</color>
+    <color name="date_picker_text_dark">@color/app_color_blue</color>
 
 </resources>

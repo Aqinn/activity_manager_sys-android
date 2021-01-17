@@ -1,8 +1,13 @@
 package com.aqinn.actmanagersysandroid.fragment;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import androidx.annotation.Nullable;
 
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
@@ -13,6 +18,8 @@ import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.UserDescDataSource;
+import com.aqinn.actmanagersysandroid.service.CheckinCountRefreshService;
+import com.aqinn.actmanagersysandroid.service.RefreshPartService;
 import com.qmuiteam.qmui.arch.QMUIFragment;
 import com.qmuiteam.qmui.arch.QMUIFragmentPagerAdapter;
 import com.qmuiteam.qmui.widget.QMUIViewPager;
@@ -57,6 +64,11 @@ public class MainFragment extends BaseFragment {
     public ServiceManager serviceManager;
 
     private boolean isCheck = false;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     protected View onCreateView() {

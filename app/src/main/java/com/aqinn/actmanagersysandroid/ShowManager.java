@@ -2,10 +2,12 @@ package com.aqinn.actmanagersysandroid;
 
 
 import android.content.ContentValues;
+import android.util.Log;
 
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
 import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.entity.show.ParticipateAttendIntroItem;
 import com.aqinn.actmanagersysandroid.qualifiers.ActCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.ActPartDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
@@ -78,19 +80,29 @@ public class ShowManager {
      * @param id
      * @return
      */
-    // TODO 还要把数据库中此人参与活动的记录移除
     public boolean quitPartAct(Long id) {
         int res = LitePal.delete(ActIntroItem.class, id);
         if (res <= 0)
             return false;
         boolean success = false;
+        Long actId = -1L;
         for (ActIntroItem aii : (List<ActIntroItem>) actP.getDatas()) {
             if (aii.getId().equals(id)) {
                 actP.getDatas().remove(aii);
                 actP.notifyAllObserver();
                 success = true;
+                actId = aii.getActId();
                 break;
             }
+        }
+        if (success) {
+            for (ParticipateAttendIntroItem paii : (List<ParticipateAttendIntroItem>) attP.getDatas()) {
+                if (paii.getActId().equals(actId)) {
+                    attP.getDatas().remove(paii);
+                    paii.delete();
+                }
+            }
+            attP.notifyAllObserver();
         }
         return success;
     }
@@ -271,6 +283,9 @@ public class ShowManager {
      */
     public boolean createAttend(CreateAttendIntroItem newCaii) {
         boolean success = false;
+        success = newCaii.save();
+        if (!success)
+            return success;
         success = attC.getDatas().add(newCaii);
         if (success)
             attC.notifyAllObserver();
@@ -288,9 +303,50 @@ public class ShowManager {
         if (!res)
             return false;
         ActIntroItem dbAii = LitePal.findLast(ActIntroItem.class);
-        actC.getDatas().add(0, dbAii);
-        actC.notifyAllObserver();
+        actP.getDatas().add(0, dbAii);
+        actP.notifyAllObserver();
         return true;
+    }
+
+    public boolean refreshAttendCount(CreateAttendIntroItem newCaii) {
+        boolean success = false;
+        List<CreateAttendIntroItem> list = attC.getDatas();
+        for (CreateAttendIntroItem caii: list) {
+            if (caii.getId().equals(newCaii.getId())) {
+                caii.setShouldAttendCount(newCaii.getShouldAttendCount());
+                caii.setHaveAttendCount(newCaii.getHaveAttendCount());
+                caii.setNotAttendCount(newCaii.getNotAttendCount());
+                success = true;
+                break;
+            }
+        }
+        attC.notifyAllObserver();
+        return success;
+    }
+
+    // 不要用这个，是有问题的，懒得删
+    @Deprecated
+    public boolean refreshAttendCount_old(CreateAttendIntroItem newCaii) {
+        boolean success = false;
+        for (int i = 0; i < attC.getDatas().size(); i++) {
+            if (((CreateAttendIntroItem) attC.getDatas().get(i)).getAttendId().equals(newCaii.getAttendId())) {
+                ContentValues values = new ContentValues();
+                if (((CreateAttendIntroItem) attC.getDatas().get(i)).getShouldAttendCount().equals(newCaii.getShouldAttendCount()) &&
+                        ((CreateAttendIntroItem) attC.getDatas().get(i)).getHaveAttendCount().equals(newCaii.getHaveAttendCount()))
+                    return true;
+                values.put("shouldAttendCount", newCaii.getShouldAttendCount());
+                values.put("haveAttendCount", newCaii.getHaveAttendCount());
+                values.put("notAttendCount", newCaii.getNotAttendCount());
+                String attendId = String.valueOf(newCaii.getAttendId());
+                int res = LitePal.updateAll(CreateAttendIntroItem.class, values, "attendId = ?", attendId);
+                if (res > 0)
+                    success = true;
+                break;
+            }
+        }
+        if (success)
+            attC.notifyAllObserver();
+        return success;
     }
 
 }

@@ -1,12 +1,13 @@
 package com.aqinn.actmanagersysandroid.modules;
 
 import com.aqinn.actmanagersysandroid.scopes.ApplicationScope;
-import com.aqinn.actmanagersysandroid.service.ActService;
-import com.aqinn.actmanagersysandroid.service.AttendService;
-import com.aqinn.actmanagersysandroid.service.ShowItemService;
-import com.aqinn.actmanagersysandroid.service.UserActService;
-import com.aqinn.actmanagersysandroid.service.UserAttendService;
-import com.aqinn.actmanagersysandroid.service.UserService;
+import com.aqinn.actmanagersysandroid.retrofitservice.ActService;
+import com.aqinn.actmanagersysandroid.retrofitservice.AttendService;
+import com.aqinn.actmanagersysandroid.retrofitservice.ShowItemService;
+import com.aqinn.actmanagersysandroid.retrofitservice.UserActService;
+import com.aqinn.actmanagersysandroid.retrofitservice.UserAttendService;
+import com.aqinn.actmanagersysandroid.retrofitservice.UserFeatureService;
+import com.aqinn.actmanagersysandroid.retrofitservice.UserService;
 import com.aqinn.actmanagersysandroid.utils.RetrofitUtils;
 
 import dagger.Module;
@@ -53,6 +54,12 @@ public class RetrofitServiceModule {
     @Provides
     ShowItemService providerShowItemService() {
         return RetrofitUtils.getRetrofit().create(ShowItemService.class);
+    }
+
+    @ApplicationScope
+    @Provides
+    UserFeatureService providerUserFeatureService() {
+        return RetrofitUtils.getRetrofit().create(UserFeatureService.class);
     }
 
 }

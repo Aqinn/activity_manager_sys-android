@@ -24,7 +24,6 @@ public class DataSourceCreateAttendIntroItem extends DataSource<CreateAttendIntr
         initData();
     }
 
-
     private void initData() {
         // 我创建的签到
         List<CreateAttendIntroItem> createAttendIntroItemList = LitePal.where("ownerId = ?", String.valueOf(CommonUtils.getNowUserIdFromSP(MyApplication.getContext()))).find(CreateAttendIntroItem.class);

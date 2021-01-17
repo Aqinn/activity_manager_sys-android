@@ -26,20 +26,6 @@
 
         </FrameLayout>
 
-<!--        <FrameLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent">-->
-
-<!--            <com.aqinn.facerecognizencnn.view.DrawView-->
-<!--                android:id="@+id/drawView"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_alignParentTop="false"-->
-<!--                android:background="@android:color/transparent"/>-->
-
-<!--        </FrameLayout>-->
-
-
     </RelativeLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

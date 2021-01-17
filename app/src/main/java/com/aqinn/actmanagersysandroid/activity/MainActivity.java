@@ -1,6 +1,7 @@
 package com.aqinn.actmanagersysandroid.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import androidx.fragment.app.FragmentContainerView;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.fragment.ErrorFragment;
 import com.aqinn.actmanagersysandroid.fragment.MainFragment;
+import com.aqinn.actmanagersysandroid.service.CheckinCountRefreshService;
 import com.aqinn.actmanagersysandroid.utils.CommonUtils;
 import com.qmuiteam.qmui.arch.QMUIFragmentActivity;
 
@@ -37,7 +39,7 @@ public class MainActivity extends BaseFragmentActivity {
     }
 
     private void init(){
-        if (CommonUtils.getNowUsernameFromSP(this) == null || CommonUtils.getUsernameFromSP(this).equals(CommonUtils.ERR_USER_ID)) {
+        if (CommonUtils.getNowUserIdFromSP(this).equals(CommonUtils.ERR_USER_ID)) {
             Log.d(TAG, "init: 无当前登录用户");
             ErrorFragment fragment = new ErrorFragment("数据错误", "您还没有登录");
             startFragment(fragment);
@@ -50,6 +52,14 @@ public class MainActivity extends BaseFragmentActivity {
     @Override
     public int getContextViewId() {
         return R.layout.activity_main;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent intent = new Intent(this, CheckinCountRefreshService.class);
+        stopService(intent);
+        Log.d("CheckinCountRefreshServ", "MainActivity onDestroy: 服务已经销毁");
     }
 
     class CustomRootView extends RootView {

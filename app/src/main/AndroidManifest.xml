@@ -16,7 +16,7 @@
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|uiMode"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
 
@@ -24,18 +24,44 @@
         <activity
             android:name=".activity.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|uiMode"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme">
-
-        </activity>
-
-        <activity android:name=".activity.FaceActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".activity.FaceActivity">
+
+        </activity>
+
+        <activity android:name=".activity.FaceCollectActivity">
+
+        </activity>
+        <activity android:name=".activity.DARBitmapActivity">
+
+        </activity>
+        <activity android:name=".activity.SelfCheckInActivity">
+
+        </activity>
+        <activity android:name=".activity.VideoCheckInActivity">
+
+        </activity>
+
+        <service
+            android:name=".service.CheckinCountRefreshService"
+            android:enabled="true"
+            android:exported="false"/>
+        <service
+            android:name=".service.CheckSelfCheckinService"
+            android:enabled="true"
+            android:exported="false"/>
+        <service android:name=".service.RefreshPartService"
+            android:enabled="true"
+            android:exported="false"/>
+
     </application>
 
     <uses-feature
@@ -51,11 +77,12 @@
         android:name="android.hardware.camera.front.autofocus"
         android:required="true" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

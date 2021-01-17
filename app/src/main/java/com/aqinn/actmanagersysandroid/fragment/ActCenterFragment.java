@@ -12,6 +12,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -350,15 +351,39 @@ public class ActCenterFragment extends BaseFragment {
                             }
                     ));
             }
-            qqa.addAction(new QMUIQuickAction.Action().text("查看签到").onClick(
-                    new QMUIQuickAction.OnClickListener() {
-                        @Override
-                        public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
-                            quickAction.dismiss();
-                            Toast.makeText(getContext(), "查看签到成功", Toast.LENGTH_SHORT).show();
+            if (mFlag == 1) {
+                qqa.addAction(new QMUIQuickAction.Action().text("创建签到").onClick(
+                        new QMUIQuickAction.OnClickListener() {
+                            @Override
+                            public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
+                                quickAction.dismiss();
+                                Toast.makeText(getContext(), "点击了创建签到", Toast.LENGTH_SHORT).show();
+                                CreateAttendFragment fragment = new CreateAttendFragment(
+                                        new CreateAttendFragment.Callback() {
+                                            @Override
+                                            public void onConfirm(String time, Integer type) {
+                                                // TODO 使用 ServerManager 创建一个签到
+                                                serviceManager.createAttend(clickAii.getActId(), time, type,
+                                                        new ServiceManager.CreateAttendCallback() {
+                                                            @Override
+                                                            public void onFinish() {
+                                                                Toast.makeText(getContext(), "创建签到成功", Toast.LENGTH_SHORT).show();
+                                                            }
+
+                                                            @Override
+                                                            public void onFail() {
+                                                                Toast.makeText(getContext(), "创建签到失败", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                            }
+                                        });
+                                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                                fragment.show(ft, "findMindmapDialogFragment");
+                            }
                         }
-                    }
-            ));
+                ));
+            }
             qqa.show(view);
         }
     }
@@ -428,6 +453,8 @@ public class ActCenterFragment extends BaseFragment {
             if (!mAdapterMap.containsKey(i) || !mListViewMap.containsKey(i))
                 continue;
             if (mAdapterMap.get(i).isEmpty())
+                continue;
+            if (mListViewMap.get(i).getChildAt(0) == null)
                 continue;
             if (mListViewMap.get(i).getChildAt(0).getTop() == 0)
                 mListViewMap.get(i).smoothScrollBy(1, 1);

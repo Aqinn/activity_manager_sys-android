@@ -20,7 +20,7 @@ public class CreateAttendIntroItem extends LitePalSupport {
 
     private String time;
 
-    // 签到方式 1: "视频签到" 2: "自助签到"
+    // 签到方式 01: "视频签到" 10: "自助签到" 11: "两个都有签到"
     private Integer type;
 
     // 签到状态 1: "未开始" 2: "进行中" 3: "已结束"
@@ -35,8 +35,10 @@ public class CreateAttendIntroItem extends LitePalSupport {
     // 未签到人数
     private Integer notAttendCount;
 
-    public CreateAttendIntroItem(Long id, Long ownerId, Long attendId, Long actId, String name, String time, Integer type, Integer status, Integer shouldAttendCount, Integer haveAttendCount, Integer notAttendCount) {
-        this.id = id;
+    public CreateAttendIntroItem() {
+    }
+
+    public CreateAttendIntroItem(Long ownerId, Long attendId, Long actId, String name, String time, Integer type, Integer status, Integer shouldAttendCount, Integer haveAttendCount, Integer notAttendCount) {
         this.ownerId = ownerId;
         this.attendId = attendId;
         this.actId = actId;

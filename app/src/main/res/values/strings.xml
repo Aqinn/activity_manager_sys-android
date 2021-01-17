@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">二休二休</string>
+    <string name="app_name">活动管理</string>
     <string name="empty_tips">列表为空</string>
     <string name="error_fragment_title">亲这边是出问题了噢</string>
     <string name="error_fragment_detail">暂时不知道是啥问题呢</string>

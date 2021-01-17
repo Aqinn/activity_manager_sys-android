@@ -30,10 +30,12 @@
     <dimen name="register_input_start_margin">10dp</dimen>
     <dimen name="register_input_end_margin">90dp</dimen>
 
-
-
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="fragment_horizontal_margin">16dp</dimen>
     <dimen name="fragment_vertical_margin">16dp</dimen>
     <dimen name="register_common_content_spacing">0dp</dimen>
+
+    <dimen name="picker_view_height">160dp</dimen>
+    <dimen name="date_unit_text_size">18sp</dimen>
+
 </resources>

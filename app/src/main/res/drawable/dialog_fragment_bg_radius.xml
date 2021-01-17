@@ -1,0 +1,19 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!-- 填充 -->
+    <solid android:color="#ffffff" />
+    <!-- 圆角 -->
+    <corners
+
+        android:radius="25dp" />
+    <padding
+        android:bottom="21dp"
+        android:top="21dp"
+        android:left="4dp"
+        android:right="4dp"/>
+    <stroke
+        android:width="3dp"
+        android:color="@color/app_color_blue" />
+</shape>
+
+    <!--        android:radius="12dp"-->

@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.aqinn.actmanagersysandroid.entity.User;
 import com.aqinn.actmanagersysandroid.entity.show.ActIntroItem;
+import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
 
 /**
  * 服务管理器
@@ -33,6 +34,8 @@ public interface ServiceManager {
 
     void editAct(ActIntroItem aii, EditActCallback callback);
 
+    void createAttend(Long actId, String time, Integer type, CreateAttendCallback callback);
+
     void startAttend(Long id);
 
     void stopAttend(Long id);
@@ -40,6 +43,8 @@ public interface ServiceManager {
     void editAttendTime(Long id, String time);
 
     void editAttendType(Long id, Integer type);
+
+    void refreshCreateAttend(Long attendId, Integer shouldAttendCount, Integer haveAttendCount, Integer notAttendCount);
 
     interface RegisterCallback{
         void onFinish();
@@ -55,6 +60,11 @@ public interface ServiceManager {
         void onFinish();
         void onFail();
         void onError();
+    }
+
+    interface CreateAttendCallback{
+        void onFinish();
+        void onFail();
     }
 
 }

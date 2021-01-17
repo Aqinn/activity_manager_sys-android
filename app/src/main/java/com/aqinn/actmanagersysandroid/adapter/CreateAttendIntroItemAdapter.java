@@ -89,8 +89,8 @@ public class CreateAttendIntroItemAdapter extends BaseAdapter implements Observe
                 sb.append(mContext.getString(R.string.attend_type_2) + " ");
         }
         viewHolder.tv_type.setText(sb.toString());
-        viewHolder.tv_count.setText("应签到/未签到/已签到 = " + item.getShouldAttendCount() + "/"
-                + item.getHaveAttendCount() + "/"
+        viewHolder.tv_count.setText("应签到/已签到/未签到 = " + item.getShouldAttendCount() + " / "
+                + item.getHaveAttendCount() + " / "
                 + item.getNotAttendCount());
         String statusText = "";
         int statusTextColor = R.color.thing_default;
