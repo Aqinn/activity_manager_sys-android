@@ -51,13 +51,13 @@ Android Studio 如果报编译不过，大概率是 gradle 很久都下载不下
 ## 3. 功能展示（Show Features）
 ### 3.1 人脸采集
 人脸采集功能预览，带指示框版本。为了更好地指引用户进行人脸采集，我模仿 iPhone 的人脸采集界面，设置了一个黑屏+中间镂空的圆框，同时添加了人脸位置检测规则，只有当人脸检测框位置位于两个框之间时，才能成功采集。
-![image](https://github.com/Aqinn/activity_manager_sys-android/previewimages/face_collect_with_box.gif)
+![image](https://github.com/Aqinn/activity_manager_sys-android/blob/master/previewimages/face_collect_with_box.gif)
 人脸采集功能预览，无框版本。
-![image](https://github.com/Aqinn/activity_manager_sys-android/previewimages/face_collect.gif)
+![image](https://github.com/Aqinn/activity_manager_sys-android/blob/master/previewimages/face_collect.gif)
 ### 3.2 自助签到
-![image](https://github.com/Aqinn/activity_manager_sys-android/previewimages/self_check_in.gif)
+![image](https://github.com/Aqinn/activity_manager_sys-android/blob/master/previewimages/self_check_in.gif)
 ### 3.3 视频签到
-![image](https://github.com/Aqinn/activity_manager_sys-android/previewimages/video_check_in.gif)
+![image](https://github.com/Aqinn/activity_manager_sys-android/blob/master/previewimages/video_check_in.gif)
 
 ## 4. 特别鸣谢
 忠心感谢本人多年好友（大佬）从 2020.3 毕设选题至今给予我的大力帮助，没有他的指导，我无以开始计算机视觉方面的学习以及攻克本课题的难点，感谢！
