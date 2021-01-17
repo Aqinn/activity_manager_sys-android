@@ -68,7 +68,7 @@ public class PersonalCenterFragment extends BaseFragment {
     }
 
     private void initTopBar() {
-        mCollapsingTopBarLayout.setTitle("个人中心 " + CommonUtils.getNowUserIdFromSP(getContext()));
+        mCollapsingTopBarLayout.setTitle("个人中心");//  + CommonUtils.getNowUserIdFromSP(getContext())
         mTopBar.addRightImageButton(R.mipmap.icon_topbar_overflow, R.id.topbar_right_change_button)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
