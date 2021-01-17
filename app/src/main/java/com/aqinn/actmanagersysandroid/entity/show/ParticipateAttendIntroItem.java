@@ -30,6 +30,9 @@ public class ParticipateAttendIntroItem extends LitePalSupport {
     // 签到状态 活动状态 1: "未开始" 2: "进行中" 3: "已结束"
     private Integer status;
 
+    public ParticipateAttendIntroItem() {
+    }
+
     public ParticipateAttendIntroItem(Long id, Long ownerId, Long attendId, Long actId, String name, String time, Integer type, Integer uStatus, Integer status) {
         this.id = id;
         this.ownerId = ownerId;

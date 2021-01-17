@@ -39,7 +39,7 @@ public class MainActivity extends BaseFragmentActivity {
     }
 
     private void init(){
-        if (CommonUtils.getNowUsernameFromSP(this) == null || CommonUtils.getUsernameFromSP(this).equals(CommonUtils.ERR_USER_ID)) {
+        if (CommonUtils.getNowUserIdFromSP(this).equals(CommonUtils.ERR_USER_ID)) {
             Log.d(TAG, "init: 无当前登录用户");
             ErrorFragment fragment = new ErrorFragment("数据错误", "您还没有登录");
             startFragment(fragment);

@@ -87,6 +87,7 @@ public class ActIntroItemAdapter extends BaseAdapter implements Observer {
         String statusText = "";
         int statusTextColor = R.color.thing_default;
         int statusBgColor = R.color.thing_default_bg;
+
         if (2 == item.getStatus()) {
             statusText = mContext.getResources().getString(R.string.thing_status_ing);
             statusTextColor = R.color.thing_ing;

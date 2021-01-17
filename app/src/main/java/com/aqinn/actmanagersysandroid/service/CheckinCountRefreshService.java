@@ -15,6 +15,7 @@ import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.data.ApiResult;
 import com.aqinn.actmanagersysandroid.data.DataSource;
 import com.aqinn.actmanagersysandroid.entity.show.CreateAttendIntroItem;
+import com.aqinn.actmanagersysandroid.fragment.AttendCenterFragment;
 import com.aqinn.actmanagersysandroid.presenter.ServiceManager;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
 import com.aqinn.actmanagersysandroid.retrofitservice.UserAttendService;
@@ -38,6 +39,7 @@ public class CheckinCountRefreshService extends Service {
 
     private static final String TAG = "CheckinCountRefreshServ";
 
+    private Handler mUIHandler = new Handler();
     private HandlerThread mCheckThread;
     private Handler mHandler;
     private static boolean requestCheckedThreadRunning = false;
@@ -61,7 +63,12 @@ public class CheckinCountRefreshService extends Service {
             Long attendId = (Long) msg.obj;
             int shouldAttendCount = msg.arg1;
             int haveAttendCount = msg.arg2;
-            serviceManager.refreshCreateAttend(attendId, shouldAttendCount, haveAttendCount, shouldAttendCount - haveAttendCount);
+            mUIHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    serviceManager.refreshCreateAttend(attendId, shouldAttendCount, haveAttendCount, shouldAttendCount - haveAttendCount);
+                }
+            });
             return true;
         });
         requestCheckedThread = new RequestCheckedThread();

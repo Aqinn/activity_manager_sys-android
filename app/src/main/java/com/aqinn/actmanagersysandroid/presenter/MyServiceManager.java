@@ -269,10 +269,14 @@ public class MyServiceManager implements ServiceManager {
                     @Override
                     public void accept(ApiResult apiResult) throws Exception {
                         if (apiResult.success) {
-                            LinkedTreeMap linkedTreeMap = (LinkedTreeMap) apiResult.data;
-                            Long actId = ((Double) (linkedTreeMap.get("id"))).longValue();
-                            Long code = ((Double) (linkedTreeMap.get("code"))).longValue();
-                            Long pwd = ((Double) (linkedTreeMap.get("pwd"))).longValue();
+                            JSONObject jo = JSONObject.parseObject(String.valueOf(apiResult.data));
+//                            LinkedTreeMap linkedTreeMap = (LinkedTreeMap) apiResult.data;
+//                            Long actId = ((Double) (linkedTreeMap.get("id"))).longValue();
+//                            Long code = ((Double) (linkedTreeMap.get("code"))).longValue();
+//                            Long pwd = ((Double) (linkedTreeMap.get("pwd"))).longValue();
+                            Long actId = jo.getLong("id");
+                            Long code = jo.getLong("code");
+                            Long pwd = jo.getLong("pwd");
                             aii.setActId(actId);
                             aii.setCode(code);
                             aii.setPwd(pwd);
@@ -292,6 +296,7 @@ public class MyServiceManager implements ServiceManager {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
                         Toast.makeText(mContext, "创建活动失败, 网络问题", Toast.LENGTH_SHORT).show();
                         callback.onError();
                     }
@@ -596,6 +601,10 @@ public class MyServiceManager implements ServiceManager {
     @Override
     public void refreshCreateAttend(Long attendId, Integer shouldAttendCount, Integer haveAttendCount, Integer notAttendCount) {
         CreateAttendIntroItem caii = LitePal.where("attendId = ?", String.valueOf(attendId)).find(CreateAttendIntroItem.class).get(0);
+        caii.setShouldAttendCount(shouldAttendCount);
+        caii.setHaveAttendCount(haveAttendCount);
+        caii.setNotAttendCount(notAttendCount);
+        caii.update(caii.getId());
         showManager.refreshAttendCount(caii);
     }
 

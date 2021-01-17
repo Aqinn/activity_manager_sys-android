@@ -35,6 +35,9 @@ public class CreateAttendIntroItem extends LitePalSupport {
     // 未签到人数
     private Integer notAttendCount;
 
+    public CreateAttendIntroItem() {
+    }
+
     public CreateAttendIntroItem(Long ownerId, Long attendId, Long actId, String name, String time, Integer type, Integer status, Integer shouldAttendCount, Integer haveAttendCount, Integer notAttendCount) {
         this.ownerId = ownerId;
         this.attendId = attendId;

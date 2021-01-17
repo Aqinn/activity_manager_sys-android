@@ -43,6 +43,9 @@
         <activity android:name=".activity.DARBitmapActivity">
 
         </activity>
+        <activity android:name=".activity.SelfCheckInActivity">
+
+        </activity>
         <activity android:name=".activity.VideoCheckInActivity">
 
         </activity>
@@ -53,6 +56,9 @@
             android:exported="false"/>
         <service
             android:name=".service.CheckSelfCheckinService"
+            android:enabled="true"
+            android:exported="false"/>
+        <service android:name=".service.RefreshPartService"
             android:enabled="true"
             android:exported="false"/>
 

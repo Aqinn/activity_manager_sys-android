@@ -3,6 +3,7 @@ package com.aqinn.actmanagersysandroid.fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.aqinn.actmanagersysandroid.MyApplication;
 import com.aqinn.actmanagersysandroid.R;
 import com.aqinn.actmanagersysandroid.activity.MainActivity;
+import com.aqinn.actmanagersysandroid.activity.SelfCheckInActivity;
 import com.aqinn.actmanagersysandroid.activity.VideoCheckInActivity;
 import com.aqinn.actmanagersysandroid.adapter.CreateAttendIntroItemAdapter;
 import com.aqinn.actmanagersysandroid.adapter.ParticipateAttendIntroItemAdapter;
@@ -35,6 +37,7 @@ import com.aqinn.actmanagersysandroid.presenter.ServiceManager;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendCreateDataSource;
 import com.aqinn.actmanagersysandroid.qualifiers.AttendPartDataSource;
 import com.aqinn.actmanagersysandroid.service.CheckinCountRefreshService;
+import com.aqinn.actmanagersysandroid.service.RefreshPartService;
 import com.aqinn.actmanagersysandroid.utils.CommonUtils;
 import com.aqinn.actmanagersysandroid.utils.DateFormatUtils;
 import com.aqinn.actmanagersysandroid.view.CustomDatePicker;
@@ -137,7 +140,11 @@ public class AttendCenterFragment extends BaseFragment {
 
         Intent intent = new Intent(getActivity(), CheckinCountRefreshService.class);
         getActivity().startService(intent);
-        Log.d("CheckinCountRefreshServ", "onCreateView: 服务已经启动");
+        Log.d(TAG, "onCreateView: 服务已经启动");
+
+        Intent intent2 = new Intent(getActivity(), RefreshPartService.class);
+        getActivity().startService(intent2);
+        Log.d(TAG, "onCreate: RefreshPartService 服务已经启动");
 
         return rootView;
     }
@@ -370,7 +377,7 @@ public class AttendCenterFragment extends BaseFragment {
                 }
             }
             if (mFlag == 2) {
-                if (clickPaii.getuStatus() == 2) {
+                if (clickPaii.getStatus() == 2 && clickPaii.getuStatus() == 2) {
                     boolean flag = false;
                     Integer type[] = CommonUtils.dec2typeArr(clickPaii.getType());
                     for (int i = 0; i < type.length; i++) {
@@ -386,11 +393,10 @@ public class AttendCenterFragment extends BaseFragment {
                                     @Override
                                     public void onClick(QMUIQuickAction quickAction, QMUIQuickAction.Action action, int position) {
                                         quickAction.dismiss();
-                                        boolean success = false;
-                                        if (success)
-                                            Toast.makeText(getContext(), "自助签到成功", Toast.LENGTH_SHORT).show();
-                                        else
-                                            Toast.makeText(getContext(), "自助签到失败", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(getActivity(), SelfCheckInActivity.class);
+                                        intent.putExtra("attendId", clickPaii.getAttendId());
+                                        getActivity().startActivity(intent);
+                                        Toast.makeText(getContext(), "点击了自助签到", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                         ));
@@ -515,13 +521,13 @@ public class AttendCenterFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         // 返回 Fragment 的时候，需要滚动一下，不然功能菜单无法出现。可能是需要滚动触发某些组件的状态更新？原因待检查。
-        if (caiia != null && mListViewMap.containsKey(1)) {
+        if (caiia != null && mListViewMap.containsKey(1) && mListViewMap.get(1).getChildAt(0) != null) {
             if (mListViewMap.get(1).getChildAt(0).getTop() == 0)
                 mListViewMap.get(1).smoothScrollBy(1, 1);
             else
                 mListViewMap.get(1).smoothScrollBy(-1, 1);
         }
-        if (paiia != null && mListViewMap.containsKey(2)) {
+        if (paiia != null && mListViewMap.containsKey(2) && mListViewMap.get(2).getChildAt(0) != null) {
             if (mListViewMap.get(2).getChildAt(0).getTop() == 0)
                 mListViewMap.get(2).smoothScrollBy(1, 1);
             else
@@ -549,7 +555,12 @@ public class AttendCenterFragment extends BaseFragment {
         super.onDestroy();
         Intent intent = new Intent(getActivity(), CheckinCountRefreshService.class);
         getActivity().stopService(intent);
-        Log.d("CheckinCountRefreshServ", "onDestroy: 服务已经销毁");
+        Log.d(TAG, "onDestroy: CheckinCountRefreshService 服务已经销毁");
+
+        Intent intent2 = new Intent(getActivity(), RefreshPartService.class);
+        getActivity().stopService(intent2);
+        Log.d(TAG, "onCreate: RefreshPartService 服务已经销毁");
+
     }
 
     private void initTimerPicker(TextView tv_time) {
