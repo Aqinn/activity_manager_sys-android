@@ -65,7 +65,7 @@ Android Studio 如果报编译不过，大概率是 gradle 很久都下载不下
 ### 3.3 视频签到
 ![image](https://github.com/Aqinn/activity_manager_sys-android/blob/master/previewimages/video_check_in.gif)
 
-## 4. 特别鸣谢
+## 4. 特别鸣谢（Special Thanks!）
 忠心感谢本人多年好友（大佬）从 2020.3 毕设选题至今给予我的大力帮助，没有他的指导，我无以开始计算机视觉方面的学习以及攻克本课题的难点，感谢！
 
 [大佬 Github 主页](https://github.com/NicoledyChen)
